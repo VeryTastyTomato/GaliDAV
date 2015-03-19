@@ -48,49 +48,58 @@ class Personne
     protected $statuts=array();
 
     // --- ATTRIBUTES ---
-
+    //Qu'est-ce que c'est?
+	private static $person_types = array(
+		"Administrateur"=>0,			
+		"Secretaire"=>1,
+		"Responsable"=>2,
+		"Enseignant"=>3
+	);
+				
+	public $status=array();
     /**
-     * Short description of attribute nom
+     * Short description of attribute familyName
      *
-     * @access protected
+     * @access private
      * @var String
      */
-    protected $nom = null;
+    private $familyName = null;
 
     /**
-     * Short description of attribute prenom
+     * Short description of attribute firstName
      *
-     * @access protected
+     * @access private
      * @var String
      */
-    protected $prenom = null;
+    private $firstName = null;
 
     /**
-     * Short description of attribute mail1
+     * Short description of attribute emailAddress1
      *
-     * @access protected
+     * @access private
      * @var String
      */
-    protected $mail1 = null;
+    private $emailAddress1 = null;
 
     /**
-     * Short description of attribute mail2
+     * Short description of attribute emailAddress2
      *
-     * @access protected
+     * @access private
      * @var String
      */
-    protected $mail2 = null;
+    private $emailAddress2 = null;
 
     // --- OPERATIONS ---
     
     // -- Constructeurs
     
     public function __construct($N,$P){
-    	$this->nom=$N;
-    	$this->prenom=$P;
+    	$this->familyName=$N;
+    	$this->firstName=$P;
     }
     
 
+/*
 	// -- Accesseurs --//
 	public function get_nom(){
 		return $this->nom;
@@ -113,7 +122,7 @@ class Personne
     	if($this->get_mail()!=null)$this->mail2=$m;
     	else $this->set_mail1($m);
     }
-    
+    */
     public function add_status($S){
     	if($S instanceof Statut_personne)if(!$this->has_status($S))$this->statuts[]=$S;
     }
@@ -132,13 +141,11 @@ class Personne
     	}
     }
     
-    //Flora: TO COMPLETE après que Simon ait fait les enums (il y a redondance) 
-    public function has_status(Statut_personne $S){
-   		if($S instanceof Statut_personne){
+    //Flora: TO COMPLETE après que Simon ait fait les enums 
+    public function has_status(Statut_personne $S)
 			foreach($this->statuts as $onestatus){
 				if($onestatus==$S)return true;
 			}
-		}
     	return false;
     }
     
@@ -159,6 +166,62 @@ class Personne
     	}
     	return $result;
     }
+
+    /* getters */
+	public function getFamilyName()
+	{
+		return $this->familyName;
+	}
+
+	public function getFirstName()
+	{
+		return $this->firstName;
+	}
+
+	public function getEmailAddress1()
+	{
+		return $this->emailAddress1;
+	}
+
+	public function getEmailAddress2()
+	{
+		return $this->emailAddress2;
+	}
+
+	/* setters */
+	public function setFamilyName($newFamilyName)
+	{
+		if (!empty($newFamilyName))
+		{
+			$this->familyName = $newFamilyName;
+		}
+	}
+
+	public function setFirstName($newFirstName)
+	{
+		if (!empty($newFirstName))
+		{
+			$this->firstName = $newFirstName;
+		}
+	}
+
+	public function setEmailAddress1($newEmailAddress1)
+	{
+		//  todo: add a regular expression to check the parameter’s pattern
+		if (!empty($newEmailAddress1))
+		{
+			$this->emailAddress1 = $newEmailAddress1;
+		}
+	}
+
+	public function setEmailAddress2($newEmailAddress2)
+	{
+		//  todo: add a regular expression to check the parameter’s pattern
+		if (!empty($newEmailAddress2))
+		{
+			$this->emailAddress2 = $newEmailAddress2;
+		}
+	}
 } /* end of class Personne */
 
 ?>

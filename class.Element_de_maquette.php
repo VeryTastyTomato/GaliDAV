@@ -62,23 +62,50 @@ class Element_de_maquette
     // --- ATTRIBUTES ---
 
     /**
-     * Short description of attribute typeDeCours
+     * Short description of attribute typeOfCourse
      *
-     * @access public
-     * @var Type_cours
+     * @access private
+     * @var Type_Course
      */
-    public $typeDeCours = null;
+    private $typeOfCourse = null;
 
     /**
-     * Short description of attribute nbHeure
+     * Short description of attribute numHours
      *
-     * @access public
+     * @access private
      * @var Integer
      */
-    public $nbHeure = null;
+    private $numHours = null;
 
     // --- OPERATIONS ---
 
+	/* getters */
+	public function getTypeOfCourse()
+	{
+		return $this->typeOfCourse;
+	}
+
+	public function getNumHours()
+	{
+		return $this->numHours;
+	}
+
+	/* setters */
+	public function setTypeofCourse($newTypeOfCourse)
+	{
+		if(!empty($newTypeOfCourse))
+		{
+			$this->typeOfCourse = $newTypeOfCourse;
+		}
+	}
+
+	public function setNumHours($newNumHours)
+	{
+		if(!empty($newNumHours))
+		{
+			$this->numHours = $newNumHours;
+		}
+	}
 } /* end of class Element_de_maquette */
 
 ?>
