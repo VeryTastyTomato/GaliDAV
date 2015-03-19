@@ -60,7 +60,17 @@ class Cours
     // generateAssociationEnd : listeEDTs    // generateAssociationEnd :     // generateAssociationEnd :     // generateAssociationEnd : 
 
     // --- ATTRIBUTES ---
-
+    private static $enum_courses_types = array(
+			"CM"=>0,
+			"TD"=>1,
+			"TP"=>2,
+			"Examen"=>4,
+			"Rattrapage"=>5,
+			"Conference"=>6
+		);
+	
+	public $courses_type = null;
+	
     /**
      * Short description of attribute Numero
      *
