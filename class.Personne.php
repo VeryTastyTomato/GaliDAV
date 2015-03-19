@@ -46,7 +46,14 @@ class Personne
     // generateAssociationEnd : statuts
 
     // --- ATTRIBUTES ---
-
+	private static $person_types = array(
+		"Administrateur"=>0,			
+		"Secretaire"=>1,
+		"Responsable"=>2,
+		"Enseignant"=>3
+	);
+				
+	public $person_type;
     /**
      * Short description of attribute familyName
      *
