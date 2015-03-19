@@ -48,14 +48,29 @@ class Matiere
     // --- ATTRIBUTES ---
 
     /**
-     * Short description of attribute Nom
+     * Short description of attribute name
      *
-     * @access public
+     * @access private
      * @var String
      */
-    public $Nom = null;
+    private $name = null;
 
     // --- OPERATIONS ---
+
+	/* getters */
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	/* setters */
+	public function setName($newName)
+	{
+		if(!empty($newName))
+		{
+			$this->name = $newName;
+		}
+	}
 
 } /* end of class Matiere */
 

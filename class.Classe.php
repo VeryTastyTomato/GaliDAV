@@ -85,7 +85,7 @@ class Classe
      * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
      * @return EDTClasse
      */
-    public function getEDTclasse()
+    public function getEDTClasse()
     {
         $returnValue = null;
 

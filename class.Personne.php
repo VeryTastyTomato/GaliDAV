@@ -48,39 +48,94 @@ class Personne
     // --- ATTRIBUTES ---
 
     /**
-     * Short description of attribute nom
+     * Short description of attribute familyName
      *
-     * @access protected
+     * @access private
      * @var String
      */
-    protected $nom = null;
+    private $familyName = null;
 
     /**
-     * Short description of attribute prenom
+     * Short description of attribute firstName
      *
-     * @access protected
+     * @access private
      * @var String
      */
-    protected $prenom = null;
+    private $firstName = null;
 
     /**
-     * Short description of attribute mail1
+     * Short description of attribute emailAddress1
      *
-     * @access protected
+     * @access private
      * @var String
      */
-    protected $mail1 = null;
+    private $emailAddress1 = null;
 
     /**
-     * Short description of attribute mail2
+     * Short description of attribute emailAddress2
      *
-     * @access protected
+     * @access private
      * @var String
      */
-    protected $mail2 = null;
+    private $emailAddress2 = null;
 
     // --- OPERATIONS ---
 
+    /* getters */
+	public function getFamilyName()
+	{
+		return $this->familyName;
+	}
+
+	public function getFirstName()
+	{
+		return $this->firstName;
+	}
+
+	public function getEmailAddress1()
+	{
+		return $this->emailAddress1;
+	}
+
+	public function getEmailAddress2()
+	{
+		return $this->emailAddress2;
+	}
+
+	/* setters */
+	public function setFamilyName($newFamilyName)
+	{
+		if (!empty($newFamilyName))
+		{
+			$this->familyName = $newFamilyName;
+		}
+	}
+
+	public function setFirstName($newFirstName)
+	{
+		if (!empty($newFirstName))
+		{
+			$this->firstName = $newFirstName;
+		}
+	}
+
+	public function setEmailAddress1($newEmailAddress1)
+	{
+		//  todo: add a regular expression to check the parameter’s pattern
+		if (!empty($newEmailAddress1))
+		{
+			$this->emailAddress1 = $newEmailAddress1;
+		}
+	}
+
+	public function setEmailAddress2($newEmailAddress2)
+	{
+		//  todo: add a regular expression to check the parameter’s pattern
+		if (!empty($newEmailAddress2))
+		{
+			$this->emailAddress2 = $newEmailAddress2;
+		}
+	}
 } /* end of class Personne */
 
 ?>

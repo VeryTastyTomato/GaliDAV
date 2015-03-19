@@ -62,22 +62,50 @@ class Groupe
     // --- ATTRIBUTES ---
 
     /**
-     * Short description of attribute nom
+     * Short description of attribute name
      *
-     * @access public
+     * @access private
      * @var String
      */
-    public $nom = null;
+    private $name = null;
 
     /**
-     * Short description of attribute EstUneClasse
+     * Short description of attribute isAClass
      *
-     * @access public
+     * @access private
      * @var Boolean
      */
-    public $EstUneClasse = null;
+    private $isAClass = null;
 
     // --- OPERATIONS ---
+
+	/* getters */
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	public function getIsAClass()
+	{
+		return $this->isAClass;
+	}
+
+	/* setters */
+	public function setName($newName)
+	{
+		if(!empty($newName))
+		{
+			$this->name = $newName;
+		}
+	}
+
+	public function setIsAClass($newIsAClass)
+	{
+		if(!empty($newIsAClass))
+		{
+			$this->isAClass = $newIsAClass;
+		}
+	}
 
     /**
      * Short description of method getEDT
