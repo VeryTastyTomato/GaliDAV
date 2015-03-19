@@ -48,15 +48,6 @@ class Personne
     protected $statuts=array();
 
     // --- ATTRIBUTES ---
-    //Qu'est-ce que c'est?
-	private static $person_types = array(
-		"Administrateur"=>0,			
-		"Secretaire"=>1,
-		"Responsable"=>2,
-		"Enseignant"=>3
-	);
-				
-	public $status=array();
     /**
      * Short description of attribute familyName
      *
