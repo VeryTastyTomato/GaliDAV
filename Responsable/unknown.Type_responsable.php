@@ -25,8 +25,9 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BCB-includes end
 
 /* user defined constants */
-// section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BCB-constants begin
-// section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BCB-constants end
+define("RESP_ANNEE", 0);
+define("RESP_FILIERE", 1);
+define("DIR_ETUDE", 2);
 
 null
 
