@@ -50,6 +50,10 @@ class Administrateur
 
     // --- OPERATIONS ---
 
+ 	public function __construct($nom,$prenom,$identifiant,$mdp){
+    	parent::__construct($nom,$prenom,$identifiant,$mdp);
+    	//$this->add_status(); //Flora TODO: indiquer le statut  Administrateur
+    }
     /**
      * Short description of method ajouterUtilisateur
      *
@@ -57,14 +61,9 @@ class Administrateur
      * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
      * @return Utilisateur
      */
-    public function ajouterUtilisateur()
+    public function ajouterUtilisateur($nom,$prenom,$identifiant,$mdp)
     {
-        $returnValue = null;
-
-        // section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000BFD begin
-        // section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000BFD end
-
-        return $returnValue;
+        return new Utilisateur($nom,$prenom,$identifiant,$mdp);
     }
 
     /**
@@ -77,12 +76,7 @@ class Administrateur
      */
     public function ajouterUtilisateur( Personne $P)
     {
-        $returnValue = null;
-
-        // section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000C00 begin
-        // section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000C00 end
-
-        return $returnValue;
+        return Utilisateur::convertPersonToUser($P);
     }
 
     /**
@@ -92,12 +86,9 @@ class Administrateur
      * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
      * @return Utilisateur
      */
-    public function ajouterUtilisateurCAS()
+    public function ajouterUtilisateurCAS($UnkownData)
     {
         $returnValue = null;
-
-        // section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000C03 begin
-        // section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000C03 end
 
         return $returnValue;
     }
@@ -110,10 +101,10 @@ class Administrateur
      * @param  Utilisateur U
      * @return mixed
      */
-    public function changerStatutUtilisateur( Utilisateur $U)
+    public function changerStatutUtilisateur( Utilisateur $U,Statut_personne $S,$operation)
     {
-        // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BC2 begin
-        // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BC2 end
+    	if($operation=='add')$U->add_status($S);
+    	else if($operation=='remove')$U->remove_status($S);
     }
 
     /**
@@ -124,14 +115,17 @@ class Administrateur
      * @param  Utilisateur U
      * @return Personne
      */
+     
+     //Flora: On veut supprimer le compte utilisateur mais pas la personne
     public function supprimerUtilisateur( Utilisateur $U)
     {
-        $returnValue = null;
-
-        // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BC5 begin
-        // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BC5 end
-
-        return $returnValue;
+        
+        $P=new Person($U->get_nom(),$U->get_prenom);
+        $P->set_mail1($U->get_mail1());
+        $P->set_mail2($U->get_mail2());
+        $U=$P;
+        return $U;
+		//Flora TODO Adapter l'entrée de la BDD
     }
 
     /**
@@ -146,6 +140,10 @@ class Administrateur
     {
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BC8 begin
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BC8 end
+        $U->__destroy();
+        $U=NULL;
+        //Flora TODO: Tester et voir s'il n'ya pas plus approprié
+        // + Supprimer de la BDD
     }
 
     /**
@@ -157,13 +155,9 @@ class Administrateur
      * @return Classe
      */
     public function ajouterClasse( String $Nom)
-    {
-        $returnValue = null;
+  {	
 
-        // section 127-0-1-1-156e4f1e:14c2db648ab:-8000:0000000000000BE1 begin
-        // section 127-0-1-1-156e4f1e:14c2db648ab:-8000:0000000000000BE1 end
-
-        return $returnValue;
+        return new Classe($Nom);
     }
 
     /**
@@ -175,6 +169,7 @@ class Administrateur
      * @param  operation
      * @return mixed
      */
+     //Flora TODO: Utiliser les fonctions de la classe Classe,fille de Groupe (ajouter/supprimer un étudiant en l'occurence)
     public function modifierClasse( Classe $C, $operation)
     {
         // section 127-0-1-1-156e4f1e:14c2db648ab:-8000:0000000000000BE3 begin

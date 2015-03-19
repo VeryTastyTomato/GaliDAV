@@ -75,7 +75,7 @@ class Groupe
      * @access public
      * @var Boolean
      */
-    public $EstUneClasse = null;
+    public $EstUneClasse = false;
 
     // --- OPERATIONS ---
 

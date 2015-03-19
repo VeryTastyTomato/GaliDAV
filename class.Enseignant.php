@@ -25,6 +25,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
  * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
  */
 require_once('class.Utilisateur.php');
+require_once('class.EDT.php');
 
 /* user defined includes */
 // section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000BDF-includes begin
@@ -44,12 +45,22 @@ class Enseignant
     extends Utilisateur
 {
     // --- ASSOCIATIONS ---
-
+		
 
     // --- ATTRIBUTES ---
 
+	private $edt_personnel=null;
     // --- OPERATIONS ---
-
+    public function __construct($nom,$prenom,$identifiant,$mdp){
+    	parent::__construct($nom,$prenom,$identifiant,$mdp);
+    	//$this->add_status(); //Flora TODO: indiquer le statut  Enseignant
+    	$this->edt_personnel=new EDT();
+    	
+    }
+	public function get_edt_personnel(){
+	
+		return $this->edt_personnel;
+	}
     /**
      * Short description of method lireEDTpersonnel
      *
@@ -59,12 +70,11 @@ class Enseignant
      */
     public function lireEDTpersonnel()
     {
-        $returnValue = null;
-
+        parent::lireEDT($this->edt_personnel);
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BE0 begin
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BE0 end
 
-        return $returnValue;
+        return parent::lireEDT($this->edt_personnel);
     }
 
 } /* end of class Enseignant */

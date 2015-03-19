@@ -54,6 +54,10 @@ require_once('class.Utilisateur.php');
  * @access public
  * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
  */
+ 
+ //Flora TODO: Ajouter un attribut de type Enseignant qui sera null si c'est un EDT de groupe/classe
+ //				sinon, c'est un EDT d'Enseignant dont le proprio est accessible dans cet attribut.
+ //Flora TODO: Et donc ajouter aussi un accesseur getEnseignant()
 class EDT
 {
     // --- ASSOCIATIONS ---
