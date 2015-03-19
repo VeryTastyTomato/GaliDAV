@@ -25,9 +25,11 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000B89-includes end
 
 /* user defined constants */
-// section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000B89-constants begin
-// section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000B89-constants end
-
+define("", );
+define("", );
+define("", );
+define("", );
+define("", );
 null
 
 ?>
