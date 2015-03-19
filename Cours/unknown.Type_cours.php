@@ -25,11 +25,11 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000B89-includes end
 
 /* user defined constants */
-define("", );
-define("", );
-define("", );
-define("", );
-define("", );
-null
+define("CM", 0);
+define("TD", 1);
+define("TP", 2);
+define("Conference", 3);
+define("Examen", 4);
+define("Rattrapage", 5);
 
 ?>
