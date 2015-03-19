@@ -25,8 +25,13 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BA7-includes end
 
 /* user defined constants */
-// section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BA7-constants begin
-// section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000BA7-constants end
+define("ETUDIANT", 0);
+define("INTERVENANT", 1);
+define("ENSEIGNANT", 2);
+define("SECRETAIRE", 3);
+define("RESPONSABLE", 4);
+define("ADMINISTRATEUR", 5);
+define("AUTRE", 6);
 
 null
 
