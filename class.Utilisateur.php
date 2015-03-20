@@ -99,7 +99,7 @@ class Utilisateur
      * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
      * @return mixed
      */
-    public function connexion()
+    public function connection()
     {
         // section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000BBE begin
         // section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000BBE end
@@ -112,7 +112,7 @@ class Utilisateur
      * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
      * @return mixed
      */
-    public function deconnexion()
+    public function deconnection()
     {
         // section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000BC0 begin
         // section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000BC0 end
@@ -126,7 +126,7 @@ class Utilisateur
      * @param  EDT E
      * @return Boolean
      */
-    public function lireEDT( EDT $E)
+    public function readEDT( EDT $E)
     {
         $returnValue = false;
       

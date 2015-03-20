@@ -51,13 +51,13 @@ class EDTClasse
     // --- OPERATIONS ---
 
     /**
-     * Short description of method générerPDF
+     * Short description of method generatePDF
      *
      * @access public
      * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
      * @return mixed
      */
-    public function générerPDF()
+    public function generatePDF()
     {
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000C2E begin
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000C2E end

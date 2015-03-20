@@ -55,12 +55,19 @@ class Matiere
      */
     private $name = null;
 
+	public $teachedBy = null;
+
     // --- OPERATIONS ---
 
 	/* getters */
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	public function getTeachedBy()
+	{
+		return $this->teachedBy;
 	}
 
 	/* setters */
@@ -72,6 +79,13 @@ class Matiere
 		}
 	}
 
+	public function setTeachedBy($newTeachedBy)
+	{
+		if(!empty($newTeachedBy))
+		{
+			$this->name = $newTeachedBy;
+		}
+	}
 } /* end of class Matiere */
 
 ?>

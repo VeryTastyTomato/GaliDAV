@@ -57,12 +57,42 @@ class Modification
     /**
      * Short description of attribute Date
      *
-     * @access public
+     * @access protected
      */
-    public $Date[ null | null | null ];
+    protected $date[ null | null | null ];
+
+	//Etienne : un attribut pour connaître l'auteur de la modif
+	protected $madeBy = null;
 
     // --- OPERATIONS ---
 
+	//getters
+	public function getDate()
+	{
+		return $this->date;
+	}
+
+	public function getMadeBy()
+	{
+		return $this->madeBy;
+	}
+
+	//setters
+	public function setDate($newDate)
+	{
+		if(!empty($newDate))
+		{
+			$this->date = $newDate;
+		}
+	}
+
+	public function setMadeBy($newMadeBy)
+	{
+		if(!empty($newMadeBy))
+		{
+			$this->madeBy = $newMadeBy;
+		}
+	}
 } /* end of class Modification */
 
 ?>

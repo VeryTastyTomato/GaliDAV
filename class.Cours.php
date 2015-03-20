@@ -66,21 +66,21 @@ class Cours
      * @access public
      * @var Integer
      */
-    public $Numero = null;
+    public $number = null;
 
     /**
      * Short description of attribute Début
      *
      * @access public
      */
-    public $Début[ null | null | null ];
+    public $begin[ null | null | null ];
 
     /**
      * Short description of attribute Fin
      *
      * @access public
      */
-    public $Fin[ null | null | null ];
+    public $end[ null | null | null ];
 
     /**
      * Short description of attribute Salle
@@ -88,9 +88,82 @@ class Cours
      * @access public
      * @var String
      */
-    public $Salle = null;
+    public $room = null;
+
+	public $typeCours = null;
+
+	public $subject = null; //Etienne : la matière a sa place dans les attributs non ?
 
     // --- OPERATIONS ---
+
+	//getters
+
+	public function getNumber()
+	{
+		return $this->number;
+	}
+
+	public function getBegin()
+	{
+		return $this->begin;
+	}
+
+	public function getEnd()
+	{
+		return $this->end;
+	}
+	
+	public function getRoom()
+	{
+		return $this->room;
+	}
+
+	public function getSubject()
+	{
+		return $this->subject;
+	}
+
+	//setters
+
+	public function setNumber($newNumber)
+	{
+		if(!empty($newNumber))
+		{
+			$this->number = $newNumber;
+		}
+	}
+
+	public function setBegin($newBegin)
+	{
+		if(!empty($newBegin))
+		{
+			$this->begin = $newBegin;
+		}
+	}
+
+	public function setEnd($newEnd)
+	{
+		if(!empty($newEnd))
+		{
+			$this->end = $newEnd;
+		}
+	}
+
+	public function setRoom($newRoom)
+	{
+		if(!empty($newRoom))
+		{
+			$this->room = $newRoom;
+		}
+	}
+
+	public function setSubject($newSubject)
+	{
+		if(!empty($newSubject))
+		{
+			$this->subject = $newSubject;
+		}
+	}
 
     /**
      * Short description of method retirer
@@ -99,8 +172,10 @@ class Cours
      * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
      * @return mixed
      */
-    public function retirer()
+    public function retire()
     {
+	//Etienne : accès à la BDD pour la delete ?
+
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000C04 begin
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000C04 end
     }
@@ -113,9 +188,15 @@ class Cours
      * @param  String S
      * @return mixed
      */
-    public function modifierSalle( String $S)
+    public function modifyRoom( String $S)
     {
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000C06 begin
+
+	if(!empty($S))
+		{
+			$this->room = $S;
+		}
+	//Etienne : c'est une sorte de setteur ça...
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000C06 end
     }
 
@@ -131,6 +212,8 @@ class Cours
      */
     public function Cours( Matiere $M, $Debut, $Fin)
     {
+	// Etienne : c'est un constructeur ça ?
+
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000C09 begin
         // section 127-0-1-1--3a776dd5:14ba843849d:-8000:0000000000000C09 end
     }

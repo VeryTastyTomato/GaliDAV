@@ -68,21 +68,32 @@ class EDT
     /**
      * Short description of attribute id_edt
      *
-     * @access public
+     * @access private
      * @var Integer
      */
-    const id_edt = null;
+	private $id_edt = null;
+
+	//Attribut teacher_owner pour savoir si c'est un EDT de groupe/classe (null), ou EDT d'enseignant (celui-ci sera accessible depuis cet attribut)
+	private $teacher_owner = null;
 
     // --- OPERATIONS ---
 
+	public function getId_EdT() {
+		return $this->id_edt;
+	}
+
+	//Etienne : accesseur ajouté - pour Flora
+	public function getTeacher() {
+		return $this->teacher_owner;
+	}
     /**
-     * Short description of method extraireExamens
+     * Short description of method extractExams
      *
      * @access public
      * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
      * @return Cours[]
      */
-    public function extraireExamens()
+    public function extractExams()
     {
         $returnValue = null;
 
