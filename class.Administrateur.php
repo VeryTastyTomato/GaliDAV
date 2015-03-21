@@ -44,7 +44,7 @@ class Administrateur extends Utilisateur
 		{
 			$U->add_status($S);
 		}
-		else if ($operation=='remove')
+		else if ($operation == 'remove')
 		{
 			$U->remove_status($S);
 		}
@@ -65,7 +65,7 @@ class Administrateur extends Utilisateur
 	public function supprimerPersonne(Personne $P)
 	{
 		$U->__destroy();
-		$U=NULL;
+		$U = NULL;
 		//Flora TODO: Tester et voir s'il n'ya pas plus approprié
 		// + Supprimer de la BDD
 	}
