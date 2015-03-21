@@ -39,25 +39,8 @@ require_once('class.Modification.php');
  * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
  */
 require_once('class.Utilisateur.php');
-
-/* user defined includes */
-// section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000C24-includes begin
-// section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000C24-includes end
-
-/* user defined constants */
-// section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000C24-constants begin
-// section 127-0-1-1--c7f407:14ba118f2a2:-8000:0000000000000C24-constants end
-
-/**
- * Short description of class EDT
- *
- * @access public
- * @author Flora KAPGNEP, <flora.kapgnep@gmail.com>
- */
  
- //Flora TODO: Ajouter un attribut de type Enseignant qui sera null si c'est un EDT de groupe/classe
- //				sinon, c'est un EDT d'Enseignant dont le proprio est accessible dans cet attribut.
- //Flora TODO: Et donc ajouter aussi un accesseur getEnseignant()
+ 
 class EDT
 {
     // --- ASSOCIATIONS ---

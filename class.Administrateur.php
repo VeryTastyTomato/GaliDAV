@@ -26,7 +26,7 @@ class Administrateur extends Utilisateur
 		return new Utilisateur($nom, $prenom, $identifiant, $mdp);
 	}
 
-	public function ajouterUtilisateur(Personne $P)
+	public function convertirPersonneEnUtilisateur(Personne $P)
 	{
 		return Utilisateur::convertPersonToUser($P);
 	}

@@ -92,7 +92,7 @@ class Cours
 
 	public $typeCours = null;
 
-	public $subject = null; //Etienne : la matière a sa place dans les attributs non ?
+	public $subject = null; //Etienne : la matière a sa place dans les attributs non ?<-Flora : OUi, c'est d'ailleurs une association vers la classe Matière
 
     // --- OPERATIONS ---
 
