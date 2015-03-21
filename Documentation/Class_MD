@@ -1,0 +1,235 @@
+___________________________________________________________________________
+Cours
+	Attributs
+		-number
+		-begin
+		-end
+		-room
+		-subject
+	Fonctions
+		+getNumber()
+		+getBegin()
+		+getEnd()
+		+getRoom()
+		+getSubject()
+		+setNumber(newNumber)
+		+setNumber(newNumber)
+		+setEnd(newEnd)
+		+setRoom(newRoom)
+		+setSubject(newSubject)
+		+retire() //WTF?
+		+modifyRoom(S)
+		+Cours(Matiere M, Debut, Fin) //?
+___________________________________________________________________________
+Type_Cours
+	Attributs
+		-LECTURE
+		-TC	
+		-PRACTICAL
+		-CONFERENCE
+		-EXAM
+		-RESIT
+	Fonctions
+___________________________________________________________________________
+Classe
+	Attributs
+	Fonctions
+		+getEDTClasse()
+___________________________________________________________________________
+Matière
+	Attributs
+		-name
+		-typeOfCourse
+		-numHours
+		-teachedBy
+	Fonctions
+		+getName()
+		+getTeachedBy()
+		+setName(newName)
+		+setTeachedBy(newTeachedBy)
+___________________________________________________________________________
+Element_de_maquette
+	Attributs
+		-name: String
+	Fonctions
+		+getName()
+		+getTeachedBy()
+		+setName(newName)
+		+setTeachedBy(newTeachedBy)
+___________________________________________________________________________
+EdT
+	Attributs
+		-id_edt
+		-teacher_owner
+		-
+		-
+		-
+		-
+		-
+	Fonctions
+		+getId_EdT
+		+getTeacher()
+		+extractExams()
+___________________________________________________________________________
+EdT_Classe
+	Attributs
+	Fonctions
+		+generatePDF()
+___________________________________________________________________________
+Modification
+	Attributs
+		-date
+		-madeBy
+	Fonctions		
+		+getDate()
+		+getMadeBy()
+		+setDate(newDate)
+		+setMadeBy(newMadeBy)
+___________________________________________________________________________
+BaseDeDonnées
+	Attributs
+		-save: Boolean	
+		-location
+	Fonctions
+___________________________________________________________________________
+Système
+	Attributs
+	Fonctions
+		+blockTimeTable(edt: EdT)
+		+sendemailAdress(P:Personne)
+		+générerEdT_PDF(edt:EdT_Classe)
+		+autoSave(B:BaseDeDonnées)
+		+getDatas(Location): BaseDeDonnées
+		+generateExamList(E:EdT)
+___________________________________________________________________________
+Groupe
+	Attributs
+		-familyName: String
+		-estUneClasse: Boolean
+	Fonctions
+		+getEdT(): EdT
+___________________________________________________________________________
+Personne
+	Associations
+		-statuts
+	Attributs
+		-familyName: String
+		-firstName: String
+		-emailAdress1: String
+		-emailAdress2: String
+	Fonctions
+		+getFamilyName()
+		+getFirstName()
+		+getEmailAddress1()
+		+getEmailAddress2()
+		+setFamilyName(newFamilyName)
+		+setFirstName(newFirsNameName)
+		+setEmailAddress1(newEmailAddress1)
+		+setEmailAddress2(newtEmailAddress1)
+		+add_status(S)
+		+remove_status(S)
+		+has_status(Statut_personne S)
+		+to_html()
+___________________________________________________________________________
+Utilisateur
+	Attributs
+		-Id
+		-Password
+	Fonctions
+		+get_ID()
+		+is_Password(mdp)
+		+convertPersonToUser(Personne P, identifiant, mdp)
+		+connection()
+		+deconnection()
+		+readEDT(EDT E)
+		+to_html()
+___________________________________________________________
+Administrateur
+	Attributs
+	Fonctions
+		+ajouterUtilisateur(nom, prenom, identifiant, mdp)
+		+convertirPersonneEnUtilisateur(Personne P)
+		+ajouterUtilisateurCAS(UnkownData)
+		+changerStatutUtilisateur(Utilisateur U, Statut_personne S, operation)
+		+supprimerUtilisateur(Utilisateur U)
+		+supprimerPersonne(Personne P)
+		+ajouterClasse(String Nom)
+		+modifierClasse(Classe C, operation)
+______________________________________________________________________________
+Secrétaire
+	Attributs
+	Fonctions
+		+modifierEDT(EDT E, Cours C, Operation)
+		+ajouterGroupe( String Nom)
+		+modifierGroupe_Membres( Personne Etu, operation)
+		+modifierGroupe_ClassesRattachees( Classe C, operation)
+		+comparerEDT(ListeEDT, Debut, Fin)
+		+validerEDT(EDT E)
+		+modifierMaquetteClasse(Classe C,Matiere M, Type_cours type, nb_heures)
+________________________________________________________________________________________________________________________________________
+Enseignant
+	Attributs
+		-edt_personnel
+	Fonctions
+		+get_edt_personnel()
+		+lireEDTpersonnel()
+___________________________________________________________________________
+Responsable
+	Attributs
+		-type
+	Fonctions
+		+modifierEDT(EDT E, Cours C, Operation)
+		+ajouterGroupe( String Nom)
+		+modifierGroupe_Membres(Personne Etu, operation)
+		+modifierGroupe_ClassesRattachees(Classe C, operation)
+		+comparerEDT(ListeEDT, Debut, Fin)
+		+validerEDT(EDT E)
+
+___________________________________________________________________________
+Type_responsable
+	Attributs
+		-RespAnnée
+		-RespFilière
+		-DirEtude
+	Fonctions
+___________________________________________________________________________
+Statut_personne
+	Attributs
+		-Etudiant
+		-Intervenant
+		-Enseignant
+		-Secrétaire
+		-Responsable
+		-Administrateur
+		-Autre
+	Fonctions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
