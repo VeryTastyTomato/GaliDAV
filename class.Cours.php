@@ -20,7 +20,7 @@ class Cours
 	private $end[null | null | null];
 	private $room = null;
 	private $typeCours = null;
-	private $subject = null; //Etienne : la matière a sa place dans les attributs non ?<-Flora : OUi, c'est d'ailleurs une association vers la classe Matière
+	private $subject = null; // Etienne : la matière a sa place dans les attributs non ?<-Flora : OUi, c'est d'ailleurs une association vers la classe Matière
 
 	// --- OPERATIONS ---
 
@@ -94,7 +94,7 @@ class Cours
 	// others
 	public function remove()
 	{
-		//Etienne : accès à la BDD pour la delete ?
+		// Etienne : accès à la BDD pour la delete ?
 	}
 
 	public function Cours(Matiere $M, $Debut, $Fin)

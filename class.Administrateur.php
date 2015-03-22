@@ -18,7 +18,7 @@ class Administrateur extends Utilisateur
 	public function __construct($nom, $prenom, $identifiant, $mdp)
 	{
 		parent::__construct($nom, $prenom, $identifiant, $mdp);
-		//$this->add_status(); //Flora TODO: indiquer le statut Administrateur
+		// $this->add_status(); // Flora TODO: indiquer le statut Administrateur
 	}
 
 	public function ajouterUtilisateur($nom, $prenom, $identifiant, $mdp)
@@ -50,7 +50,7 @@ class Administrateur extends Utilisateur
 		}
 	}
 
-	//Flora: On veut supprimer le compte utilisateur mais pas la personne
+	// Flora: On veut supprimer le compte utilisateur mais pas la personne
 	public function supprimerUtilisateur(Utilisateur $U)
 	{
 		$P = new Person($U->get_nom(), $U->get_prenom);
@@ -59,14 +59,14 @@ class Administrateur extends Utilisateur
 		$U = $P;
 
 		return $U;
-		//Flora TODO Adapter l'entrée de la BDD
+		// Flora TODO Adapter l'entrée de la BDD
 	}
 
 	public function supprimerPersonne(Personne $P)
 	{
 		$U->__destroy();
 		$U = NULL;
-		//Flora TODO: Tester et voir s'il n'ya pas plus approprié
+		// Flora TODO: Tester et voir s'il n'ya pas plus approprié
 		// + Supprimer de la BDD
 	}
 
@@ -75,7 +75,7 @@ class Administrateur extends Utilisateur
 		return new Classe($Nom);
 	}
 
-	//Flora TODO: Utiliser les fonctions de la classe Classe,fille de Groupe (ajouter/supprimer un étudiant en l'occurence)
+	// Flora TODO: Utiliser les fonctions de la classe Classe,fille de Groupe (ajouter/supprimer un étudiant en l'occurence)
 	public function modifierClasse(Classe $C, $operation)
 	{
 	}
