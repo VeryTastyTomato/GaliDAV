@@ -15,22 +15,22 @@ class EDT
 	// --- ASSOCIATIONS ---
 
 	// --- ATTRIBUTES ---
-	private $id_edt = null;
+	private $idTimetable = null;
 
 	// Attribut teacher_owner pour savoir si c'est un EDT de groupe/classe (null), ou EDT d'enseignant (celui-ci sera accessible depuis cet attribut)
-	private $teacher_owner = null;
+	private $teacherOwner = null;
 
 	// --- OPERATIONS ---
 
-	public function getId_EdT()
+	public function getIdTimetable()
 	{
-		return $this->id_edt;
+		return $this->idTimetable;
 	}
 
 	// Etienne : accesseur ajouté - pour Flora
-	public function getTeacher()
+	public function getTeacherOwner()
 	{
-		return $this->teacher_owner;
+		return $this->teacherOwner;
 	}
 
 	public function extractExams()

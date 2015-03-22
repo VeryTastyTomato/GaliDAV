@@ -47,7 +47,7 @@ class Groupe
 		}
 	}
 
-	public function getEDT()
+	public function getTimetable()
 	{
 		$returnValue = null;
 

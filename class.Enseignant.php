@@ -14,26 +14,26 @@ class Enseignant extends Utilisateur
 	// --- ASSOCIATIONS ---
 
 	// --- ATTRIBUTES ---
-	private $edt_personnel = null;
+	private $personalTimetable = null;
 
 	// --- OPERATIONS ---
-	public function __construct($nom,$prenom,$identifiant,$mdp)
+	public function __construct($familyName, $firstName, $id, $passwd)
 	{
-		parent::__construct($nom,$prenom,$identifiant,$mdp);
+		parent::__construct($familyName, $firstName, $id, $passwd);
 		// $this->add_status(); // Flora TODO: indiquer le statut Enseignant
-		$this->edt_personnel = new EDT();
+		$this->personalTimetable = new EDT();
 	}
 
-	public function get_edt_personnel()
+	public function getPersonalTimetable()
 	{
-		return $this->edt_personnel;
+		return $this->personalTimetable;
 	}
 
-	public function lireEDTpersonnel()
+	public function readPersonalTimetable()
 	{
-		parent::lireEDT($this->edt_personnel);
+		parent::readTimetable($this->personalTimetable);
 
-		return parent::lireEDT($this->edt_personnel);
+		return parent::readTimetable($this->personalTimetable);
 	}
 }
 ?>

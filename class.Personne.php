@@ -6,7 +6,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 	die('$this file was generated for PHP 5');
 }
 
-require_once('Personne/unknown.Statut_persone.php');
+require_once('Personne/unknown.Statut_personne.php');
 
 class Personne
 {
@@ -20,11 +20,11 @@ class Personne
 	private $emailAddress2 = null;
 
 	// --- OPERATIONS ---
-	// Constructeurs
-	public function __construct($N, $P)
+	// builder
+	public function __construct($newFamilyName, $newFirstName)
 	{
-		$this->familyName = $N;
-		$this->firstName = $P;
+		$this->familyName = $newFamilyName;
+		$this->firstName = $newFirstName;
 	}
 
 	// getters
@@ -48,11 +48,11 @@ class Personne
 		return $this->emailAddress2;
 	}
 
-	public function has_status(Statut_personne $S)
+	public function hasStatus(Statut_personne $s)
 	{
-		foreach ($this->status as $onestatus)
+		foreach ($this->statuts as $oneStatus)
 		{
-			if ($onestatus == $S)
+			if ($oneStatus == $s)
 			{
 				return true;
 			}
@@ -96,28 +96,28 @@ class Personne
 		}
 	}
 
-	public function add_status($S)
+	public function addStatus($s)
 	{
-		if ($S instanceof Statut_personne)
+		if ($s instanceof Statut_personne)
 		{
-			if (!$this->has_status($S))
+			if (!$this->hasStatus($s))
 			{
-				$this->statuts[]=$S;
+				$this->statuts[]=$s;
 			}
 		}
 	}
 
-	public function remove_status($S)
+	public function removeStatus($s)
 	{
-		if ($S instanceof Statut_personne)
+		if ($s instanceof Statut_personne)
 		{
-			if ($this->has_status($S))
+			if ($this->hasStatus($s))
 			{
 				$indice = 0;
 
-				foreach ($this->statuts as $onestatus)
+				foreach ($this->statuts as $oneStatus)
 				{
-					if ($onestatus == $S)
+					if ($oneStatus == $s)
 					{
 						unset($this->statuts[$indice]);
 						break;
@@ -130,11 +130,11 @@ class Personne
 	}
 
 	// Flora: TO COMPLETE après que Simon ait fait les enums
-	public function has_status(Statut_personne $S)
+	public function hasStatus(Statut_personne $s)
 	{
-		foreach ($this->statuts as $onestatus)
+		foreach ($this->statuts as $oneStatus)
 		{
-			if ($onestatus == $S)
+			if ($oneStatus == $S)
 			{
 				return true;
 			}
@@ -144,17 +144,17 @@ class Personne
 	}
 
 	// -- Affichage texte --
-	public function to_html()
+	public function toHTML()
 	{
-		$result = "<p>Nom:&emsp;&emsp; " . $this->nom . "<br/>Prenom:&emsp; &emsp; " . $this->prenom . "</p>";
+		$result = "<p>Nom:&emsp;&emsp; " . $this->familyName . "<br/>Prenom:&emsp; &emsp; " . $this->firstName . "</p>";
 
-		if ($this->get_mail1() != NULL)
+		if ($this->getEmailAddress1() != NULL)
 		{
-			$result = $result . "<p>Adresse mail1 :&emsp; <i>" . $this->mail1 . "</i>";
+			$result = $result . "<p>Adresse mail1 :&emsp; <i>" . $this->emailAddress1 . "</i>";
 
-			if ($this->get_mail2())
+			if ($this->getEmailAddress2())
 			{
-				$result = $result . "<br/>Adresse mail2 :&emsp; <i>" . $this->mail2 . "</i>";
+				$result = $result . "<br/>Adresse mail2 :&emsp; <i>" . $this->emailAddress2 . "</i>";
 			}
 
 			$result = $result . "</p>";

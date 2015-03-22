@@ -23,7 +23,6 @@ class Cours
 	private $subject = null; // Etienne : la matière a sa place dans les attributs non ?<-Flora : OUi, c'est d'ailleurs une association vers la classe Matière
 
 	// --- OPERATIONS ---
-
 	// getters
 	public function getNumber()
 	{
@@ -97,7 +96,7 @@ class Cours
 		// Etienne : accès à la BDD pour la delete ?
 	}
 
-	public function Cours(Matiere $M, $Debut, $Fin)
+	public function Cours(Matiere $m, $begin, $end)
 	{
 		// Etienne : c'est un constructeur ça ?
 		// Ibrar : il semblerait, le cas échéant il y a des méthodes standards pour ça

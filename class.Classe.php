@@ -19,7 +19,7 @@ class Classe extends Groupe
 	// --- ATTRIBUTES ---
 
 	// --- OPERATIONS ---
-	public function getEDTClasse()
+	public function getTimetableOfClass()
 	{
 		$returnValue = null;
 

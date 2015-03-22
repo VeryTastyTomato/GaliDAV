@@ -14,38 +14,38 @@ class Utilisateur extends Personne
 	// --- ASSOCIATIONS ---
 
 	// --- ATTRIBUTES ---
-	protected $ID = null;
-	private $Password = null;
+	protected $id = null;
+	private $passwd = null;
 
 	// --- OPERATIONS ---
 	// Constructeurs
 	// Flora NOTE: Ailleurs devra être défini l'accès au CAS
 	// Flora PERSO: Rappel l'appel au constructeur de la classe mère n'est jamais implicite
-	public function __construct($nom, $prenom, $identifiant, $mdp)
+	public function __construct($familyName, $firstName, $id, $passwd)
 	{
-		parent::__construct($nom, $prenom);
-		$this->ID = $identifiant;
-		$this->Password = $mdp;
+		parent::__construct($familyName, $firstName);
+		$this->id = $id;
+		$this->passwd = $passwd;
 	}
 
 	// Accesseurs
-	public get_ID()
+	public getId()
 	{
-		return $this->ID;
+		return $this->id;
 	}
 
-	public is_Password($mdp)
+	public isPassword($givenPassword)
 	{
-		return $Password == $mdp;
+		return $givenPassword == $passwd;
 	}
 
 	// Flora NOTE: La fonction ci-dessous peut ne pas être utile finalement
-	static public function convertPersonToUser(Personne $P, $identifiant, $mdp)
+	static public function convertPersonToUser(Personne $p, $id, $passwd)
 	{
-		$U = __construct(P->nom, P->prenom, $identifiant, $mdp);
-		$P = $U;
+		$u = __construct($p->familyName, $P->firstName, $id, $passwd);
+		$p = $u;
 
-		return $U;
+		return $u;
 	}
 
 	public function logIn()
@@ -56,7 +56,7 @@ class Utilisateur extends Personne
 	{
 	}
 
-	public function readTimetable(EDT $E)
+	public function readTimetable(EDT $e)
 	{
 		$returnValue = false;
 
@@ -67,10 +67,10 @@ class Utilisateur extends Personne
 	}
 
 	// Affichage texte
-	public function to_html()
+	public function toHTML()
 	{
-		$result = "<b>ID: &emsp;&emsp;" . $this->ID . "</b><br/>";
-		$result = $result . parent::to_html();
+		$result = "<b>ID: &emsp;&emsp;" . $this->id . "</b><br/>";
+		$result = $result . parent::toHTML();
 
 		return $result;
 	}

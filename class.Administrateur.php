@@ -15,68 +15,70 @@ class Administrateur extends Utilisateur
 	// --- ATTRIBUTES ---
 
 	// --- OPERATIONS ---
-	public function __construct($nom, $prenom, $identifiant, $mdp)
+	// builder
+	public function __construct($familyName, $firstName, $id, $passwd)
 	{
-		parent::__construct($nom, $prenom, $identifiant, $mdp);
+		parent::__construct($familyName, $firstName, $id, $passwd);
 		$this->add_status(new Statut_personne(Statut_personne::ADMINISTRATOR));
 	}
 
-	public function addUser($nom, $prenom, $identifiant, $mdp)
+	// others
+	public function addUser($familyName, $firstName, $id, $passwd)
 	{
-		return new Utilisateur($nom, $prenom, $identifiant, $mdp);
+		return new Utilisateur($familyName, $firstName, $id, $passwd);
 	}
 
-	public function convertPersonToUser(Personne $P)
+	public function convertPersonToUser(Personne $p)
 	{
-		return Utilisateur::convertPersonToUser($P);
+		return Utilisateur::convertPersonToUser($p);
 	}
 
-	public function addUserCAS($UnkownData)
+	public function addUserCAS($unknownData)
 	{
 		$returnValue = null;
 
 		return $returnValue;
 	}
 
-	public function changeUserStatus(Utilisateur $U, Statut_personne $S, $operation)
+	public function changeUserStatus(Utilisateur $u, Statut_personne $s, $operation)
 	{
 		if ($operation == 'add')
 		{
-			$U->add_status($S);
+			$u->add_status($s);
 		}
 		else if ($operation == 'remove')
 		{
-			$U->remove_status($S);
+			$u->remove_status($s);
 		}
 	}
 
 	// Flora: On veut supprimer le compte utilisateur mais pas la personne
-	public function deleteUser(Utilisateur $U)
+	public function deleteUser(Utilisateur $u)
 	{
-		$P = new Person($U->getFamilyName(), $U->getFirstName());
-		$P->set_mail1($U->getEmailAddress1());
-		$P->set_mail2($U->getEmailAddress2());
-		$U = $P;
+		$p = new Person($u->getFamilyName(), $u->getFirstName());
+		$p->setEmailAddress1($u->getEmailAddress1());
+		$p->setEmailAddress2($u->getEmailAddress2());
+		$u = $p;
 
-		return $U;
+		return $u;
 		// Flora TODO Adapter l'entrée de la BDD
 	}
 
-	public function deletePerson(Personne $P)
+	public function deletePerson(Personne $p)
 	{
-		$U->__destroy();
-		$U = NULL;
+		$u->__destroy();
+		$u = NULL;
 		// Flora TODO: Tester et voir s'il n'ya pas plus approprié
 		// + Supprimer de la BDD
 	}
 
-	public function addClass(String $Nom)
-	{	
-		return new Classe($Nom);
+	public function addClass(String $name)
+	{
+		return new Classe($name);
 	}
 
 	// Flora TODO: Utiliser les fonctions de la classe Classe, fille de Groupe (ajouter/supprimer un étudiant en l'occurence)
-	public function modifyClass(Classe $C, $operation)
+	public function modifyClass(Classe $c, $operation)
 	{
 	}
 }
