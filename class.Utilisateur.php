@@ -18,7 +18,7 @@ class Utilisateur extends Personne
 	private $passwd = null;
 
 	// --- OPERATIONS ---
-	// Constructeurs
+	// builder
 	// Flora NOTE: Ailleurs devra être défini l'accès au CAS
 	// Flora PERSO: Rappel l'appel au constructeur de la classe mère n'est jamais implicite
 	public function __construct($familyName, $firstName, $id, $passwd)
@@ -29,14 +29,14 @@ class Utilisateur extends Personne
 	}
 
 	// Accesseurs
-	public getId()
+	public function getId()
 	{
 		return $this->id;
 	}
 
-	public isPassword($givenPassword)
+	public function isPassword($givenPassword)
 	{
-		return $givenPassword == $passwd;
+		// return $givenPassword == $passwd; code incorrect
 	}
 
 	// Flora NOTE: La fonction ci-dessous peut ne pas être utile finalement
