@@ -16,8 +16,8 @@ class Cours
 
 	// --- ATTRIBUTES ---
 	private $number = null;
-	private $begin[null | null | null];
-	private $end[null | null | null];
+	private $begin;
+	private $end;
 	private $room = null;
 	private $typeCours = null;
 	private $subject = null; // Etienne : la matière a sa place dans les attributs non ?<-Flora : OUi, c'est d'ailleurs une association vers la classe Matière
@@ -100,6 +100,7 @@ class Cours
 	{
 		// Etienne : c'est un constructeur ça ?
 		// Ibrar : il semblerait, le cas échéant il y a des méthodes standards pour ça
+		//Flora: Non, un constructeur c'est __construct()
 	}
 
 	public function integrateInTimetable(EDT $timetable)

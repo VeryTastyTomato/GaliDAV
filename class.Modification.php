@@ -14,7 +14,7 @@ class Modification
 	// --- ASSOCIATIONS ---
 
 	// --- ATTRIBUTES ---
-	private $date[null | null | null];
+	private $date;
 
 	//Etienne : un attribut pour connaître l'auteur de la modif
 	private $madeBy = null;
