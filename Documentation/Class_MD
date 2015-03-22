@@ -115,8 +115,8 @@ Personne
 	Attributs
 		-familyName: String
 		-firstName: String
-		-emailAdress1: String
-		-emailAdress2: String
+		-emailAddress1: String
+		-emailAddress2: String
 	Fonctions
 		+getFamilyName()
 		+getFirstName()
@@ -139,8 +139,8 @@ Utilisateur
 		+get_ID()
 		+is_Password(mdp)
 		+convertPersonToUser(Personne P, identifiant, mdp)
-		+connection()
-		+deconnection()
+		+logIn()
+		+logOut()
 		+readEDT(EDT E)
 		+to_html()
 ___________________________________________________________
@@ -194,15 +194,20 @@ Type_responsable
 	Fonctions
 ___________________________________________________________________________
 Statut_personne
+	Constantes de classe
+		+STUDENT
+		+SPEAKER
+		+TEACHER
+		+SECRETARY
+		+HEAD
+		+ADMINISTRATOR
+		+OTHER
 	Attributs
-		-Etudiant
-		-Intervenant
-		-Enseignant
-		-Secrétaire
-		-Responsable
-		-Administrateur
-		-Autre
+		~value
+	Constructeurs
+		+__construct($value)
 	Fonctions
+		+toString()
 
 
 

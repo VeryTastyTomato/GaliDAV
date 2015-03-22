@@ -45,7 +45,7 @@ class Personne
 {
     // --- ASSOCIATIONS ---
     // generateAssociationEnd : statuts
-    protected $statuts=array();
+    protected $status=array();
 
     // --- ATTRIBUTES ---
     /**
@@ -87,78 +87,10 @@ class Personne
     public function __construct($N,$P){
     	$this->familyName=$N;
     	$this->firstName=$P;
+    	
     }
     
-
-/*
-	// -- Accesseurs --//
-	public function get_nom(){
-		return $this->nom;
-	}
-	public function get_prenom(){
-		return $this->prenom;
-	}
-	public function get_mail1(){
-		return $this->mail1;
-	}
-	
-	public function get_mail2(){
-		return $this->mail2;
-	}
-	
-	public function set_mail1($m){
-    	$this->mail1=$m;
-    }
-    public function set_mail2($m){
-    	if($this->get_mail()!=null)$this->mail2=$m;
-    	else $this->set_mail1($m);
-    }
-    */
-    public function add_status($S){
-    	if($S instanceof Statut_personne)if(!$this->has_status($S))$this->statuts[]=$S;
-    }
-    public function remove_status($S){
-    	if($S instanceof Statut_personne){
-    		if($this->has_status($S)){
-    			$indice=0;
-    			foreach($this->statuts as $onestatus){
-    				if($onestatus==$S){
-    					unset($this->statuts[$indice]);
-    					break;
-    				}
-    				$indice=$indice+1;
-    			}
-    		}
-    	}
-    }
-    
-    //Flora: TO COMPLETE après que Simon ait fait les enums 
-    public function has_status(Statut_personne $S)
-			foreach($this->statuts as $onestatus){
-				if($onestatus==$S)return true;
-			}
-    	return false;
-    }
-    
-    // -- Affichage texte --//
-    public function to_html(){
-    	$result="<p>Nom:&emsp;&emsp;  ".$this->nom."<br/>Prenom:&emsp; &emsp; ".$this->prenom."</p>";
-    	if($this->get_mail1()!=NULL){
-    		$result=$result."<p>Adresse mail1 :&emsp;  <i>".$this->mail1."</i>";
-    		if($this->get_mail2())$result=$result."<br/>Adresse mail2 :&emsp;  <i>".$this->mail2."</i>";
-    		$result=$result."</p>";
-    	}
-    	if($this->statuts!=NULL){
-    		$result=$result."<p>Statuts:&emsp;  ";
-    		foreach($this->statuts as $s){
-    			$result=$result."- $s ";
-    		}
-    		$result=$result."</p>";
-    	}
-    	return $result;
-    }
-
-    /* getters */
+      /* getters */
 	public function getFamilyName()
 	{
 		return $this->familyName;
@@ -179,6 +111,13 @@ class Personne
 		return $this->emailAddress2;
 	}
 
+  	public function has_status(Statut_personne $S){
+			foreach($this->status as $onestatus){
+				if($onestatus==$S)return true;
+			}
+    	return false;
+    }
+    
 	/* setters */
 	public function setFamilyName($newFamilyName)
 	{
@@ -213,6 +152,46 @@ class Personne
 			$this->emailAddress2 = $newEmailAddress2;
 		}
 	}
+
+    public function add_status($S){
+    	if($S instanceof Statut_personne)if(!$this->has_status($S))$this->status[]=$S;
+    }
+    public function remove_status($S){
+    	if($S instanceof Statut_personne){
+    		if($this->has_status($S)){
+    			$indice=0;
+    			foreach($this->status as $onestatus){
+    				if($onestatus==$S){
+    					unset($this->status[$indice]);
+    					break;
+    				}
+    				$indice=$indice+1;
+    			}
+    		}
+    	}
+    }
+    
+  
+    
+    // -- Affichage texte --//
+    public function to_html(){
+    	$result="<p>Nom:&emsp;&emsp;  ".$this->familyName."<br/>Prenom:&emsp; &emsp; ".$this->firstName."</p>";
+    	if($this->emailAddress1!=NULL){
+    		$result=$result."<p>Adresse mail1 :&emsp;  <i>".$this->emailAddress1."</i>";
+    		if($this->emailAddress2)$result=$result."<br/>Adresse mail2 :&emsp;  <i>".$this->emailAddress2."</i>";
+    		$result=$result."</p>";
+    	}
+    	if($this->status!=NULL){
+    		$result=$result."<p>Statuts:&emsp;  ";
+    		foreach($this->status as $s){
+    			$result=$result."- ".$s->toString()." ";
+    		}
+    		$result=$result."</p>";
+    	}
+    	return $result;
+    }
+
+  
 } /* end of class Personne */
 
 ?>

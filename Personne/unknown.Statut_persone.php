@@ -6,15 +6,26 @@ if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
 
+class Statut_personne
+{
 /* user defined constants */
-define("STUDENT", 0);
-define("SPEAKER", 1);
-define("TEACHER", 2);
-define("SECREATARY", 3);
-define("PERSON_IN_CHARGE", 4);
-define("ADMINISTRATOR", 5);
-define("OTHER", 6);
-
-null
+	const STUDENT='Etudiant(e)';
+	const SPEAKER="Intervenant(e)";
+	const TEACHER="Enseignant(e)";
+	const SECRETARY="Secrétaire";
+	const HEAD="Responsable";
+	const ADMINISTRATOR="Administrateur/trice";
+	const OTHER="Autre";
+	protected $value;
+	
+	function __construct($value){
+		$this->value=$value;
+	}
+	
+	function toString(){
+		if($this->value==NULL)return "Statut invalide";
+		else return $this->value;
+	}
+}
 
 ?>
