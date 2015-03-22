@@ -141,7 +141,7 @@ Utilisateur
 		+convertPersonToUser(Personne P, identifiant, mdp)
 		+logIn()
 		+logOut()
-		+readEDT(EDT E)
+		+readTimeTable(EDT E)
 		+to_html()
 ___________________________________________________________
 Administrateur
@@ -159,13 +159,13 @@ ______________________________________________________________________________
 Secrétaire
 	Attributs
 	Fonctions
-		+modifierEDT(EDT E, Cours C, Operation)
-		+ajouterGroupe( String Nom)
-		+modifierGroupe_Membres( Personne Etu, operation)
-		+modifierGroupe_ClassesRattachees( Classe C, operation)
-		+comparerEDT(ListeEDT, Debut, Fin)
-		+validerEDT(EDT E)
-		+modifierMaquetteClasse(Classe C,Matiere M, Type_cours type, nb_heures)
+		+modifyTimeTable(EDT E, Cours C, Operation)
+		+addGroup( String Nom)
+		+modifyGroup_Members( Personne Etu, operation)
+		+modifyGroup_LinkedClasses( Classe C, operation)
+		+compareTimeTables(ListeEDT, Debut, Fin)
+		+validateTimeTable(EDT E)
+		+modifyClass_CoursesModel(Classe C,Matiere M, Type_cours type, nb_heures)
 ________________________________________________________________________________________________________________________________________
 Enseignant
 	Attributs
@@ -178,13 +178,13 @@ Responsable
 	Attributs
 		-type
 	Fonctions
-		+modifierEDT(EDT E, Cours C, Operation)
-		+ajouterGroupe( String Nom)
-		+modifierGroupe_Membres(Personne Etu, operation)
-		+modifierGroupe_ClassesRattachees(Classe C, operation)
-		+comparerEDT(ListeEDT, Debut, Fin)
-		+validerEDT(EDT E)
-
+		+modifyTimeTable(EDT E, Cours C, Operation)
+		+addGroup( String Nom)
+		+modifyGroup_Members(Personne Etu, operation)
+		+modifyGroup_LinkedClasses(Classe C, operation)
+		+compareTimeTables(ListeEDT, Debut, Fin)
+		+validateTimeTable(EDT E)
+		+modifyClass_CoursesModel(Classe C,Matiere M, Type_cours type, nb_heures)
 ___________________________________________________________________________
 Type_responsable
 	Attributs
