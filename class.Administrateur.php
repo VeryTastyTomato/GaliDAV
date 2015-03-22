@@ -19,7 +19,7 @@ class Administrateur extends Utilisateur
 	public function __construct($familyName, $firstName, $id, $passwd)
 	{
 		parent::__construct($familyName, $firstName, $id, $passwd);
-		$this->add_status(new Statut_personne(Statut_personne::ADMINISTRATOR));
+		$this->addStatus(new Statut_personne(Statut_personne::ADMINISTRATOR));
 	}
 
 	// others

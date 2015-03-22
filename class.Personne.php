@@ -11,13 +11,13 @@ require_once('Personne/unknown.Statut_personne.php');
 class Personne
 {
 	// --- ASSOCIATIONS ---
-	protected $statuts = array();
+	protected $status = array();
 
 	// --- ATTRIBUTES ---
-	private $familyName = null;
-	private $firstName = null;
-	private $emailAddress1 = null;
-	private $emailAddress2 = null;
+	protected $familyName = null;
+	protected $firstName = null;
+	protected $emailAddress1 = null;
+	protected $emailAddress2 = null;
 
 	// --- OPERATIONS ---
 	// builder
@@ -46,6 +46,10 @@ class Personne
 	public function getEmailAddress2()
 	{
 		return $this->emailAddress2;
+	}
+	
+	public function getAllStatus(){
+		return $this->status;
 	}
 
 	// setters
@@ -82,6 +86,9 @@ class Personne
 			$this->emailAddress2 = $newEmailAddress2;
 		}
 	}
+	public function setAllStatus($arrayOfStatus){
+		$this->status=$arrayOfStatus;
+	}
 
 	public function addStatus($s)
 	{
@@ -89,7 +96,7 @@ class Personne
 		{
 			if (!$this->hasStatus($s))
 			{
-				$this->statuts[]=$s;
+				$this->status[]=$s;
 			}
 		}
 	}
@@ -102,11 +109,11 @@ class Personne
 			{
 				$indice = 0;
 
-				foreach ($this->statuts as $oneStatus)
+				foreach ($this->status as $oneStatus)
 				{
 					if ($oneStatus == $s)
 					{
-						unset($this->statuts[$indice]);
+						unset($this->status[$indice]);
 						break;
 					}
 
@@ -116,10 +123,10 @@ class Personne
 		}
 	}
 
-	// Flora: TO COMPLETE après que Simon ait fait les enums
+
 	public function hasStatus(Statut_personne $s)
 	{
-		foreach ($this->statuts as $oneStatus)
+		foreach ($this->status as $oneStatus)
 		{
 			if ($oneStatus == $s)
 			{
@@ -147,13 +154,13 @@ class Personne
 			$result = $result . "</p>";
 		}
 
-		if ($this->statuts != NULL)
+		if ($this->status != NULL)
 		{
 			$result = $result . "<p>Statuts:&emsp; ";
 
-			foreach ($this->statuts as $s)
+			foreach ($this->status as $s)
 			{
-				$result = $result . "- $s ";
+				$result = $result . "- ".$s->toString()." ";
 			}
 
 			$result = $result . "</p>";

@@ -42,7 +42,10 @@ class Utilisateur extends Personne
 	// Flora NOTE: La fonction ci-dessous peut ne pas être utile finalement
 	static public function convertPersonToUser(Personne $p, $id, $passwd)
 	{
-		$u = __construct($p->familyName, $P->firstName, $id, $passwd);
+		$u = new Utilisateur($p->familyName, $p->firstName, $id, $passwd);
+		$u->setEmailAddress1($p->getEmailAddress1());
+		$u->setEmailAddress2($p->getEmailAddress2());
+		$u->setAllStatus($p->getAllStatus());
 		$p = $u;
 
 		return $u;
@@ -70,7 +73,7 @@ class Utilisateur extends Personne
 	public function toHTML()
 	{
 		$result = "<b>ID: &emsp;&emsp;" . $this->id . "</b><br/>";
-		$result = $result . parent::toHTML();
+		$result = $result.parent::toHTML();
 
 		return $result;
 	}

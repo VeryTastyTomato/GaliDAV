@@ -20,7 +20,7 @@ class Enseignant extends Utilisateur
 	public function __construct($familyName, $firstName, $id, $passwd)
 	{
 		parent::__construct($familyName, $firstName, $id, $passwd);
-		// $this->add_status(); // Flora TODO: indiquer le statut Enseignant
+		$this->addStatus(new Status_personne(Statut_personne::TEACHER));
 		$this->personalTimetable = new EDT();
 	}
 

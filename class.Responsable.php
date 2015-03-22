@@ -23,7 +23,7 @@ class Responsable extends Utilisateur
 	public function __construct($familyName, $firstName, $id, $passwd)
 	{
 		parent::__construct($familyName, $firstName, $id, $passwd);
-		$this->add_status(new Status_personne(Statut_personne::HEAD));
+		$this->addStatus(new Status_personne(Statut_personne::HEAD));
 	}
 
 	// Flora TODO: Utiliser les méthodes de la classe EDT pour compléter cette fonction

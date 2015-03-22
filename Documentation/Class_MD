@@ -122,23 +122,26 @@ Personne
 		+getFirstName()
 		+getEmailAddress1()
 		+getEmailAddress2()
+		+getAllStatus()
 		+setFamilyName(newFamilyName)
 		+setFirstName(newFirsNameName)
 		+setEmailAddress1(newEmailAddress1)
 		+setEmailAddress2(newtEmailAddress1)
-		+add_status(S)
-		+remove_status(S)
-		+has_status(Statut_personne S)
-		+to_html()
+		+setAllStatus(arryOfStatus)
+		+addStatus(S)
+		+removeStatus(S)
+		+hasStatus(Statut_personne S)
+		+toHTML()
 ___________________________________________________________________________
 Utilisateur
 	Attributs
 		-Id
 		-Password
-	Fonctions
+	Fonctions statiques
+		+convertPersonToUser(Personne P, identifiant, mdp)
+	Méthodes
 		+get_ID()
 		+is_Password(mdp)
-		+convertPersonToUser(Personne P, identifiant, mdp)
 		+logIn()
 		+logOut()
 		+readTimeTable(EDT E)
