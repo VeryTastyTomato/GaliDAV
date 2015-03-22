@@ -20,7 +20,7 @@ class Personne
 	private $emailAddress2 = null;
 
 	// --- OPERATIONS ---
-	// -- Constructeurs
+	// Constructeurs
 	public function __construct($N, $P)
 	{
 		$this->familyName = $N;
@@ -46,6 +46,19 @@ class Personne
 	public function getEmailAddress2()
 	{
 		return $this->emailAddress2;
+	}
+
+	public function has_status(Statut_personne $S)
+	{
+		foreach ($this->status as $onestatus)
+		{
+			if ($onestatus == $S)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	// setters
@@ -98,7 +111,7 @@ class Personne
 	{
 		if ($S instanceof Statut_personne)
 		{
-			if($this->has_status($S))
+			if ($this->has_status($S))
 			{
 				$indice = 0;
 

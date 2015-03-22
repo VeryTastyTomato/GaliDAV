@@ -48,15 +48,15 @@ class Utilisateur extends Personne
 		return $U;
 	}
 
-	public function connection()
+	public function logIn()
 	{
 	}
 
-	public function deconnection()
+	public function logOut()
 	{
 	}
 
-	public function readEDT(EDT $E)
+	public function readTimetable(EDT $E)
 	{
 		$returnValue = false;
 

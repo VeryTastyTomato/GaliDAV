@@ -20,21 +20,21 @@ class Responsable extends Utilisateur
 	private $type = null;
 
 	// --- OPERATIONS ---
-	public function __construct($nom, $prenom, $identifiant, $mdp)
+	public function __construct($name, $surname, $id, $pass)
 	{
-		parent::__construct($nom, $prenom, $identifiant, $mdp);
-		// $this->add_status(); // Flora TODO: indiquer le statut Responsable
+		parent::__construct($name, $surname, $id, $pass);
+		$this->add_status(new Status_personne(Statut_personne::HEAD));
 	}
 
 	// Flora TODO: Utiliser les méthodes de la classe EDT pour compléter cette fonction
-	public function modifierEDT(EDT $E, Cours $C, $Operation)
+	public function modifyTimetable(EDT $E, Cours $C, $Operation)
 	{
 		$returnValue = null;
 
 		return $returnValue;
 	}
 
-	public function ajouterGroupe(String $Nom)
+	public function addGroup(String $Nom)
 	{
 		new Groupe($Nom, false);
 	}
@@ -48,7 +48,7 @@ class Responsable extends Utilisateur
 	}
 
 	// Flora TODO: Utiliser les fonctions de la classe Groupe (ajouter/supprimer un étudiant en l'occurence)
-	public function modifierGroupe_ClassesRattachees(Classe $C, $operation)
+	public function modifyGroup_LinkedClasses(Classe $C, $operation)
 	{
 		$returnValue = null;
 
@@ -56,7 +56,7 @@ class Responsable extends Utilisateur
 	}
 
 	// Flora NOTE: On va devoir faire appel aux commandes 'bas niveau' du serveur caldav
-	public function comparerEDT($ListeEDT, $Debut, $Fin)
+	public function compareTimetable($ListeEDT, $Debut, $Fin)
 	{
 		$returnValue = null;
 
@@ -64,7 +64,12 @@ class Responsable extends Utilisateur
 	}
 
 	// Flora TODO: Utiliser les fonctions de la classe EDT (valider l'ensemble des modifs en l'occurrrence)
-	public function validerEDT(EDT $E)
+	public function validateTimetable(EDT $E)
+	{
+	}
+
+	// Flora TODO: implémenter des accesseurs pour la maquette dans la classe Classe
+	public function modifyClass_CoursesModel(Classe $C, Matiere $M, Type_cours $type, $nb_heures)
 	{
 	}
 }
