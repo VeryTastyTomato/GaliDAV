@@ -36,7 +36,7 @@ class Utilisateur extends Personne
 
 	public function isPassword($givenPassword)
 	{
-		// return $givenPassword == $passwd; code incorrect
+		return $givenPassword == $this->passwd;
 	}
 
 	// Flora NOTE: La fonction ci-dessous peut ne pas être utile finalement
