@@ -48,19 +48,6 @@ class Personne
 		return $this->emailAddress2;
 	}
 
-	public function hasStatus(Statut_personne $s)
-	{
-		foreach ($this->statuts as $oneStatus)
-		{
-			if ($oneStatus == $s)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	// setters
 	public function setFamilyName($newFamilyName)
 	{
@@ -134,7 +121,7 @@ class Personne
 	{
 		foreach ($this->statuts as $oneStatus)
 		{
-			if ($oneStatus == $S)
+			if ($oneStatus == $s)
 			{
 				return true;
 			}
