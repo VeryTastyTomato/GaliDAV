@@ -34,7 +34,7 @@ ___________________________________________________________________________
 Classe
 	Attributs
 	Fonctions
-		+getEDTClasse()
+		+getTimetableOfClass()
 ___________________________________________________________________________
 Matière
 	Attributs
@@ -50,12 +50,13 @@ Matière
 ___________________________________________________________________________
 Element_de_maquette
 	Attributs
-		-name: String
+		-typeOfCourse: String
+		-numHours: Integer
 	Fonctions
-		+getName()
-		+getTeachedBy()
-		+setName(newName)
-		+setTeachedBy(newTeachedBy)
+		+getTypeOfCourse(): String
+		+getNumHours(): Integer
+		+setTypeOfCourse(String newTypeOfCourse)
+		+setNumHours(Integer newNumHours)
 ___________________________________________________________________________
 EdT
 	Attributs
@@ -103,11 +104,15 @@ Système
 		+generateExamList(E:EdT)
 ___________________________________________________________________________
 Groupe
-	Attributs
-		-familyName: String
-		-estUneClasse: Boolean
-	Fonctions
-		+getEdT(): EdT
+	Attributes
+		-name: String
+		-isAClass: Boolean
+	Operations
+		+getName(): String
+		+getIsAClass(): Boolean
+		+setName(String newName)
+		+setIsAClass(Boolean newIsAClass)
+		+getTimetable(): EDT
 ___________________________________________________________________________
 Personne
 	Associations
