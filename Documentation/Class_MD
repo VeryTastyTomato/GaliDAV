@@ -147,14 +147,14 @@ ___________________________________________________________
 Administrateur
 	Attributs
 	Fonctions
-		+ajouterUtilisateur(nom, prenom, identifiant, mdp)
-		+convertirPersonneEnUtilisateur(Personne P)
-		+ajouterUtilisateurCAS(UnkownData)
-		+changerStatutUtilisateur(Utilisateur U, Statut_personne S, operation)
-		+supprimerUtilisateur(Utilisateur U)
-		+supprimerPersonne(Personne P)
-		+ajouterClasse(String Nom)
-		+modifierClasse(Classe C, operation)
+		+addUser(nom, prenom, identifiant, mdp)
+		+convertPersonToUser(Personne P)
+		+addUserCAS(UnkownData)
+		+changeUserStatus(Utilisateur U, Statut_personne S, operation)
+		+deleteUser(Utilisateur U)
+		+deletePerson(Personne P)
+		+addClass(String Nom)
+		+modifyClass(Classe C, operation)
 ______________________________________________________________________________
 Secrétaire
 	Attributs
