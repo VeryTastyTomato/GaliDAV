@@ -17,7 +17,7 @@ Cours
 		+setEnd(newEnd)
 		+setRoom(newRoom)
 		+setSubject(newSubject)
-		+retire() //WTF?
+		+remove() 
 		+modifyRoom(S)
 		+Cours(Matiere M, Debut, Fin) //?
 ___________________________________________________________________________
@@ -60,16 +60,20 @@ Element_de_maquette
 ___________________________________________________________________________
 EdT
 	Attributs
-		-id_edt
-		-teacher_owner
-		-
-		-
-		-
+		-idTimetable
+		-modifiedBy
+		-listCourses
+		-listModif
+		-teacherOwner
 		-
 		-
 	Fonctions
-		+getId_EdT
-		+getTeacher()
+		+getIdTimetable()
+		+getModifiedBy()
+		+getListCourses()
+		+getListModif()
+		+getTeacherOwner()
+		+setModifiedBy(newModifiedBy)
 		+extractExams()
 ___________________________________________________________________________
 EdT_Classe
@@ -81,11 +85,14 @@ Modification
 	Attributs
 		-date
 		-madeBy
+		-courseModified
 	Fonctions		
 		+getDate()
 		+getMadeBy()
+		+getCourseModified()
 		+setDate(newDate)
 		+setMadeBy(newMadeBy)
+		+setCourseModified(newCourseModified)
 ___________________________________________________________________________
 BaseDeDonnées
 	Attributs
