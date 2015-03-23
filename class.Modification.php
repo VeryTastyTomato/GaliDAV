@@ -15,9 +15,8 @@ class Modification
 
 	// --- ATTRIBUTES ---
 	private $date;
-
-	//Etienne : un attribut pour connaître l'auteur de la modif
 	private $madeBy = null;
+	private $courseModified = null;
 
 	// --- OPERATIONS ---
 	// getters
@@ -29,6 +28,11 @@ class Modification
 	public function getMadeBy()
 	{
 		return $this->madeBy;
+	}
+
+	public function getCourseModified()
+	{
+		return $this->courseModified;
 	}
 
 	// setters
@@ -45,6 +49,14 @@ class Modification
 		if (!empty($newMadeBy))
 		{
 			$this->madeBy = $newMadeBy;
+		}
+	}
+
+	public function setCourseModified($newCourseModified)
+	{
+		if (!empty($newcourseModified))
+		{
+			$this->courseModified = $newCourseModified;
 		}
 	}
 }

@@ -15,8 +15,10 @@ class EDTClasse extends EDT
 	// --- ATTRIBUTES ---
 
 	// --- OPERATIONS ---
+
 	public function generatePDF()
 	{
+		// TODO
 	}
 }
 ?>

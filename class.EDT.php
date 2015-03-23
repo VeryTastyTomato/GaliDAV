@@ -16,27 +16,56 @@ class EDT
 
 	// --- ATTRIBUTES ---
 	private $idTimetable = null;
+	private $modifiedBy = null;
+	private $listCourses = null;
+	private $listModif = null;
 
 	// Attribut teacher_owner pour savoir si c'est un EDT de groupe/classe (null), ou EDT d'enseignant (celui-ci sera accessible depuis cet attribut)
 	private $teacherOwner = null;
 
 	// --- OPERATIONS ---
-
+	// getters
 	public function getIdTimetable()
 	{
 		return $this->idTimetable;
 	}
 
-	// Etienne : accesseur ajouté - pour Flora
+	public function getModifiedBy()
+	{
+		return $this->modifiedBy;
+	}
+
+	public function getListCourses()
+	{
+		return $this->listCourses;
+	}
+
+	public function getListModif()
+	{
+		return $this->listModif;
+	}	
+
 	public function getTeacherOwner()
 	{
 		return $this->teacherOwner;
 	}
 
+	// setters
+
+	public function setModifiedBy($newModifiedBy)
+	{
+		if (!empty($newModifiedBy))
+		{
+			$this->modifiedBy = $newModifiedBy;
+		}
+	}
+
+
+	// others
 	public function extractExams()
 	{
 		$returnValue = null;
-
+		// TODO
 		return $returnValue;
 	}
 }
