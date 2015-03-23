@@ -99,15 +99,22 @@ BaseDeDonnées
 		-save: Boolean	
 		-location
 	Fonctions
+		+getSave()
+		+getLocation()
+		+setSave($newSave)
+		+setLocation($newLocation)
 ___________________________________________________________________________
 Système
 	Attributs
+		-database: BaseDeDonnees
 	Fonctions
-		+blockTimeTable(edt: EdT)
-		+sendemailAdress(P:Personne)
-		+générerEdT_PDF(edt:EdT_Classe)
+		+getDatabase()
+		+setDatabase($newDatabase)
+		+blockTimetable(edt: EdT)
+		+sendEmail(P:Personne)
+		+generateTimetable_PDF(edt:EDTClasse)
 		+autoSave(B:BaseDeDonnées)
-		+getDatas(Location): BaseDeDonnées
+		+recoverData($location): BaseDeDonnees
 		+generateExamList(E:EdT)
 ___________________________________________________________________________
 Groupe

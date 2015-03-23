@@ -60,7 +60,7 @@ class Systeme
 		return $database;
 	}
 
-	public function generateListExams(EDT $edt)
+	public function generateExamList(EDT $edt)
 	{
 	//TODO
 	}
