@@ -23,6 +23,21 @@ class Cours
 	private $subject = null; 
 	
 	// --- OPERATIONS ---
+	// builders
+	public function __construct(Matiere $m, $begin, $end)
+	{
+		if(!is_int($begin)){
+			$begin=time();
+		}
+		if(!is_int($end)){
+			$end=time();
+		}
+		
+		$this->subject=$m;
+		$this->begin=$begin;
+		$this->end=$end;
+	}
+
 	// getters
 	public function getNumber()
 	{
@@ -109,20 +124,6 @@ class Cours
 	public function remove()
 	{
 		// Etienne : accès à la BDD pour la delete ?
-	}
-
-	public function __construct(Matiere $m, $begin, $end)
-	{
-		if(!is_int($begin)){
-			$begin=time();
-		}
-		if(!is_int($end)){
-			$end=time();
-		}
-		
-		$this->subject=$m;
-		$this->begin=$begin;
-		$this->end=$end;
 	}
 
 	public function integrateInTimetable(EDT $timetable)

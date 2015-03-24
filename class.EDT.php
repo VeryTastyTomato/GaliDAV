@@ -64,9 +64,15 @@ class EDT
 	// others
 	public function extractExams()
 	{
-		$returnValue = null;
-		// TODO
-		return $returnValue;
+		$examList = array();
+		foreach ($this->listCourses as $tempCourse)
+		{
+			if ($tempCourse->getTypeOfCourse() = Examen)
+			{
+				$examList[] = $tempCourse;
+			}			
+		}
+		return $examList;
 	}
 }
 ?>
