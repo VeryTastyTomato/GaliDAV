@@ -6,20 +6,28 @@ Cours
 		-end
 		-room
 		-subject
+		-typeOfCourse
+	Constructeurs
+		+__construct(Matiere M, Debut, Fin)
 	Fonctions
 		+getNumber()
 		+getBegin()
+		+getBegin_string:string
 		+getEnd()
+		+getEnd_string:String
 		+getRoom()
 		+getSubject()
+		+getTypeOfCourse()
+		+getTypeOfCourse_string():String
 		+setNumber(newNumber)
 		+setNumber(newNumber)
 		+setEnd(newEnd)
 		+setRoom(newRoom)
 		+setSubject(newSubject)
+		+setTypeOfCourse()
 		+remove() 
 		+modifyRoom(S)
-		+Cours(Matiere M, Debut, Fin) //?
+		+toHTML:String
 ___________________________________________________________________________
 Type_Cours
 	Attributs
@@ -39,14 +47,17 @@ ___________________________________________________________________________
 Matière
 	Attributs
 		-name
-		-typeOfCourse
 		-numHours
-		-teachedBy
+		-teachedBy :Array (of Personne)
+	Constructeurs
+		+__construct(name)
 	Fonctions
 		+getName()
 		+getTeachedBy()
+		+isTeachedBy(Personne $P): Boolean
 		+setName(newName)
 		+setTeachedBy(newTeachedBy)
+		+addTeacher(Personne $P)
 ___________________________________________________________________________
 Element_de_maquette
 	Attributs

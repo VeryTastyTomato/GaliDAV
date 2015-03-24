@@ -19,9 +19,9 @@ class Cours
 	private $begin;
 	private $end;
 	private $room = null;
-	private $typeCours = null;
+	private $typeOfCourse = null;
 	private $subject = null; 
-
+	
 	// --- OPERATIONS ---
 	// getters
 	public function getNumber()
@@ -34,11 +34,20 @@ class Cours
 		return $this->begin;
 	}
 
+	public function getBegin_string()
+	{
+		return date('d/m/Y H:i',$this->begin);
+	}
+	
 	public function getEnd()
 	{
 		return $this->end;
 	}
-
+	public function getEnd_string()
+	{
+		return date('d/m/Y H:i',$this->end);
+	}
+	
 	public function getRoom()
 	{
 		return $this->room;
@@ -47,6 +56,9 @@ class Cours
 	public function getSubject()
 	{
 		return $this->subject;
+	}
+	public function getTypeOfCourse(){
+		return $this->getTypeOfCourse;
 	}
 
 	// setters
@@ -89,6 +101,9 @@ class Cours
 			$this->subject = $newSubject;
 		}
 	}
+	public function setTypeOfCourse($type){
+		$this->typeOfCourse=$type;
+	}
 
 	// others
 	public function remove()
@@ -96,15 +111,49 @@ class Cours
 		// Etienne : accès à la BDD pour la delete ?
 	}
 
-	public function Cours(Matiere $m, $begin, $end)
+	public function __construct(Matiere $m, $begin, $end)
 	{
-		// Etienne : c'est un constructeur ça ?
-		// Ibrar : il semblerait, le cas échéant il y a des méthodes standards pour ça
-		//Flora: Non, un constructeur c'est __construct()
+		if(!is_int($begin)){
+			$begin=time();
+		}
+		if(!is_int($end)){
+			$end=time();
+		}
+		
+		$this->subject=$m;
+		$this->begin=$begin;
+		$this->end=$end;
 	}
 
 	public function integrateInTimetable(EDT $timetable)
 	{
+	}
+	
+	public function getTypeOfCourse_string(){
+		switch($this->typeOfCourse)
+		{
+			case(CM):
+				return "CM";
+			case(TD):
+				return "TD";
+			case(TP):
+				return "TP";
+			case(Examen):
+				return "Partiel";
+			case(Conférence):
+				return "Conférence";
+			case(Rattrapage):
+				return "Rattrapage";
+			default:
+				return "Type inconnu";
+		}
+	}
+	
+	// -- Affichage texte --
+	public function toHTML()
+	{
+		$result = "<p>Matière:&emsp; &emsp; " . $this->subject->getName() . "<br/>Type de cours:&emsp; &emsp;". $this->typeOfCourse."&emsp; &emsp;&emsp; &emsp;Numero:&emsp; &emsp; " . $this->number . "<br/>Horaires:&emsp; du ".$this->getBegin_string()." au ".$this->getEnd_string()."<br/>Salle: &emsp; &emsp; ".$this->room."</p>";
+		return $result;
 	}
 }
 ?>

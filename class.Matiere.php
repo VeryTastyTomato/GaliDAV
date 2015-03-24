@@ -14,7 +14,15 @@ class Matiere
 
 	// --- ATTRIBUTES ---
 	private $name = null;
-	private $teachedBy = null;
+	private $teachedBy = array();
+	
+	public function __construct($n){
+		if(!is_string($n))
+		{
+			$n="Pas de nom";
+		}
+		$this->name=$n;	
+	}
 
 	// --- OPERATIONS ---
 	// getters
@@ -28,6 +36,14 @@ class Matiere
 		return $this->teachedBy;
 	}
 
+	public function isTeachedBy(Personne $P)
+	{
+		foreach($this->teachedBy as $person)
+		{
+			if($person==$P)return true;
+		}
+		return false;
+	}
 	// setters
 	public function setName($newName)
 	{
@@ -43,6 +59,15 @@ class Matiere
 		{
 			$this->name = $newTeachedBy;
 		}
+	}
+	
+	public function addTeacher(Personne $P)
+	{
+		if(!isTeachedBy($P))
+		{
+			$this->teachedBy[]=$P;
+		}
+	
 	}
 }
 ?>
