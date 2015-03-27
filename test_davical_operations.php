@@ -3,12 +3,6 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 ?>
 
- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<title>Tests GaliDAV</title></head><body> <h1>Test utilisation davical</h1>
-
 <?php 
 //Flora NOTE: vous devez écrire dans votre hote.conf la ligne 
 //	php_value include_path /usr/share/davical/inc:/usr/share/awl/inc
@@ -20,7 +14,7 @@ require_once("DAVPrincipal.php");
 
 
 //Créer un calendrier de nom, $calendarNameGiven pour l'utilisateur d'identifiant $username
-function CreateTimeTable( $username, $calendarNameGiven,$defult_timezone = null ) {
+function CreateSubject( $username, $calendarNameGiven,$defult_timezone = null ) {
   global $session, $c;
 
 	if ( !isset($c->default_collections) )
@@ -54,7 +48,8 @@ function CreateTimeTable( $username, $calendarNameGiven,$defult_timezone = null 
           $params[':parent_container'] = $principal->dav_name();
           $params[':dav_etag'] = '-1';
           $params[':collection_path'] = $principal->dav_name().$calendarNameGiven.'/';
-          $params[':displayname'] = $user_fullname." ".$calendarNameGiven;
+         // $params[':displayname'] = $user_fullname." ".$calendarNameGiven;
+          $params[':displayname'] = $calendarNameGiven;
           $params[':resourcetypes'] = '<DAV::collection/><urn:ietf:params:xml:ns:caldav:calendar/>';
           $params[':is_calendar'] = true;
           $params[':is_addressbook'] = false;
@@ -84,13 +79,19 @@ echo ("<p>Un calendrier a dû être créé. Vérifiez sur davical</p>");
 
 
 
-$param['username']='test10';
-$param['fullname']='User test 10';
-$param['displayname']='User test 10';
-$param['password']='test10';//Ne marche pas
-$param['email']='example@example.net';
-$param['type_id']=1;//Type Person
-//$param['default_privileges']= privilege_to_bits(array('all')) ;//Ne compile pas
+function CreateUserAccount($username,$fullname,$password,$email,$privilege){
+
+	$param['username']=$username;
+	$param['fullname']=$fullname;
+	$param['displayname']=$fullname;
+	$param['password']=$password;//Ne marche pas
+	$param['email']=$email;
+	$param['type_id']=1;//Type Person
+	//$param['default_privileges']= privilege_to_bits(array('all')) ;//Ne compile pas
+	$P=new DAVPrincipal($param);
+	$P->Create($param);
+	return $P;
+}
 
 //Essai de création d'utilisateur (décommenter)
 /*
@@ -100,12 +101,26 @@ $P->privileges=privilege_to_bits( array('DAV::all') );//Ne marche pas
 $P->Create($param);
 echo "<br/>Num de l'user:  ".$P->user_no()."<br/>Vérifiez sur davical";
 */
+
+function CreateClassAccount($classname,$password,$email,$privilege){//pour l'instant le mot de passe n'est pas utile, on n'est pas censé se connecter en tant que class
+
+	$param['username']=$classname;
+	$param['fullname']=$classname;
+	$param['displayname']=$classname;
+	$param['password']=$password;//Ne marche pas
+	$param['email']=$email;
+	$param['type_id']=3;//Type Groupe;
+	$C=new DAVPrincipal($param);
+	$C->Create($param);
+	return $C;
+}
+
+
+
+if(isset($_POST['action'])){
+	if($_POST['action']=='add_subject'){
+		CreateSubject($_POST['classname'],$_POST['subjectname']);
+		echo("OK");
+	}
+}
 ?>
-
-
-
-
-
-
-</body>
-</html>
