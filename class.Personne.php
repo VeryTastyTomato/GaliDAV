@@ -71,19 +71,28 @@ class Personne
 
 	public function setEmailAddress1($newEmailAddress1)
 	{
-		//  todo: add a regular expression to check the parameter’s pattern
+		//  todo: vérifier si le comportement après les tests est celui souhaité
 		if (!empty($newEmailAddress1))
 		{
-			$this->emailAddress1 = $newEmailAddress1;
+			$pattern = '#^[a-zA-Z]+[a-zA-Z0-9._-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$#';
+			if(preg_match($pattern, $newEmailAddress1)){
+				$this->emailAddress1 = $newEmailAddress1;
+			}else{
+				echo 'incorrect address';
+			}
 		}
 	}
 
 	public function setEmailAddress2($newEmailAddress2)
 	{
-		//  todo: add a regular expression to check the parameter’s pattern
 		if (!empty($newEmailAddress2))
 		{
-			$this->emailAddress2 = $newEmailAddress2;
+			$pattern = '#^[a-zA-Z]+[a-zA-Z0-9._-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$#';
+			if(preg_match($pattern, $newEmailAddress2)){
+				$this->emailAddress1 = $newEmailAddress2;
+			}else{
+				echo 'incorrect address';
+			}
 		}
 	}
 	public function setAllStatus($arrayOfStatus){
