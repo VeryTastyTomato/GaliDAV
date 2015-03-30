@@ -67,7 +67,7 @@ class EDT
 		$examList = array();
 		foreach ($this->listCourses as $tempCourse)
 		{
-			if ($tempCourse->getTypeOfCourse() = Examen)
+			if ($tempCourse->getTypeOfCourse() == Examen)
 			{
 				$examList[] = $tempCourse;
 			}			

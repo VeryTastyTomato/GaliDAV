@@ -109,14 +109,22 @@ Modification
 ___________________________________________________________________________
 BaseDeDonnées
 	Attributs
-		−save: Boolean	
-		−location
+		—save: Boolean	
+		—location
+		—const PERSON_TABLE
+		—const USER_TABLE
+	    —(static) current_db: BaseDeDonnees
 	Accesseurs
 		+getSave(): Boolean
 		+getLocation()
 	Mutateurs
 		+setSave(Boolean newSave)
 		+setLocation(newLocation)
+	Autres fonctions
+		+executeQuery(query, params)
+		+initialize()
+	Fonctions statiques
+		+currentDB(): BaseDeDonnees
 ___________________________________________________________________________
 Système
 	Attributs
@@ -153,8 +161,12 @@ Personne
 		−firstName: String
 		−emailAddress1: String
 		−emailAddress2: String
+	Constantes
+		const TABLENAME
+		const SQLcolumns
 	Constructeurs
 		+__construct(String newFamilyName, String newFirstName)
+		+__construct(String newFamilyName, String newFirstName, String email1)
 	Accesseurs
 		+getFamilyName(): String
 		+getFirstName(): String
@@ -173,10 +185,13 @@ Personne
 		+hasStatus(Statut_personne s): Boolean
 		+toHTML(): String
 ___________________________________________________________________________
-Utilisateur
+Utilisateur (extends Personne)
 	Attributs
 		−id: Integer
 		−passwd: String
+	Constantes
+		const TABLENAME
+		const SQLcolumns
 	Constructeurs
 		+__construct(String familyName, String firstName, Integer id, String passwd)
 	Accesseurs
@@ -190,7 +205,7 @@ Utilisateur
 		+readTimeTable(EDT e): Boolean
 		+toHTML(): String
 ___________________________________________________________
-Administrateur
+Administrateur extends Utilisateur
 	Constructeurs
 		+__construct(String familyName, String firstName, Integer id, String passwd)
 	Autres fonctions
@@ -203,7 +218,7 @@ Administrateur
 		+addClass(String name): Classe
 		+modifyClass(Classe c, operation)
 ______________________________________________________________________________
-Secrétaire
+Secrétaire extends Utilisateur
 	Constructeurs
 		+__construct(String familyName, String firstName, Integer id, String passwd)
 	Autres fonctions
@@ -215,7 +230,7 @@ Secrétaire
 		+validateTimetable(EDT e)
 		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, numHours)
 ________________________________________________________________________________________________________________________________________
-Enseignant
+Enseignant (extends Utilisateur)
 	Attributs
 		−personalTimetable: EDTClasse
 	Constructeurs
@@ -225,7 +240,7 @@ Enseignant
 	Autres fonctions
 		+readPersonalTimetable()
 ___________________________________________________________________________
-Responsable
+Responsable (extends Utilisateur)
 	Attributs
 		−type: Type_responsable
 	Constructeurs
@@ -260,12 +275,6 @@ Statut_personne
 		+__construct($value)
 	Fonctions
 		+toString()
-
-
-
-
-
-
 
 
 

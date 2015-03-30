@@ -30,9 +30,36 @@ require_once("test_davical_operations.php");
 				<input type='hidden' name='action' value="add_subject"/>
 				Nom de la classe<br/><input type="text" name="classname"/><br/>
 				Nom de la matière <br/><input type="text" name="subjectname"/><br/>
+				Intervenant1: <br/><input type="text" list=listspeakers name="speaker1"/><br/>
+				Intervenant2: <br/><input type="text" list=listspeakers name="speaker2"/><br/>
+				Intervenant3: <br/><input type="text" list=listspeakers name="speaker3"/><br/>
+				<datalist id=listspeakers >
+   					<option> Sylvie Borne
+   					<option> Céline Rouveirol
+				</datalist>
+				
+				<!--<div id=listspeakers2 style= "max-height:50px; overflow:scroll">
+					<input type="checkbox" value="Sylvie Borne"/>Sylvie Borne<br/>
+					<input type="checkbox" value="Sylvie Borne"/>Céline Rouveirol
+					<br/><input type="checkbox" value="Sylvie Borne"/>Christian Codognet
+					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
+					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
+					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
+					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
+					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
+					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
+					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
+					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
+					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
+					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
+					
+				</div>-->
 				<input type="submit" value="Ajouter"/><br/>
 			</form></td>
 		</tr>
 	</table>
 
 </div>
+
+</body>
+</html>
