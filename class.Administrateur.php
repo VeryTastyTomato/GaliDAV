@@ -66,8 +66,8 @@ class Administrateur extends Utilisateur
 
 	public function deletePerson(Personne $p)
 	{
-		$u->__destroy();
-		$u = NULL;
+		$p->__destroy();
+		$p = NULL;
 		// Flora TODO: Tester et voir s'il n'ya pas plus approprié
 		// + Supprimer de la BDD
 	}
