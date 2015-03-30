@@ -7,6 +7,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 }
 
 require_once('Responsable/unknown.Type_responsable.php');
+require_once('class.Groupe.php');
 require_once('class.Classe.php');
 require_once('class.Utilisateur.php');
 
@@ -47,20 +48,36 @@ class Responsable extends Utilisateur
 		new Groupe($name, false);
 	}
 
-     // Flora TODO: Utiliser les fonctions de la classe Groupe (ajouter/supprimer un étudiant en l'occurence)
-	public function modifyGroup_Members(Personne $etu, $operation)
+	public function modifyGroup_Members(Groupe $group, Personne $etu, $operation)
 	{
-		$returnValue = null;
-
-		return $returnValue;
+		if ($operation == 'add')
+		{
+			$group->addStudent($etu);
+		}
+		else if ($operation == 'remove')
+		{
+			$group->removeStudent($etu);
+		}
+		else
+		{
+			echo 'Opération invalide';
+		}
 	}
 
-	// Flora TODO: Utiliser les fonctions de la classe Groupe (ajouter/supprimer un étudiant en l'occurence)
-	public function modifyGroup_LinkedClasses(Classe $c, $operation)
+	public function modifyGroup_LinkedClasses(Classe $c, Personne $etu, $operation)
 	{
-		$returnValue = null;
-
-		return $returnValue;
+		if ($operation == 'add')
+		{
+			$c->addStudent($etu);
+		}
+		else if ($operation == 'remove')
+		{
+			$c->removeStudent($etu);
+		}
+		else
+		{
+			echo 'Opération invalide';
+		}
 	}
 
 	// Flora NOTE: On va devoir faire appel aux commandes 'bas niveau' du serveur caldav
@@ -77,7 +94,7 @@ class Responsable extends Utilisateur
 	}
 
 	// Flora TODO: implémenter des accesseurs pour la maquette dans la classe Classe
-	public function modifyClass_CoursesModel(Classe $c, Matiere $m, Type_cours $type, $nb_heures)
+	public function modifyClass_CoursesModel(Classe $c, Matiere $m, Type_cours $type, $numHours)
 	{
 	}
 }
