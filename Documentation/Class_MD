@@ -41,7 +41,9 @@ Type_cours
 		−RESIT
 ___________________________________________________________________________
 Classe
-	Fonctions
+	Constructeurs
+		+__construct(String newName)
+	Autres fonctions
 		+getTimetableOfClass(): EDT
 ___________________________________________________________________________
 Matière
@@ -145,6 +147,8 @@ Groupe
 	Attributes
 		−name: String
 		−isAClass: Boolean
+	Constructeurs
+		+__construct(String newName, Boolean newIsAClass)
 	Accesseurs
 		+getName(): String
 		+getIsAClass(): Boolean

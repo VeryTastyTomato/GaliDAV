@@ -19,6 +19,13 @@ class Classe extends Groupe
 	// --- ATTRIBUTES ---
 
 	// --- OPERATIONS ---
+	// builders
+	public function __construct($newName)
+	{
+		parent::__construct($newName, true);
+	}
+
+	// others
 	public function getTimetableOfClass()
 	{
 		$returnValue = null;

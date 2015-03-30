@@ -19,6 +19,13 @@ class Groupe
 	private $isAClass = null;
 
 	// --- OPERATIONS ---
+	// buiders
+	public function __construct($newName, $newIsAClass)
+	{
+		$this->name = $newName;
+		$this->isAClass = $newIsAClass;
+	}
+
 	// getters
 	public function getName()
 	{
