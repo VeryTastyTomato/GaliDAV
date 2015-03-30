@@ -94,14 +94,15 @@ class Personne
 
 	public function setEmailAddress1($newEmailAddress1)
 	{
-		//  todo: vérifier si le comportement après les tests est celui souhaité
 		if (!empty($newEmailAddress1))
 		{
-			$pattern = '#^[a-zA-Z]+[a-zA-Z0-9._-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$#';
-			if(preg_match($pattern, $newEmailAddress1)){
+			if (filter_var($newEmailAddress1, FILTER_VALIDATE_EMAIL))
+			{
 				$this->emailAddress1 = $newEmailAddress1;
-			}else{
-				echo 'incorrect address';
+			}
+			else
+			{
+				echo 'Wrong address';
 			}
 		}
 	}
@@ -110,11 +111,13 @@ class Personne
 	{
 		if (!empty($newEmailAddress2))
 		{
-			$pattern = '#^[a-zA-Z]+[a-zA-Z0-9._-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$#';
-			if(preg_match($pattern, $newEmailAddress2)){
+			if (filter_var($newEmailAddress2, FILTER_VALIDATE_EMAIL))
+			{
 				$this->emailAddress1 = $newEmailAddress2;
-			}else{
-				echo 'incorrect address';
+			}
+			else
+			{
+				echo 'Wrong address';
 			}
 		}
 	}

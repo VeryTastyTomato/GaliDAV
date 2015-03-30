@@ -44,11 +44,11 @@ class Administrateur extends Utilisateur
 	{
 		if ($operation == 'add')
 		{
-			$u->add_status($s);
+			$u->addStatus($s);
 		}
 		else if ($operation == 'remove')
 		{
-			$u->remove_status($s);
+			$u->removeStatus($s);
 		}
 	}
 
