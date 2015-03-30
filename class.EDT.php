@@ -51,7 +51,6 @@ class EDT
 	}
 
 	// setters
-
 	public function setModifiedBy($newModifiedBy)
 	{
 		if (!empty($newModifiedBy))
@@ -73,6 +72,12 @@ class EDT
 			}			
 		}
 		return $examList;
+	}
+
+	public function addCourse($newCourse)
+	{
+		// faire des vérifs pour éviter les conflits ? ou demander à l’utilisateur s’il veut écraser un cours en cas de conflit ?
+		$this->listCourses[] = $newCourse;
 	}
 }
 ?>

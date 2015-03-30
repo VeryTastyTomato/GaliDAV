@@ -90,6 +90,7 @@ EDT
 		+setModifiedBy(Personne newModifiedBy)
 	Autres fonctions
 		+extractExams(): Array (of Type_cours)
+		+addCourse(Cours newCourse)
 ___________________________________________________________________________
 EdT_Classe
 	Fonctions
