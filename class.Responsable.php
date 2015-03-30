@@ -29,9 +29,18 @@ class Responsable extends Utilisateur
 	// Flora TODO: Utiliser les méthodes de la classe EDT pour compléter cette fonction
 	public function modifyTimetable(EDT $e, Cours $c, $operation)
 	{
-		$returnValue = null;
-
-		return $returnValue;
+		if ($operation == 'add')
+		{
+			$e->addCourse($c);
+		}
+		else if ($operation == 'remove')
+		{
+			$e->removeCourse($c);
+		}
+		else
+		{
+			echo 'Opération invalide';
+		}
 	}
 
 	public function addGroup(String $name)

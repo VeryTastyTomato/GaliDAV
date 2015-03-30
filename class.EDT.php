@@ -76,8 +76,36 @@ class EDT
 
 	public function addCourse($newCourse)
 	{
-		// faire des vérifs pour éviter les conflits ? ou demander à l’utilisateur s’il veut écraser un cours en cas de conflit ?
-		$this->listCourses[] = $newCourse;
+		if ($newCourse instanceof Cours)
+		{
+			$this->listCourses[] = $newCourse;
+		}
+		else
+		{
+			echo 'Erreur dans la méthode addCourse() de la classe EDT : l’argument donné n’est pas un cours.';
+		}
+	}
+
+	public function removeCourse($courseToRemove)
+	{
+		$indice;
+
+		if ($courseToRemove instanceof Cours)
+		{
+			$indice = array_search($courseToRemove, $this->listCourses);
+			if ($indice !== false)
+			{
+				unset($this->listCourses[$indice]);
+			}
+			else
+			{
+				echo 'Le cours n’est pas dans l’emploi du temps.';
+			}
+		}
+		else
+		{
+			echo 'Erreur dans la méthode removeCourse() de la classe EDT : l’argument donné n’est pas un cours.';
+		}
 	}
 }
 ?>
