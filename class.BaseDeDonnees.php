@@ -6,6 +6,8 @@ if (0 > version_compare(PHP_VERSION, '5'))
 	die('$this file was generated for PHP 5');
 }
 
+/* Par défaut la BDD considérée se nomme galidav accessible par l'utilisateur galidav en local */
+
 require_once("/usr/share/davical/htdocs/always.php");
 require_once("auth-functions.php");	//Utile ou pas?
 
@@ -25,6 +27,10 @@ class BaseDeDonnees
 	
 	private $save = false;
 	private $location = null;
+	private $dbname='galidav';
+	private $user='galidav';
+	private $password;
+	private $host;
 	// TODO : attributs des éléments enregistrés (1attribut != pour chaque élément ?)
 
 	// --- OPERATIONS ---
@@ -46,9 +52,7 @@ class BaseDeDonnees
 		if(self::$current_db==null)
 		{
 			self::$current_db=new BaseDeDonnees();
-			if(!self::$current_db->initialize()){
-				echo ("Linitialisation a échoué!!!");
-			};
+			
 		}
 		return self::$current_db;
 	}
@@ -73,9 +77,7 @@ class BaseDeDonnees
 	
 	
 	public function executeQuery($query,$params=array()){
-		global $c;
-		$conn = pg_pconnect("user=galidav");
-		if (!$conn) {
+		if (!$this->connect()) {
   			echo "Impossible de se connecter à la DB galidav.\n";
   			exit;
 		}
@@ -95,6 +97,24 @@ class BaseDeDonnees
             $c->messages[] = i18n("There was an error reading/writing to the GaliDAV database.");
           }*/
           
+	}
+	
+	public function clear(){
+		$this->executeQuery("DELETE from ".Personne::TABLENAME." where true;");
+		$this->executeQuery("DELETE from ".Utilisateur::TABLENAME." where true;");
+	}
+	public function dropall(){
+		$this->executeQuery("DROP TABLE ".Personne::TABLENAME.";");
+		$this->executeQuery("DROP TABLE ".Utilisateur::TABLENAME.";");
+	}
+	
+	public function connect()
+	{
+		$param="user=".$this->user;
+		if($this->dbname)$param.=", dbname=".$this->dbname;
+		if($this->password)$param.=", password=".$this->password;
+		if($this->host)$param.=", host=".$this->host;
+		return pg_pconnect($param);
 	}
 	
 	public function initialize()
