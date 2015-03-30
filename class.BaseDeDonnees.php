@@ -7,6 +7,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 }
 
 require_once("/usr/share/davical/htdocs/always.php");
+require_once("auth-functions.php");	//Utile ou pas?
 
 /* TODO quand on aura réglé les attributs dépendants
 require_once('');
@@ -29,6 +30,7 @@ class BaseDeDonnees
 	// --- OPERATIONS ---
 	//getters
 
+	
 	public function getSave()
 	{
 		return $this->save;
@@ -41,9 +43,14 @@ class BaseDeDonnees
 	
 	static public function currentDB()
 	{
-		if(self::current_db==null)self::current_db=new BaseDeDonnees();
-		self::current_db->initialize();
-		return self::current_db;
+		if(self::$current_db==null)
+		{
+			self::$current_db=new BaseDeDonnees();
+			if(!self::$current_db->initialize()){
+				echo ("Linitialisation a échoué!!!");
+			};
+		}
+		return self::$current_db;
 	}
 
 	//setters
@@ -64,28 +71,43 @@ class BaseDeDonnees
 		}
 	}	
 	
-	public function executeQuery($query,$params=null){
+	
+	public function executeQuery($query,$params=array()){
 		global $c;
-		$Q=new AwlQuery( $query, $params );
+		$conn = pg_pconnect("user=galidav");
+		if (!$conn) {
+  			echo "Impossible de se connecter à la DB galidav.\n";
+  			exit;
+		}
+		$result = pg_query_params($conn, $query, $params);
+		return $result;
+		/*$Q=new AwlQuery( $query, $params );
+		$connection=array();
+		$connection['dsn']='galidav';
+		$connection['dbuser']='galidav';
+		$Q->SetConnection($connection);
 		if ( $Q->Exec() ) {
             $c->messages[] = i18n('GaliDAV query answered.');
             dbg_error_log("GaliDAV",": ? : SQL Operation done" );
           }
           else {
+          	echo("GaliDAV SQL error: ".$Q->getErrorInfo());
             $c->messages[] = i18n("There was an error reading/writing to the GaliDAV database.");
-          }
-          return $Q;
+          }*/
+          
 	}
 	
 	public function initialize()
 	{
-		$result=$this->executeQuery("CREATE TABLE ".Personne::TABLENAME."(".Personne::SQLcolumns.";");
-		if($result->Exec())$result=$this->executeQuery("CREATE TABLE ".Utilisateur::TABLENAME."(".Utilisateur::SQLcolumns.";");
+		$result=$this->executeQuery("CREATE TABLE ".Personne::TABLENAME." (".Personne::SQLcolumns.");");
+		if(!$result)$result=$this->executeQuery("CREATE TABLE ".Utilisateur::TABLENAME." (".Utilisateur::SQLcolumns.");");
 		
 		/*** TODO Autres tables ***/
 		
-		return $result->Exec();
+		return $result;
 	}
 
 }
 ?>
+
+

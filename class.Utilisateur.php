@@ -8,6 +8,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 
 require_once('class.Personne.php');
 require_once('class.EDT.php');
+require_once('class.BaseDeDonnees.php');
 
 class Utilisateur extends Personne
 {
@@ -16,8 +17,9 @@ class Utilisateur extends Personne
 	// --- ATTRIBUTES ---
 	protected $id = null;
 	private $passwd = null;
-	const TABLENAME="GaliDAVUser";
-	const SQLcolumns="id_person SERIAL PRIMARY KEY REFERENCES ".BaseDeDonnees::PERSON_TABLE."(id),login varchar2(30) NOT NULL UNIQUE, id_principal password varchar2(30), firstName varchar2(30) NOT NULL, emailAddress1 varchar2(50),emailAddress1 varchar2(60), emailAddress1 varchar2(60)";
+	const TABLENAME="guser";
+	//const SQLcolumns="id_person SERIAL PRIMARY KEY REFERENCES ".Personne::TABLENAME."(id),login varchar2(30) NOT NULL UNIQUE, id_principal password varchar2(30), firstName varchar2(30) NOT NULL, emailAddress1 varchar2(50),emailAddress1 varchar2(60), emailAddress1 varchar2(60)";
+	const SQLcolumns="id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) NOT NULL, id_principal integer UNIQUE, password varchar(30)";
 
 	// --- OPERATIONS ---
 	// builder

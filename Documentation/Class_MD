@@ -126,7 +126,7 @@ BaseDeDonnées
 	Autres fonctions
 		+executeQuery(query, params)
 		+initialize()
-		+executeQuery
+		+clear() //EFFACELA BDD
 	Fonctions statiques
 		+currentDB(): BaseDeDonnees
 ___________________________________________________________________________
