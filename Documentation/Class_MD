@@ -118,6 +118,7 @@ BaseDeDonnées
 		+setSave($newSave)
 		+setLocation($newLocation)
 		+initialize()
+		+executeQuery
 	Fonctions statiques
 		+currentDB(): BaseDeDonnées
 ___________________________________________________________________________
