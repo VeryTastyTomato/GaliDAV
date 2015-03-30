@@ -234,7 +234,7 @@ Administrateur extends Utilisateur
 		+deleteUser(Utilisateur u)
 		+deletePerson(Personne p)
 		+addClass(String name): Classe
-		+modifyClass(Classe c, operation)
+		+modifyClass(Classe c, Personne etu, String operation)
 ______________________________________________________________________________
 Secrétaire extends Utilisateur
 	Constructeurs

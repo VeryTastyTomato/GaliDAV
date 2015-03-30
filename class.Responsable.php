@@ -26,7 +26,6 @@ class Responsable extends Utilisateur
 		$this->addStatus(new Status_personne(Statut_personne::HEAD));
 	}
 
-	// Flora TODO: Utiliser les méthodes de la classe EDT pour compléter cette fonction
 	public function modifyTimetable(EDT $e, Cours $c, $operation)
 	{
 		if ($operation == 'add')

@@ -77,9 +77,20 @@ class Administrateur extends Utilisateur
 		return new Classe($name);
 	}
 
-	// Flora TODO: Utiliser les fonctions de la classe Classe, fille de Groupe (ajouter/supprimer un étudiant en l'occurence)
-	public function modifyClass(Classe $c, $operation)
+	public function modifyClass(Classe $c, Personne $etu = null, $operation)
 	{
+		if ($operation == 'add')
+		{
+			$c->addStudent($etu);
+		}
+		else if ($operation == 'remove')
+		{
+			$c->removeStudent($etu);
+		}
+		else
+		{
+			echo 'Erreur dans la méthode modifyClass() de la classe Administrateur : opération invalide.';
+		}
 	}
 }
 ?>
