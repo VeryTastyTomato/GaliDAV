@@ -16,6 +16,8 @@ class Utilisateur extends Personne
 	// --- ATTRIBUTES ---
 	protected $id = null;
 	private $passwd = null;
+	const TABLENAME="GaliDAVUser";
+	const SQLcolumns="id_person SERIAL PRIMARY KEY REFERENCES ".BaseDeDonnees::PERSON_TABLE."(id),login varchar2(30) NOT NULL UNIQUE, id_principal password varchar2(30), firstName varchar2(30) NOT NULL, emailAddress1 varchar2(50),emailAddress1 varchar2(60), emailAddress1 varchar2(60)";
 
 	// --- OPERATIONS ---
 	// builder

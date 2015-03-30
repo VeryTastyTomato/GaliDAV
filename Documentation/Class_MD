@@ -109,11 +109,17 @@ BaseDeDonnées
 	Attributs
 		-save: Boolean	
 		-location
+		const PERSON_TABLE
+		const USER_TABLE
+	    -(static) current_db
 	Fonctions
 		+getSave()
 		+getLocation()
 		+setSave($newSave)
 		+setLocation($newLocation)
+		+initialize()
+	Fonctions statiques
+		+currentDB(): BaseDeDonnées
 ___________________________________________________________________________
 Système
 	Attributs
@@ -147,6 +153,8 @@ Personne
 		-firstName: String
 		-emailAddress1: String
 		-emailAddress2: String
+		const TABLENAME
+		const SQLcolumns
 	Fonctions
 		+getFamilyName()
 		+getFirstName()
@@ -163,10 +171,12 @@ Personne
 		+hasStatus(Statut_personne S)
 		+toHTML()
 ___________________________________________________________________________
-Utilisateur
+Utilisateur (extends Personne)
 	Attributs
 		-Id
 		-Password
+		const TABLENAME
+		const SQLcolumns
 	Fonctions statiques
 		+convertPersonToUser(Personne P, identifiant, mdp)
 	Méthodes
@@ -177,7 +187,7 @@ Utilisateur
 		+readTimeTable(EDT E)
 		+to_html()
 ___________________________________________________________
-Administrateur
+Administrateur(extends Utilisateur)
 	Attributs
 	Fonctions
 		+addUser(nom, prenom, identifiant, mdp)
@@ -189,7 +199,7 @@ Administrateur
 		+addClass(String Nom)
 		+modifyClass(Classe C, operation)
 ______________________________________________________________________________
-Secrétaire
+Secrétaire (extends Utilisateur)
 	Attributs
 	Fonctions
 		+modifyTimeTable(EDT E, Cours C, Operation)
@@ -200,14 +210,14 @@ Secrétaire
 		+validateTimeTable(EDT E)
 		+modifyClass_CoursesModel(Classe C,Matiere M, Type_cours type, nb_heures)
 ________________________________________________________________________________________________________________________________________
-Enseignant
+Enseignant (extends Utilisateur)
 	Attributs
 		-edt_personnel
 	Fonctions
 		+get_edt_personnel()
 		+lireEDTpersonnel()
 ___________________________________________________________________________
-Responsable
+Responsable (extends Utilisateur)
 	Attributs
 		-type
 	Fonctions
@@ -241,12 +251,6 @@ Statut_personne
 		+__construct($value)
 	Fonctions
 		+toString()
-
-
-
-
-
-
 
 
 

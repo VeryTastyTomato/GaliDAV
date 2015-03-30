@@ -7,7 +7,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 }
 
 require_once('Personne/unknown.Statut_personne.php');
-
+require_once('class.BaseDeDonnees.php');
 class Personne
 {
 	// --- ASSOCIATIONS ---
@@ -18,6 +18,9 @@ class Personne
 	protected $firstName = null;
 	protected $emailAddress1 = null;
 	protected $emailAddress2 = null;
+	const TABLENAME="GaliDAVPerson";
+	const SQLcolumns="id int SERIAL PRIMARY KEY, familyName varchar2(30) NOT NULL,firstName varchar2(30) NOT NULL, emailAddress1 varchar2(50),emailAddress1 varchar2(60), emailAddress1 varchar2(60)";
+	
 
 	// --- OPERATIONS ---
 	// builder
@@ -25,8 +28,28 @@ class Personne
 	{
 		$this->familyName = $newFamilyName;
 		$this->firstName = $newFirstName;
+		
+		$query="INSERT INTO ".self::TABLENAME." (familyName, firstName) VALUES (:familyName, :firstName)";
+		$params=array();
+		$params[':familyName']=$newFamilyName;
+		$params[':firstName']=$newFamilyName;
+		BaseDeDonnes::currentDB().executeQuery($query,$params);
+		
 	}
-
+	public function __construct($newFamilyName, $newFirstName,$email1)
+	{
+		$this->familyName = $newFamilyName;
+		$this->firstName = $newFirstName;
+		$this->emailAddress1 = $email1;
+		
+		$query="INSERT INTO ".self::TABLENAME." (familyName, firstName,emailAddress1) VALUES (:familyName, :firstName, :email1)";
+		$params=array();
+		$params[':familyName']=$newFamilyName;
+		$params[':firstName']=$newFamilyName;
+		$params[':email1']=$email1;
+		BaseDeDonnes::currentDB().executeQuery($query,$params);
+	}
+	
 	// getters
 	public function getFamilyName()
 	{
