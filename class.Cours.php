@@ -128,8 +128,9 @@ class Cours
 
 	public function integrateInTimetable(EDT $timetable)
 	{
+		$timetable->addCourse($this);
 	}
-	
+
 	public function getTypeOfCourse_string(){
 		switch($this->typeOfCourse)
 		{
