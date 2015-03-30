@@ -13,6 +13,7 @@ require_once('class.Personne.php');
 class Groupe
 {
 	// --- ASSOCIATIONS ---
+	private $listOfStudents = array();
 
 	// --- ATTRIBUTES ---
 	private $name = null;
@@ -37,6 +38,11 @@ class Groupe
 		return $this->isAClass;
 	}
 
+	public function getListOfStudents()
+	{
+		return $this->listOfStudents;
+	}
+
 	// setters
 	public function setName($newName)
 	{
@@ -59,6 +65,39 @@ class Groupe
 		$returnValue = null;
 
 		return $returnValue;
+	}
+
+	// others
+	public function addStudent($newStudent)
+	{
+		if ($newStudent instanceof Personne)
+		{
+			$this->listOfStudents[] = $newStudent;
+		}
+		else
+		{
+			echo 'Erreur dans la méthode addStudent() de la classe Groupe, l’argument donné n’est pas une personne.';
+		}
+	}
+
+	public function removeStudent($studentToRemove)
+	{
+		if ($studentToRemove instanceof Personne)
+		{
+			$indice = array_search($studentToRemove, $this->listOfStudents);
+			if ($indice !== false)
+			{
+				unset($this->listOfStudents[$indice]);
+			}
+			else
+			{
+				echo 'L’étudiant donné n’est pas dans ce groupe.';
+			}
+		}
+		else
+		{
+			echo 'Erreur dans la méthode removeStudent() de la classe Groupe, l’argument donné n’est pas une personne.';
+		}
 	}
 }
 ?>
