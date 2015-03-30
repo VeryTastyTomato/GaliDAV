@@ -1,241 +1,265 @@
 ___________________________________________________________________________
 Cours
 	Attributs
-		-number
-		-begin
-		-end
-		-room
-		-subject
-		-typeOfCourse
+		−number: Integer
+		−begin
+		−end
+		−room: String
+		−typeOfCourse: Type_cours
+		−subject: Matiere
 	Constructeurs
-		+__construct(Matiere M, Debut, Fin)
-	Fonctions
-		+getNumber()
+		+__construct(Matiere m, begin, end)
+	Accesseurs
+		+getNumber(): Integer
 		+getBegin()
-		+getBegin_string:string
+		+getBegin_string: String
 		+getEnd()
-		+getEnd_string:String
-		+getRoom()
+		+getEnd_string: String
+		+getRoom(): String
 		+getSubject()
-		+getTypeOfCourse()
-		+getTypeOfCourse_string():String
-		+setNumber(newNumber)
-		+setNumber(newNumber)
+		+getTypeOfCourse(): Type_cours
+		+getTypeOfCourse_string(): String
+	Mutateurs
+		+setNumber(Integer newNumber)
+		+setBegin(newBegin)
 		+setEnd(newEnd)
-		+setRoom(newRoom)
-		+setSubject(newSubject)
-		+setTypeOfCourse()
-		+remove() 
-		+modifyRoom(S)
-		+toHTML:String
+		+setRoom(String newRoom)
+		+setSubject(Matiere newSubject)
+		+setTypeOfCourse(Type_cours type)
+	Autres fonctions
+		+integrateInTimetable(EDT timetable)
+		+remove()
+		+toHTML: String
 ___________________________________________________________________________
-Type_Cours
+Type_cours
 	Attributs
-		-LECTURE
-		-TC	
-		-PRACTICAL
-		-CONFERENCE
-		-EXAM
-		-RESIT
-	Fonctions
+		−LECTURE
+		−TC	
+		−PRACTICAL
+		−CONFERENCE
+		−EXAM
+		−RESIT
 ___________________________________________________________________________
 Classe
-	Attributs
 	Fonctions
-		+getTimetableOfClass()
+		+getTimetableOfClass(): EDT
 ___________________________________________________________________________
 Matière
 	Attributs
-		-name
-		-numHours
-		-teachedBy :Array (of Personne)
+		−name: String
+		−teachedBy: Array (of Personne)
 	Constructeurs
 		+__construct(name)
-	Fonctions
-		+getName()
-		+getTeachedBy()
-		+isTeachedBy(Personne $P): Boolean
-		+setName(newName)
-		+setTeachedBy(newTeachedBy)
-		+addTeacher(Personne $P)
+	Accesseurs
+		+getName(): String
+		+getTeachedBy(): Array (of Personne)
+	Mutateurs
+		+setName(String newName)
+		+setTeachedBy(Array (of Personne) newTeachedBy)
+	Autres fonctions
+		+isTeachedBy(Personne P): Boolean
+		+addTeacher(Personne P)
 ___________________________________________________________________________
 Element_de_maquette
 	Attributs
-		-typeOfCourse: String
-		-numHours: Integer
-	Fonctions
+		−typeOfCourse: Type_cours
+		−numHours: Integer
+	Accesseurs
 		+getTypeOfCourse(): String
 		+getNumHours(): Integer
-		+setTypeOfCourse(String newTypeOfCourse)
-		+setNumHours(Integer newNumHours)
+	Mutateurs
+		+setTypeOfCourse(newTypeOfCourse)
+		+setNumHours(newNumHours)
 ___________________________________________________________________________
-EdT
+EDT
 	Attributs
-		-idTimetable
-		-modifiedBy
-		-listCourses
-		-listModif
-		-teacherOwner
-		-
-		-
-	Fonctions
-		+getIdTimetable()
-		+getModifiedBy()
-		+getListCourses()
+		−idTimetable: Integer
+		−modifiedBy: Personne
+		−listCourses: Array (of Type_cours)
+		−listModif
+		−teacherOwner: Personne
+	Accesseurs
+		+getIdTimetable(): Integer
+		+getModifiedBy(): Personne
+		+getListCourses(): Array (of Type_cours)
 		+getListModif()
-		+getTeacherOwner()
-		+setModifiedBy(newModifiedBy)
-		+extractExams()
+		+getTeacherOwner(): Personne
+	Mutateurs
+		+setModifiedBy(Personne newModifiedBy)
+	Autres fonctions
+		+extractExams(): Array (of Type_cours)
 ___________________________________________________________________________
 EdT_Classe
-	Attributs
 	Fonctions
 		+generatePDF()
 ___________________________________________________________________________
 Modification
 	Attributs
-		-date
-		-madeBy
-		-courseModified
-	Fonctions		
-		+getDate()
-		+getMadeBy()
-		+getCourseModified()
-		+setDate(newDate)
-		+setMadeBy(newMadeBy)
-		+setCourseModified(newCourseModified)
+		−date: Date
+		−madeBy: Utilisateur
+		−courseModified: Cours
+	Accesseurs		
+		+getDate(): Date
+		+getMadeBy(): Utilisateur
+		+getCourseModified(): Cours
+	Mutateurs
+		+setDate(Date newDate)
+		+setMadeBy(Utilisateur newMadeBy)
+		+setCourseModified(Cours newCourseModified)
 ___________________________________________________________________________
 BaseDeDonnées
 	Attributs
-		-save: Boolean	
-		-location
-		const PERSON_TABLE
-		const USER_TABLE
-	    -(static) current_db
-	Fonctions
-		+getSave()
+		—save: Boolean	
+		—location
+		—const PERSON_TABLE
+		—const USER_TABLE
+	    —(static) current_db: BaseDeDonnees
+	Accesseurs
+		+getSave(): Boolean
 		+getLocation()
-		+setSave($newSave)
-		+setLocation($newLocation)
+	Mutateurs
+		+setSave(Boolean newSave)
+		+setLocation(newLocation)
+	Autres fonctions
+		+executeQuery(query, params)
 		+initialize()
 		+executeQuery
 	Fonctions statiques
-		+currentDB(): BaseDeDonnées
+		+currentDB(): BaseDeDonnees
 ___________________________________________________________________________
 Système
 	Attributs
-		-database: BaseDeDonnees
-	Fonctions
-		+getDatabase()
-		+setDatabase($newDatabase)
-		+blockTimetable(edt: EdT)
-		+sendEmail(P:Personne)
-		+generateTimetable_PDF(edt:EDTClasse)
-		+autoSave(B:BaseDeDonnées)
-		+recoverData($location): BaseDeDonnees
-		+generateExamList(E:EdT)
+		−database: BaseDeDonnees
+	Accesseurs
+		+getDatabase(): BaseDeDonnees
+	Mutateurs
+		+setDatabase(BaseDeDonnees newDatabase)
+	Autres fonctions
+		+blockTimetable(EDT edt)
+		+sendEmail(Personne P)
+		+generateTimetable_PDF(EDTClasse edt)
+		+autoSave(BaseDeDonnees database)
+		+recoverData(location): BaseDeDonnees
+		+generateExamList(EDT edt)
 ___________________________________________________________________________
 Groupe
 	Attributes
-		-name: String
-		-isAClass: Boolean
-	Operations
+		−name: String
+		−isAClass: Boolean
+	Accesseurs
 		+getName(): String
 		+getIsAClass(): Boolean
+	Mutateurs
 		+setName(String newName)
 		+setIsAClass(Boolean newIsAClass)
 		+getTimetable(): EDT
 ___________________________________________________________________________
 Personne
 	Associations
-		-statuts
+		−status: Array (of Statut_personne)
 	Attributs
-		-familyName: String
-		-firstName: String
-		-emailAddress1: String
-		-emailAddress2: String
+		−familyName: String
+		−firstName: String
+		−emailAddress1: String
+		−emailAddress2: String
+	Constantes
 		const TABLENAME
 		const SQLcolumns
-	Fonctions
-		+getFamilyName()
-		+getFirstName()
-		+getEmailAddress1()
-		+getEmailAddress2()
-		+getAllStatus()
-		+setFamilyName(newFamilyName)
-		+setFirstName(newFirsNameName)
-		+setEmailAddress1(newEmailAddress1)
-		+setEmailAddress2(newtEmailAddress1)
-		+setAllStatus(arryOfStatus)
-		+addStatus(S)
-		+removeStatus(S)
-		+hasStatus(Statut_personne S)
-		+toHTML()
+	Constructeurs
+		+__construct(String newFamilyName, String newFirstName)
+		+__construct(String newFamilyName, String newFirstName, String email1)
+	Accesseurs
+		+getFamilyName(): String
+		+getFirstName(): String
+		+getEmailAddress1(): String
+		+getEmailAddress2(): String
+		+getAllStatus(): Array (of Statut_personne)
+	Mutateurs
+		+setFamilyName(String newFamilyName)
+		+setFirstName(String newFirsNameName)
+		+setEmailAddress1(String newEmailAddress1)
+		+setEmailAddress2(String newtEmailAddress1)
+		+setAllStatus(Array (of Statut_personne) arrayOfStatus)
+	Autres fonctions
+		+addStatus(Statut_personne s)
+		+removeStatus(Statut_personne s)
+		+hasStatus(Statut_personne s): Boolean
+		+toHTML(): String
 ___________________________________________________________________________
 Utilisateur (extends Personne)
 	Attributs
-		-Id
-		-Password
+		−id: Integer
+		−passwd: String
+	Constantes
 		const TABLENAME
 		const SQLcolumns
+	Constructeurs
+		+__construct(String familyName, String firstName, Integer id, String passwd)
+	Accesseurs
+		+getId(): Integer
 	Fonctions statiques
-		+convertPersonToUser(Personne P, identifiant, mdp)
-	Méthodes
-		+get_ID()
-		+is_Password(mdp)
+		+convertPersonToUser(Personne P, Integer id, String passwd)
+	Autres fonctions
+		+isPassword(String givenPassword): Boolean
 		+logIn()
 		+logOut()
-		+readTimeTable(EDT E)
-		+to_html()
+		+readTimeTable(EDT e): Boolean
+		+toHTML(): String
 ___________________________________________________________
-Administrateur(extends Utilisateur)
-	Attributs
-	Fonctions
-		+addUser(nom, prenom, identifiant, mdp)
-		+convertPersonToUser(Personne P)
-		+addUserCAS(UnkownData)
-		+changeUserStatus(Utilisateur U, Statut_personne S, operation)
-		+deleteUser(Utilisateur U)
-		+deletePerson(Personne P)
-		+addClass(String Nom)
-		+modifyClass(Classe C, operation)
+Administrateur extends Utilisateur
+	Constructeurs
+		+__construct(String familyName, String firstName, Integer id, String passwd)
+	Autres fonctions
+		+addUser(String familyName, String firstName, Integer id, String passwd): Utilisateur
+		+convertPersonToUser(Personne p): Utilisateur
+		+addUserCAS(unknownData)
+		+changeUserStatus(Utilisateur u, Statut_personne s, operation)
+		+deleteUser(Utilisateur u)
+		+deletePerson(Personne p)
+		+addClass(String name): Classe
+		+modifyClass(Classe c, operation)
 ______________________________________________________________________________
-Secrétaire (extends Utilisateur)
-	Attributs
-	Fonctions
-		+modifyTimeTable(EDT E, Cours C, Operation)
-		+addGroup( String Nom)
-		+modifyGroup_Members( Personne Etu, operation)
-		+modifyGroup_LinkedClasses( Classe C, operation)
-		+compareTimeTables(ListeEDT, Debut, Fin)
-		+validateTimeTable(EDT E)
-		+modifyClass_CoursesModel(Classe C,Matiere M, Type_cours type, nb_heures)
+Secrétaire extends Utilisateur
+	Constructeurs
+		+__construct(String familyName, String firstName, Integer id, String passwd)
+	Autres fonctions
+		+modifyTimeTable(EDT e, Cours c, operation)
+		+addGroup(String name): Groupe
+		+modifyGroup_Members(Personne etu, operation)
+		+modifyGroup_LinkedClasses(Classe c, operation)
+		+compareTimetables(listOfTimetable, begin, end)
+		+validateTimetable(EDT e)
+		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, numHours)
 ________________________________________________________________________________________________________________________________________
 Enseignant (extends Utilisateur)
 	Attributs
-		-edt_personnel
-	Fonctions
-		+get_edt_personnel()
-		+lireEDTpersonnel()
+		−personalTimetable: EDTClasse
+	Constructeurs
+		+__construct(String familyName, String firstName, Integer id, String passwd)
+	Accesseurs
+		+getPersonalTimetable(): EDTClasse
+	Autres fonctions
+		+readPersonalTimetable()
 ___________________________________________________________________________
 Responsable (extends Utilisateur)
 	Attributs
-		-type
-	Fonctions
-		+modifyTimeTable(EDT E, Cours C, Operation)
-		+addGroup( String Nom)
-		+modifyGroup_Members(Personne Etu, operation)
-		+modifyGroup_LinkedClasses(Classe C, operation)
-		+compareTimeTables(ListeEDT, Debut, Fin)
-		+validateTimeTable(EDT E)
-		+modifyClass_CoursesModel(Classe C,Matiere M, Type_cours type, nb_heures)
+		−type: Type_responsable
+	Constructeurs
+		+__construct(String familyName, String firstName, Integer id, String passwd)
+	Autres fonctions
+		+modifyTimetable(EDT e, Cours c, operation)
+		+addGroup(String name): Groupe
+		+modifyGroup_Members(Personne etu, operation)
+		+modifyGroup_LinkedClasses(Classe c, operation)
+		+compareTimetables(listOfTimetable, begin, end)
+		+validateTimetable(EDT e)
+		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, numHours)
 ___________________________________________________________________________
 Type_responsable
 	Attributs
-		-RespAnnée
-		-RespFilière
-		-DirEtude
-	Fonctions
+		−RESP_ANNEE
+		−RESP_FILIERE
+		−DIR_ETUDE
 ___________________________________________________________________________
 Statut_personne
 	Constantes de classe
