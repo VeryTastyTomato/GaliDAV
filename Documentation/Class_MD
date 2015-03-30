@@ -115,8 +115,10 @@ BaseDeDonnées
 	Attributs
 		—save: Boolean	
 		—location
-		—const PERSON_TABLE
-		—const USER_TABLE
+		-dbname
+		-user
+		-password
+		-host
 	    —(static) current_db: BaseDeDonnees
 	Accesseurs
 		+getSave(): Boolean
@@ -125,10 +127,14 @@ BaseDeDonnées
 		+setSave(Boolean newSave)
 		+setLocation(newLocation)
 	Autres fonctions
+		+connect
 		+executeQuery(query, params)
 		+initialize()
+		+clear() //EFFACE TOUTES LES DONNEES
+		+dropall()//EFFACE TOUTES LES TABLES
 	Fonctions statiques
 		+currentDB(): BaseDeDonnees
+		
 ___________________________________________________________________________
 Système
 	Attributs

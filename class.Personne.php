@@ -18,37 +18,36 @@ class Personne
 	protected $firstName = null;
 	protected $emailAddress1 = null;
 	protected $emailAddress2 = null;
-	const TABLENAME="GaliDAVPerson";
-	const SQLcolumns="id int SERIAL PRIMARY KEY, familyName varchar2(30) NOT NULL,firstName varchar2(30) NOT NULL, emailAddress1 varchar2(50),emailAddress1 varchar2(60), emailAddress1 varchar2(60)";
+	const TABLENAME="gperson";
+	const SQLcolumns="id serial PRIMARY KEY, familyName varchar(30) NOT NULL, firstName varchar(30) NOT NULL, emailAddress1 varchar(60), emailAddress2 varchar(60)";
 	
 
 	// --- OPERATIONS ---
 	// builder
-	public function __construct($newFamilyName, $newFirstName)
+	public function __construct($newFamilyName, $newFirstName,$email1=null)
 	{
 		$this->familyName = $newFamilyName;
 		$this->firstName = $newFirstName;
-		
-		$query="INSERT INTO ".self::TABLENAME." (familyName, firstName) VALUES (:familyName, :firstName)";
 		$params=array();
-		$params[':familyName']=$newFamilyName;
-		$params[':firstName']=$newFamilyName;
-		BaseDeDonnes::currentDB().executeQuery($query,$params);
+		$params[]=$newFamilyName;
+		$params[]=$newFirstName;
+		$query="";
+		if($email1==null)
+		{
+			$query="INSERT INTO ".self::TABLENAME." (familyName, firstName) VALUES ($1, $2)";
+		}
+		else 
+		{
+			$this->emailAddress1 = $email1;
+			$params[]=$email1;
+			$query="INSERT INTO ".self::TABLENAME." (familyName,firstName,emailAddress1) VALUES ($1, $2, $3)";
+		}
+		$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
+		if(!$result)echo("false!!!!<br/>");
+		
 		
 	}
-	public function __construct($newFamilyName, $newFirstName,$email1)
-	{
-		$this->familyName = $newFamilyName;
-		$this->firstName = $newFirstName;
-		$this->emailAddress1 = $email1;
-		
-		$query="INSERT INTO ".self::TABLENAME." (familyName, firstName,emailAddress1) VALUES (:familyName, :firstName, :email1)";
-		$params=array();
-		$params[':familyName']=$newFamilyName;
-		$params[':firstName']=$newFamilyName;
-		$params[':email1']=$email1;
-		BaseDeDonnes::currentDB().executeQuery($query,$params);
-	}
+
 	
 	// getters
 	public function getFamilyName()

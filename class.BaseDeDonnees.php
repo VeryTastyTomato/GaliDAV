@@ -6,7 +6,10 @@ if (0 > version_compare(PHP_VERSION, '5'))
 	die('$this file was generated for PHP 5');
 }
 
+/* Par défaut la BDD considérée se nomme galidav accessible par l'utilisateur galidav en local */
+
 require_once("/usr/share/davical/htdocs/always.php");
+require_once("auth-functions.php");	//Utile ou pas?
 
 /* TODO quand on aura réglé les attributs dépendants
 require_once('');
@@ -24,11 +27,16 @@ class BaseDeDonnees
 	
 	private $save = false;
 	private $location = null;
+	private $dbname='galidav';
+	private $user='galidav';
+	private $password;
+	private $host;
 	// TODO : attributs des éléments enregistrés (1attribut != pour chaque élément ?)
 
 	// --- OPERATIONS ---
 	//getters
 
+	
 	public function getSave()
 	{
 		return $this->save;
@@ -41,9 +49,12 @@ class BaseDeDonnees
 	
 	static public function currentDB()
 	{
-		if(self::current_db==null)self::current_db=new BaseDeDonnees();
-		self::current_db->initialize();
-		return self::current_db;
+		if(self::$current_db==null)
+		{
+			self::$current_db=new BaseDeDonnees();
+			
+		}
+		return self::$current_db;
 	}
 
 	//setters
@@ -64,28 +75,59 @@ class BaseDeDonnees
 		}
 	}	
 	
-	public function executeQuery($query,$params=null){
-		global $c;
-		$Q=new AwlQuery( $query, $params );
+	
+	public function executeQuery($query,$params=array()){
+		if (!$this->connect()) {
+  			echo "Impossible de se connecter à la DB galidav.\n";
+  			exit;
+		}
+		$result = pg_query_params($conn, $query, $params);
+		return $result;
+		/*$Q=new AwlQuery( $query, $params );
+		$connection=array();
+		$connection['dsn']='galidav';
+		$connection['dbuser']='galidav';
+		$Q->SetConnection($connection);
 		if ( $Q->Exec() ) {
             $c->messages[] = i18n('GaliDAV query answered.');
             dbg_error_log("GaliDAV",": ? : SQL Operation done" );
           }
           else {
+          	echo("GaliDAV SQL error: ".$Q->getErrorInfo());
             $c->messages[] = i18n("There was an error reading/writing to the GaliDAV database.");
-          }
-          return $Q;
+          }*/
+          
+	}
+	
+	public function clear(){
+		$this->executeQuery("DELETE from ".Personne::TABLENAME." where true;");
+		$this->executeQuery("DELETE from ".Utilisateur::TABLENAME." where true;");
+	}
+	public function dropall(){
+		$this->executeQuery("DROP TABLE ".Personne::TABLENAME.";");
+		$this->executeQuery("DROP TABLE ".Utilisateur::TABLENAME.";");
+	}
+	
+	public function connect()
+	{
+		$param="user=".$this->user;
+		if($this->dbname)$param.=", dbname=".$this->dbname;
+		if($this->password)$param.=", password=".$this->password;
+		if($this->host)$param.=", host=".$this->host;
+		return pg_pconnect($param);
 	}
 	
 	public function initialize()
 	{
-		$result=$this->executeQuery("CREATE TABLE ".Personne::TABLENAME."(".Personne::SQLcolumns.";");
-		if($result->Exec())$result=$this->executeQuery("CREATE TABLE ".Utilisateur::TABLENAME."(".Utilisateur::SQLcolumns.";");
+		$result=$this->executeQuery("CREATE TABLE ".Personne::TABLENAME." (".Personne::SQLcolumns.");");
+		if(!$result)$result=$this->executeQuery("CREATE TABLE ".Utilisateur::TABLENAME." (".Utilisateur::SQLcolumns.");");
 		
 		/*** TODO Autres tables ***/
 		
-		return $result->Exec();
+		return $result;
 	}
 
 }
 ?>
+
+
