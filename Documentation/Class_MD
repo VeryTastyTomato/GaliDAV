@@ -152,6 +152,8 @@ Système
 		+generateExamList(EDT edt)
 ___________________________________________________________________________
 Groupe
+	Associations
+		–listOfStudents: Array (of Personne)
 	Attributes
 		−name: String
 		−isAClass: Boolean
@@ -160,10 +162,14 @@ Groupe
 	Accesseurs
 		+getName(): String
 		+getIsAClass(): Boolean
+		+getListOfStudents(): Array (of Personne)
 	Mutateurs
 		+setName(String newName)
 		+setIsAClass(Boolean newIsAClass)
 		+getTimetable(): EDT
+	Autres fonctions
+		+addStudent(Personne newStudent)
+		+removeStudent(Personne studentToRemove)
 ___________________________________________________________________________
 Personne
 	Associations
