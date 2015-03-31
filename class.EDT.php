@@ -107,5 +107,17 @@ class EDT
 			echo 'Erreur dans la méthode removeCourse() de la classe EDT : l’argument donné n’est pas un cours.';
 		}
 	}
+
+	public function applyModifications()
+	{
+		foreach ($this->listModif as $oneModif)
+		{
+			$indice = array_search($oneModif->getCourseModified(), $this->listCourses);
+			if ($indice !== false)
+			{
+				$this->listCourses[$indice] = $oneModif->getCourseModified();
+			}
+		}
+	}
 }
 ?>

@@ -88,9 +88,9 @@ class Responsable extends Utilisateur
 		return $returnValue;
 	}
 
-	// Flora TODO: Utiliser les fonctions de la classe EDT (valider l'ensemble des modifs en l'occurrrence)
 	public function validateTimetable(EDT $e)
 	{
+		$e->applyModifications();
 	}
 
 	// Flora TODO: implémenter des accesseurs pour la maquette dans la classe Classe
