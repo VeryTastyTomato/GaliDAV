@@ -243,8 +243,8 @@ Secrétaire extends Utilisateur
 	Autres fonctions
 		+modifyTimeTable(EDT e, Cours c, operation)
 		+addGroup(String name): Groupe
-		+modifyGroup_Members(Personne etu, operation)
-		+modifyGroup_LinkedClasses(Classe c, operation)
+		+modifyGroup_Members(Group group, Personne etu, operation)
+		+modifyGroup_LinkedClasses(Classe c, Personne etu operation)
 		+compareTimetables(listOfTimetable, begin, end)
 		+validateTimetable(EDT e)
 		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, numHours)
@@ -267,8 +267,8 @@ Responsable (extends Utilisateur)
 	Autres fonctions
 		+modifyTimetable(EDT e, Cours c, operation)
 		+addGroup(String name): Groupe
-		+modifyGroup_Members(Personne etu, operation)
-		+modifyGroup_LinkedClasses(Classe c, operation)
+		+modifyGroup_Members(Group group, Personne etu, operation)
+		+modifyGroup_LinkedClasses(Classe c, Personne etu operation)
 		+compareTimetables(listOfTimetable, begin, end)
 		+validateTimetable(EDT e)
 		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, numHours)
