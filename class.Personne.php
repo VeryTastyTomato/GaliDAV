@@ -150,27 +150,27 @@ class Personne
 		$this->status=$arrayOfStatus;
 	}
 	
-	//TODO : Actualiser la BDD
-	public function addStatus($s)
+	public function addStatus(Statut_personne $s)
 	{
-		if ($s instanceof Statut_personne)
+		if (!$this->hasStatus($s))
 		{
-			if (!$this->hasStatus($s))
-			{
-				$this->status[]=$s;
-			}
+			$params[]=$this->sqlid;
+			$params[]=$s->toInt();
+			$query="INSERT INTO ".Statut_personne::TABLENAME." (id_person,status) VALUES ($1, $2)";
+			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
+			if($result)$this->status[]=$s;
 		}
 	}
 
-	//TODO : Actualiser la BDD
-	public function removeStatus($s)
+	
+	public function removeStatus(Statut_personne $s)
 	{
-		if ($s instanceof Statut_personne)
+		if ($this->hasStatus($s))
 		{
-			if ($this->hasStatus($s))
+			$query="DELETE FROM ".Statut_personne::TABLENAME." where id_person=".$this->sqlid." and status=".$s->toInt().";";
+			if(BaseDeDonnees::currentDB()->executeQuery($query,$params))
 			{
 				$indice = 0;
-
 				foreach ($this->status as $oneStatus)
 				{
 					if ($oneStatus == $s)
@@ -178,7 +178,6 @@ class Personne
 						unset($this->status[$indice]);
 						break;
 					}
-
 					$indice = $indice + 1;
 				}
 			}

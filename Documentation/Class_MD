@@ -274,7 +274,7 @@ Responsable (extends Utilisateur)
 		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, numHours)
 ___________________________________________________________________________
 Type_responsable
-	Attributs
+	Constantes
 		−RESP_ANNEE
 		−RESP_FILIERE
 		−DIR_ETUDE
@@ -294,6 +294,7 @@ Statut_personne
 		+__construct($value)
 	Fonctions
 		+toString()
+		+toInt()
 
 
 

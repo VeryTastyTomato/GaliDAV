@@ -103,10 +103,12 @@ class BaseDeDonnees
 	public function clear(){
 		$this->executeQuery("DELETE from ".Personne::TABLENAME." where true;");
 		$this->executeQuery("DELETE from ".Utilisateur::TABLENAME." where true;");
+		$this->executeQuery("DELETE from ".Statut_personne::TABLENAME." where true;");
 	}
 	public function dropall(){
 		$this->executeQuery("DROP TABLE ".Personne::TABLENAME." CASCADE;");
 		$this->executeQuery("DROP TABLE ".Utilisateur::TABLENAME." CASCADE;");
+		$this->executeQuery("DROP TABLE ".Statut_personne::TABLENAME." CASCADE;");
 	}
 	
 	public function connect()
@@ -122,7 +124,7 @@ class BaseDeDonnees
 	{
 		$result=$this->executeQuery("CREATE TABLE ".Personne::TABLENAME." (".Personne::SQLcolumns.");");
 		if($result)$result=$this->executeQuery("CREATE TABLE ".Utilisateur::TABLENAME." (".Utilisateur::SQLcolumns.");");
-		
+		if($result)$result=$this->executeQuery("CREATE TABLE ".Statut_personne::TABLENAME." (".Utilisateur::SQLcolumns.");");
 		/*** TODO Autres tables ***/
 		
 		return $result;
