@@ -41,8 +41,14 @@ Type_cours
 		−RESIT
 ___________________________________________________________________________
 Classe
+	Associations
+		–coursesModel: Maquette
 	Constructeurs
 		+__construct(String newName)
+	Accesseurs
+		+getCoursesModel(): Maquette
+	Mutateurs
+		+setCoursesModel(Maquette newCoursesModel)
 	Autres fonctions
 		+getTimetableOfClass(): EDT
 ___________________________________________________________________________
@@ -63,15 +69,29 @@ Matière
 		+addTeacher(Personne P)
 ___________________________________________________________________________
 Element_de_maquette
+	Associations
+		–subject: Matiere
 	Attributs
 		−typeOfCourse: Type_cours
 		−numHours: Integer
 	Accesseurs
 		+getTypeOfCourse(): String
 		+getNumHours(): Integer
+		+getSubject(): Matiere
 	Mutateurs
 		+setTypeOfCourse(newTypeOfCourse)
 		+setNumHours(newNumHours)
+		+setSubject(Matiere newSubject)
+
+___________________________________________________________________________
+Maquette
+	Associations
+		–listOfElemOfClassesModel: Array (of Element_de_maquette)
+	Accesseurs
+		–getListOfElemOfClassesModel(): Array (of Element_de_maquette)
+	Autres fonctions
+		–addElemOfClassesModel(Element_de_maquette newElem)
+		–removeElemOfClassesModel(Element_de_maquette elemToRemove)
 ___________________________________________________________________________
 EDT
 	Attributs
