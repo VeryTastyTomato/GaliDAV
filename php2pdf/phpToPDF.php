@@ -1228,7 +1228,7 @@ class phpToPDF extends FPDF
 			// par défaut, le texte est centré à gauche, non italic, non souligné et non gras.
 			// par défaut, les cellules ne sont pas fusionnées.
 			$header_type[$i]['T_TYPE'] = '';
-			$header_type[$i]['T_ALIGN'] = '';		
+			$header_type[$i]['T_ALIGN'] = 'C';		
 			$header_type[$i]['COLSPAN'] = "1";
 		}
 
@@ -1334,7 +1334,7 @@ class phpToPDF extends FPDF
 				// par défaut, le texte est centré à gauche, non italic, non souligné et non gras.
 				// par défaut, les cellules ne sont pas fusionnées.
 				$data[$k]['T_TYPE'] = '';
-				$data[$k]['T_ALIGN'] = '';		
+				$data[$k]['T_ALIGN'] = 'C';		
 				$data[$k]['COLSPAN'] = "1";
 					
 				// Si l'utilisateur a précisé une couleur de fond pour les autres colonnes, on l'applique ici.
