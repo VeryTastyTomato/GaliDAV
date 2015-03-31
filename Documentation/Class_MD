@@ -149,6 +149,7 @@ BaseDeDonnées
 		+setLocation(newLocation)
 	Autres fonctions
 		+connect
+		+close
 		+executeQuery(query, params)
 		+initialize()
 		+clear() //EFFACE TOUTES LES DONNEES
@@ -204,8 +205,7 @@ Personne
 		const TABLENAME
 		const SQLcolumns
 	Constructeurs
-		+__construct(String newFamilyName, String newFirstName)
-		+__construct(String newFamilyName, String newFirstName, String email1)
+		+__construct(String newFamilyName, String newFirstName, String email1=null)
 	Accesseurs
 		+getFamilyName(): String
 		+getFirstName(): String
@@ -232,7 +232,7 @@ Utilisateur (extends Personne)
 		const TABLENAME
 		const SQLcolumns
 	Constructeurs
-		+__construct(String familyName, String firstName, Integer id, String passwd)
+		+__construct(String familyName, String firstName, Integer id, String passwd,String email1=null)
 	Accesseurs
 		+getId(): Integer
 	Fonctions statiques
@@ -246,7 +246,7 @@ Utilisateur (extends Personne)
 ___________________________________________________________
 Administrateur extends Utilisateur
 	Constructeurs
-		+__construct(String familyName, String firstName, Integer id, String passwd)
+		+__construct(String familyName, String firstName, Integer id, String passwd,String email1=null)
 	Autres fonctions
 		+addUser(String familyName, String firstName, Integer id, String passwd): Utilisateur
 		+convertPersonToUser(Personne p): Utilisateur
@@ -259,7 +259,7 @@ Administrateur extends Utilisateur
 ______________________________________________________________________________
 Secrétaire extends Utilisateur
 	Constructeurs
-		+__construct(String familyName, String firstName, Integer id, String passwd)
+		+__construct(String familyName, String firstName, Integer id, String passwd, String email1=null)
 	Autres fonctions
 		+modifyTimeTable(EDT e, Cours c, operation)
 		+addGroup(String name): Groupe
@@ -273,7 +273,7 @@ Enseignant (extends Utilisateur)
 	Attributs
 		−personalTimetable: EDTClasse
 	Constructeurs
-		+__construct(String familyName, String firstName, Integer id, String passwd)
+		+__construct(String familyName, String firstName, Integer id, String passwd, String email1=null)
 	Accesseurs
 		+getPersonalTimetable(): EDTClasse
 	Autres fonctions
@@ -283,7 +283,7 @@ Responsable (extends Utilisateur)
 	Attributs
 		−type: Type_responsable
 	Constructeurs
-		+__construct(String familyName, String firstName, Integer id, String passwd)
+		+__construct(String familyName, String firstName, Integer id, String passwd, String email1=null)
 	Autres fonctions
 		+modifyTimetable(EDT e, Cours c, operation)
 		+addGroup(String name): Groupe

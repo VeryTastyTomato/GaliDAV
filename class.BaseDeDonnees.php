@@ -36,7 +36,13 @@ class BaseDeDonnees
 	// --- OPERATIONS ---
 	//getters
 
-	
+	public function __construct($user='galidav',$dbname=null,$password=null,$host=null)
+	{
+		$this->user=$user;
+		$this->dbname=$dbname;
+		$this->password=$password;
+		$this->host=$host;
+	}
 	public function getSave()
 	{
 		return $this->save;
@@ -80,7 +86,7 @@ class BaseDeDonnees
 	{
 		$conn=$this->connect();
 		if (!$conn) {
-  			echo "Impossible de se connecter à la DB galidav.\n";
+  			echo "Impossible de se connecter à la DB ".$this->dbname." avec le rôle ".$this->user." \n";
   			exit;
 		}
 		$result = pg_query_params($conn, $query, $params);
@@ -89,6 +95,7 @@ class BaseDeDonnees
 	
 	public function clear()
 	{
+		//TODO: clear aussi la DB de davical cad tous les comptes sauf admin
 		$this->executeQuery("DELETE from ".Utilisateur::TABLENAME.";");
 		$this->executeQuery("DELETE from ".Statut_personne::TABLENAME.";");
 		$this->executeQuery("DELETE from ".Personne::TABLENAME.";");
@@ -107,12 +114,15 @@ class BaseDeDonnees
 	public function connect()
 	{
 		$param="user=".$this->user;
-		if($this->dbname)$param.=", dbname=".$this->dbname;
-		if($this->password)$param.=", password=".$this->password;
-		if($this->host)$param.=", host=".$this->host;
+		if($this->dbname)$param.=" dbname=".$this->dbname;
+		if($this->password)$param.=" password=".$this->password;
+		if($this->host)$param.=" host=".$this->host;
 		return pg_pconnect($param);
 	}
 	
+	public function close(){
+		pg_close($this->connect());
+	}
 	public function initialize()
 	{
 		$result=$this->executeQuery("CREATE TABLE ".Personne::TABLENAME." (".Personne::SQLcolumns.");");

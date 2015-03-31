@@ -24,7 +24,8 @@ class Responsable extends Utilisateur
 	public function __construct($familyName, $firstName, $id, $passwd)
 	{
 		parent::__construct($familyName, $firstName, $id, $passwd);
-		$this->addStatus(new Status_personne(Statut_personne::HEAD));
+		$this->addStatus(new Statut_personne(Statut_personne::HEAD));
+		$this->addStatus(new Statut_personne(Statut_personne::TEACHER));
 	}
 
 	public function modifyTimetable(EDT $e, Cours $c, $operation)

@@ -21,7 +21,7 @@ class Personne
 	protected $emailAddress1 = null;
 	protected $emailAddress2 = null;
 	const TABLENAME="gperson";
-	const SQLcolumns="id serial PRIMARY KEY, familyName varchar(30) NOT NULL, firstName varchar(30) NOT NULL, emailAddress1 varchar(60), emailAddress2 varchar(60), date_creation timestamp";
+	const SQLcolumns="id serial PRIMARY KEY, familyname varchar(30) NOT NULL, firstname varchar(30) NOT NULL, emailaddress1 varchar(60), emailaddress2 varchar(60), date_creation timestamp";
 	
 
 	// --- OPERATIONS ---
@@ -43,7 +43,7 @@ class Personne
 		{
 			$this->emailAddress1 = $email1;
 			$params[]=$email1;
-			$query="INSERT INTO ".self::TABLENAME." (familyName,firstName,emailAddress1) VALUES ($1, $2, $3, $4)";
+			$query="INSERT INTO ".self::TABLENAME." (familyName,firstName,date_creation,emailAddress1) VALUES ($1, $2, $3, $4)";
 		}
 		$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
 		if(!$result)echo("GaliDAV: Impossible de créer cette personne dans la base");
@@ -199,6 +199,11 @@ class Personne
 		}
 
 		return false;
+	}
+	
+	public function removeFromDB(){
+		$query="delete from ".Personne::TABLENAME." where id=".$this->sqlid.";";
+		BaseDeDonnees::currentDB()->executeQuery($query);
 	}
 
 	// -- Affichage texte --
