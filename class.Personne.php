@@ -8,18 +8,20 @@ if (0 > version_compare(PHP_VERSION, '5'))
 
 require_once('Personne/unknown.Statut_personne.php');
 require_once('class.BaseDeDonnees.php');
+//Les opérations sur une Personne sont automatiquement reportées dans la BDD
 class Personne
 {
 	// --- ASSOCIATIONS ---
 	protected $status = array();
 
 	// --- ATTRIBUTES ---
+	protected $sqlid=null;
 	protected $familyName = null;
 	protected $firstName = null;
 	protected $emailAddress1 = null;
 	protected $emailAddress2 = null;
 	const TABLENAME="gperson";
-	const SQLcolumns="id serial PRIMARY KEY, familyName varchar(30) NOT NULL, firstName varchar(30) NOT NULL, emailAddress1 varchar(60), emailAddress2 varchar(60)";
+	const SQLcolumns="id serial PRIMARY KEY, familyName varchar(30) NOT NULL, firstName varchar(30) NOT NULL, emailAddress1 varchar(60), emailAddress2 varchar(60), date_creation timestamp";
 	
 
 	// --- OPERATIONS ---
@@ -31,21 +33,28 @@ class Personne
 		$params=array();
 		$params[]=$newFamilyName;
 		$params[]=$newFirstName;
+		$params[]="'now'";
 		$query="";
 		if($email1==null)
 		{
-			$query="INSERT INTO ".self::TABLENAME." (familyName, firstName) VALUES ($1, $2)";
+			$query="INSERT INTO ".self::TABLENAME." (familyName, firstName,date_creation) VALUES ($1, $2,$3)";
 		}
 		else 
 		{
 			$this->emailAddress1 = $email1;
 			$params[]=$email1;
-			$query="INSERT INTO ".self::TABLENAME." (familyName,firstName,emailAddress1) VALUES ($1, $2, $3)";
+			$query="INSERT INTO ".self::TABLENAME." (familyName,firstName,emailAddress1) VALUES ($1, $2, $3, $4)";
 		}
 		$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
-		if(!$result)echo("false!!!!<br/>");
-		
-		
+		if(!$result)echo("GaliDAV: Impossible de créer cette personne dans la base");
+		else
+		{
+			$query="SELECT id from ".self::TABLENAME." order by date_creation desc ";
+			$result=BaseDeDonnees::currentDB()->executeQuery($query);
+			$this->sqlid=pg_fetch_assoc($result)['id'];
+			echo ("id créé: ".$this->sqlid);
+		}
+	
 	}
 
 	
@@ -79,7 +88,11 @@ class Personne
 	{
 		if (!empty($newFamilyName))
 		{
-			$this->familyName = $newFamilyName;
+			$query="ALTER TABLE ".self::TABLENAME." set familyName=$1;";
+			$params[]=$newFamilyName;
+			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
+			if($result)$this->familyName = $newFamilyName;
+			else echo ('GaliDAV: Impossible de modifier le nom de famille de cette personne');
 		}
 	}
 
@@ -87,7 +100,10 @@ class Personne
 	{
 		if (!empty($newFirstName))
 		{
-			$this->firstName = $newFirstName;
+			$query="ALTER TABLE ".self::TABLENAME." set firstName=$1;";
+			$params[]=$newFirstName;
+			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
+			if($result)$this->firstName = $newFirstName;
 		}
 	}
 
@@ -97,7 +113,10 @@ class Personne
 		{
 			if (filter_var($newEmailAddress1, FILTER_VALIDATE_EMAIL))
 			{
-				$this->emailAddress1 = $newEmailAddress1;
+				$query="ALTER TABLE ".self::TABLENAME." set emailaddress1=$1;";
+				$params[]=$newEmailAddress1;
+				$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
+				if($result)$this->emailAddress1 = $newEmailAddress1;
 			}
 			else
 			{
@@ -112,7 +131,10 @@ class Personne
 		{
 			if (filter_var($newEmailAddress2, FILTER_VALIDATE_EMAIL))
 			{
-				$this->emailAddress1 = $newEmailAddress2;
+				$query="ALTER TABLE ".self::TABLENAME." set emailaddress2=$1;";
+				$params[]=$newEmailAddress2;
+				$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
+				if($result)$this->emailAddress2 = $newEmailAddress2;
 			}
 			else
 			{
@@ -121,9 +143,14 @@ class Personne
 		}
 	}
 	public function setAllStatus($arrayOfStatus){
+		foreach ($this->status as $oneStatus)
+		{
+			$this->remove($oneStatus);
+		}
 		$this->status=$arrayOfStatus;
 	}
-
+	
+	//TODO : Actualiser la BDD
 	public function addStatus($s)
 	{
 		if ($s instanceof Statut_personne)
@@ -135,6 +162,7 @@ class Personne
 		}
 	}
 
+	//TODO : Actualiser la BDD
 	public function removeStatus($s)
 	{
 		if ($s instanceof Statut_personne)

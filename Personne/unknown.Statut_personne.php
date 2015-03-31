@@ -16,6 +16,8 @@ class Statut_personne
 	const HEAD = "Responsable";
 	const ADMINISTRATOR = "Administrateur/trice";
 	const OTHER = "Autre";
+	
+	const TABLENAME="gstatus";
 	protected $value;
 
 	function __construct($value)
