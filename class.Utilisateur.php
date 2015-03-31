@@ -18,8 +18,7 @@ class Utilisateur extends Personne
 	protected $id = null;
 	private $passwd = null;
 	const TABLENAME="guser";
-	//const SQLcolumns="id_person SERIAL PRIMARY KEY REFERENCES ".Personne::TABLENAME."(id),login varchar2(30) NOT NULL UNIQUE, id_principal password varchar2(30), firstName varchar2(30) NOT NULL, emailAddress1 varchar2(50),emailAddress1 varchar2(60), emailAddress1 varchar2(60)";
-	const SQLcolumns="id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) NOT NULL, id_principal integer UNIQUE, password varchar(30)";
+	const SQLcolumns="id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) NOT NULL, id_principal integer UNIQUE, password varchar(30), last_connection timestamp"; //Ce n'est pas ici, qu'on touche au paramètre id_principal
 
 	// --- OPERATIONS ---
 	// builder
@@ -29,7 +28,14 @@ class Utilisateur extends Personne
 	{
 		parent::__construct($familyName, $firstName);
 		$this->id = $id;
-		$this->passwd = $passwd;
+		$this->passwd = $passwd; //Il faut chiffrer le mot de passe pour le sauvegarder
+		
+		$params[]=$this->sqlid;
+		$params[]=$id;
+		$query="INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2)";
+		$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
+		if(!$result)echo("GaliDAV: Impossible de créer cet utilisateur dans la base");
+		
 	}
 
 	// Accesseurs
@@ -44,9 +50,11 @@ class Utilisateur extends Personne
 	}
 
 	// Flora NOTE: La fonction ci-dessous peut ne pas être utile finalement
-	static public function convertPersonToUser(Personne $p, $id, $passwd)
+	static public function convertPersonToUser(Personne $p, $login, $passwd)
 	{
-		$u = new Utilisateur($p->familyName, $p->firstName, $id, $passwd);
+		$query="delete from ".parent::TABLENAME." where id=".$p->sqlid.";";
+		BaseDeDonnees::currentDB()->executeQuery($query);
+		$u = new Utilisateur($p->familyName, $p->firstName, $login, $passwd);
 		$u->setEmailAddress1($p->getEmailAddress1());
 		$u->setEmailAddress2($p->getEmailAddress2());
 		$u->setAllStatus($p->getAllStatus());

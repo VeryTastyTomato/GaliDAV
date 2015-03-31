@@ -27,10 +27,10 @@ class BaseDeDonnees
 	
 	private $save = false;
 	private $location = null;
-	private $dbname='galidav';
+	private $dbname=null;
 	private $user='galidav';
-	private $password;
-	private $host;
+	private $password=null;
+	private $host=null;
 	// TODO : attributs des éléments enregistrés (1attribut != pour chaque élément ?)
 
 	// --- OPERATIONS ---
@@ -77,7 +77,8 @@ class BaseDeDonnees
 	
 	
 	public function executeQuery($query,$params=array()){
-		if (!$this->connect()) {
+		$conn=$this->connect();
+		if (!$conn) {
   			echo "Impossible de se connecter à la DB galidav.\n";
   			exit;
 		}
@@ -104,8 +105,8 @@ class BaseDeDonnees
 		$this->executeQuery("DELETE from ".Utilisateur::TABLENAME." where true;");
 	}
 	public function dropall(){
-		$this->executeQuery("DROP TABLE ".Personne::TABLENAME.";");
-		$this->executeQuery("DROP TABLE ".Utilisateur::TABLENAME.";");
+		$this->executeQuery("DROP TABLE ".Personne::TABLENAME." CASCADE;");
+		$this->executeQuery("DROP TABLE ".Utilisateur::TABLENAME." CASCADE;");
 	}
 	
 	public function connect()
@@ -120,7 +121,7 @@ class BaseDeDonnees
 	public function initialize()
 	{
 		$result=$this->executeQuery("CREATE TABLE ".Personne::TABLENAME." (".Personne::SQLcolumns.");");
-		if(!$result)$result=$this->executeQuery("CREATE TABLE ".Utilisateur::TABLENAME." (".Utilisateur::SQLcolumns.");");
+		if($result)$result=$this->executeQuery("CREATE TABLE ".Utilisateur::TABLENAME." (".Utilisateur::SQLcolumns.");");
 		
 		/*** TODO Autres tables ***/
 		
