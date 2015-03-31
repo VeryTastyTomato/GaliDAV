@@ -10,56 +10,78 @@ error_reporting(E_ALL);
 <link rel="stylesheet" href="./agendav-1.2.6.2.css">
 <title>Tests GaliDAV</title></head>
 <body> 
-<h1>Test utilisation davical</h1>
+<h1 style="text-align:center;">Test utilisation davical</h1>
 
 <?php 
 require_once("test_davical_operations.php");
+require_once("ListePersonnes.php");
+//BaseDeDonnees::currentDB()->clear();
 ?>
 
-<div id=admin_panel>
+<div id=admin_panel style='width:80%;height:50%;padding:auto;margin-left:auto;margin-right:auto;'>
 	<table>
 		<tr>
-			<th>Ajouter un utilisateur</th>
-			<th>Ajouter une classe</th>
-			<th>Ajouter une matière</th>
+			<th style="width:33%">Ajouter un utilisateur</th>
+			<th style="width:33%">Ajouter une personne</th>
+			<th style="width:33%">Ajouter une matière</th>
 		</tr>
-		<tr>
-			<td><form><input type="submit" value="Ajouter"/></form></td>
-			<td><form><input type="submit" value="Ajouter"/></form></td>
-			<td><form action="test_davical_operations.php" method="POST">
+		<tr style="border-left:solid;border-right:solid">
+			<td style="border-left:solid;border-right:solid; padding:auto;">
+			<form action="test_davical_operations.php" method="POST">
+				<input type='hidden' name='action' value="add_user"/>
+				<table style=margin-left:auto;margin-right:auto;>
+				<tr><th>Nom</th><td><input type="text" name="familyname"/></td>
+				<tr><th>Prénom</th><td><input type="text" name="firstname"/></td>
+				<tr><th>login</th><td><input type="text" name="login"/></td>
+				<tr><th>Mot de passe</th><td><input type="password" name="password"/></td>
+				</table>
+				<br/><input type="radio" name="status" value="teacher"/>Enseignant<br/>
+				<input type="radio" name="status" value="secretary"/>Secrétaire<br/>
+				<input type="radio" name="status" value="head"/>Responsable<br/>
+				<input type="radio" name="status" value="administrator"/>Administrateur<br/>
+				<input type="submit" value="Ajouter" style='width:80%;margin-left:auto;margin-right:auto;'/>
+			</form></td>
+			<td style="border-left:solid;border-right:solid; padding:auto;">
+			<form action="test_davical_operations.php" method="POST">
+				<input type='hidden' name='action' value="add_person"/>
+				<table style=margin-left:auto;margin-right:auto;>
+				<tr><th>Nom</th><td><input type="text" name="familyname"/></td>
+				<tr><th>Prénom</th><td><input type="text" name="firstname"/></td>
+				<tr><th>email</th><td><input type="text" name="email"/></td>
+				</table>
+				<br/><input type="radio" name="status" value="student"/>Elève<br/>
+				<input type="radio" name="status" value="speaker"/>Intervenant<br/>
+				<input type="submit" value="Ajouter" style='width:80%;margin-left:auto;margin-right:auto;'/>
+			</form></td>
+			<td style="border-left:solid;border-right:solid; padding:auto;">
+			<form action="test_davical_operations.php" method="POST">
 				<input type='hidden' name='action' value="add_subject"/>
-				Nom de la classe<br/><input type="text" name="classname"/><br/>
-				Nom de la matière <br/><input type="text" name="subjectname"/><br/>
-				Intervenant1: <br/><input type="text" list=listspeakers name="speaker1"/><br/>
-				Intervenant2: <br/><input type="text" list=listspeakers name="speaker2"/><br/>
-				Intervenant3: <br/><input type="text" list=listspeakers name="speaker3"/><br/>
-				<datalist id=listspeakers >
-   					<option> Sylvie Borne
-   					<option> Céline Rouveirol
-				</datalist>
-				
-				<!--<div id=listspeakers2 style= "max-height:50px; overflow:scroll">
-					<input type="checkbox" value="Sylvie Borne"/>Sylvie Borne<br/>
-					<input type="checkbox" value="Sylvie Borne"/>Céline Rouveirol
-					<br/><input type="checkbox" value="Sylvie Borne"/>Christian Codognet
-					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
-					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
-					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
-					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
-					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
-					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
-					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
-					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
-					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
-					<br/><input type="checkbox" value="Sylvie Borne"/>Sylvie Borne
-					
-				</div>-->
-				<input type="submit" value="Ajouter"/><br/>
+				<table style=margin-left:auto;margin-right:auto;>
+				<tr><th>Classe</th><td><input type="text" name="classname"/></td></tr>
+				<tr><th>Matière </th><td><input type="text" name="subjectname"/></td></tr>
+				<tr><th>Intervenant1:</th><td><select name="speaker1"/><?php echo XoptionSpeakers();?></select></td></tr>
+				<tr><th>Intervenant2: </th><td><select name="speaker2"/><?php echo XoptionSpeakers();?></select></td></tr>
+				<tr><th>Intervenant3: </th><td><select name="speaker3"/><?php echo XoptionSpeakers();?></select></td></tr>
+				</table>
+				<input type="submit" value="Ajouter" style='width:80%;margin-left:auto;margin-right:auto;'/><br/>
 			</form></td>
 		</tr>
 	</table>
-
 </div>
+
+
+	<table style='margin-top:2%;height:auto;border:solid;border-width:10px;width:100%;margin-left:auto;margin-right:auto;'>
+		<tr>
+			<th style="width:33%">Toutes les personnes</th>
+			<th style="width:33%">Tous les enseignants</th>
+			<th style="width:33%">Tous les élèves</th>
+		</tr>
+		<tr>
+			<td><?php echo XListAll();?></td>
+			<td><?php echo XListTeachers();?></td>
+			<td><?php echo XListStudents();?></td>
+		</tr>
+	</table>
 
 </body>
 </html>

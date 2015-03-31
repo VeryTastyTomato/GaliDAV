@@ -9,8 +9,10 @@ error_reporting(E_ALL);
 require_once("/usr/share/davical/htdocs/always.php");
 require_once("auth-functions.php");	
 require_once("DAVPrincipal.php");	
-	
-
+require_once("class.Secretaire.php");
+require_once("class.Enseignant.php");
+require_once("class.Administrateur.php");
+require_once("class.Responsable.php");
 
 
 //Créer un calendrier de nom, $calendarNameGiven pour l'utilisateur d'identifiant $username
@@ -71,15 +73,8 @@ function CreateSubject( $username, $calendarNameGiven,$defult_timezone = null ) 
 }
 
 
-//Test de création d'un EDT (à décommenter)
-/*
-CreateTimeTable("test3","CalendarTestKFK");
-echo ("<p>Un calendrier a dû être créé. Vérifiez sur davical</p>");
-*/
 
-
-
-function CreateUserAccount($username,$fullname,$password,$email,$privilege){
+function CreateUserAccount($username,$fullname,$password,$email=null,$privileges=null){
 
 	$param['username']=$username;
 	$param['fullname']=$fullname;
@@ -89,18 +84,23 @@ function CreateUserAccount($username,$fullname,$password,$email,$privilege){
 	$param['type_id']=1;//Type Person
 	//$param['default_privileges']= privilege_to_bits(array('all')) ;//Ne compile pas
 	$P=new DAVPrincipal($param);
+	$P->password=$password;//Ne marche pas
+	$P->privileges=$privileges;//Ne marche pas
 	$P->Create($param);
+	if($privileges)
+	{
+		$BDD=new BaseDeDonnees("davical_app","davical");
+		$params2[]=privilege_to_bits($privileges);
+		$params2[]=$username;
+		$query="update dav_principal set default_privileges=$1 where username=$2;";
+		$result=$BDD->executeQuery($query,$params2);
+		$BDD->close();
+		if(!$result)echo("GaliDAV: Erreur d'écriture dans la base davical");
+	}
 	return $P;
 }
 
-//Essai de création d'utilisateur (décommenter)
-/*
-echo "test création utilisateurs";
-$P=new DAVPrincipal($param);
-$P->privileges=privilege_to_bits( array('DAV::all') );//Ne marche pas
-$P->Create($param);
-echo "<br/>Num de l'user:  ".$P->user_no()."<br/>Vérifiez sur davical";
-*/
+
 
 function CreateClassAccount($classname,$password,$email,$privilege){//pour l'instant le mot de passe n'est pas utile, on n'est pas censé se connecter en tant que class
 
@@ -120,7 +120,20 @@ function CreateClassAccount($classname,$password,$email,$privilege){//pour l'ins
 if(isset($_POST['action'])){
 	if($_POST['action']=='add_subject'){
 		CreateSubject($_POST['classname'],$_POST['subjectname']);
-		echo("OK");
+		header('Location: ./admin_panel.php');
+	}
+	if($_POST['action']=='add_user'){
+		if($_POST['status']=='secretary')new Secretaire($_POST['familyname'], $_POST['firstname'], $_POST['login'],$_POST['password']);
+		else if($_POST['status']=='teacher')new Enseignant($_POST['familyname'], $_POST['firstname'], $_POST['login'],$_POST['password']);
+		else if($_POST['status']=='head')new Responsable($_POST['familyname'], $_POST['firstname'], $_POST['login'],$_POST['password']);
+		else if($_POST['status']=='administrator')new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'],$_POST['password']);
+		header('Location: ./admin_panel.php');
+	}
+	if($_POST['action']=='add_person'){
+		$P=new Personne($_POST['familyname'], $_POST['firstname'], $_POST['email']);
+		if($_POST['status']=='student')$P->addStatus(new Statut_personne(Statut_personne::STUDENT));
+		else if($_POST['status']=='speaker')$P->addStatus(new Statut_personne(Statut_personne::SPEAKER));
+		header('Location: ./admin_panel.php');
 	}
 }
 ?>

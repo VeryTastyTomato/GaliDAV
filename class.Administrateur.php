@@ -16,23 +16,35 @@ class Administrateur extends Utilisateur
 
 	// --- OPERATIONS ---
 	// builder
-	public function __construct($familyName, $firstName, $id, $passwd)
+	public function __construct($familyName, $firstName, $login, $passwd,$email=null)
 	{
-		parent::__construct($familyName, $firstName, $id, $passwd);
+		parent::__construct($familyName, $firstName, $login, $passwd,$email);
 		$this->addStatus(new Statut_personne(Statut_personne::ADMINISTRATOR));
+		$this->addStatus(new Statut_personne(Statut_personne::HEAD));
+		$this->addStatus(new Statut_personne(Statut_personne::TEACHER));
+		/*$BDD=new BaseDeDonnees("davical_app","davical");
+		$params[]=privilege_to_bits(array('all'));
+		$params[]=$login;
+		$query="update dav_principal set default_privileges=$1 where username=$2;";
+		$result=$BDD->executeQuery($query,$params);
+		$BDD->close();
+		if(!$result)echo("GaliDAV: Erreur d'écriture dans la base davical");
+		*/
 	}
 
 	// others
-	public function addUser($familyName, $firstName, $id, $passwd)
+	public function addUser($familyName, $firstName, $login, $passwd,$email=null)
 	{
-		return new Utilisateur($familyName, $firstName, $id, $passwd);
+		return new Utilisateur($familyName, $firstName, $login, $passwd,$email);
+			
 	}
 
+/*
 	public function convertPersonToUser(Personne $p)
 	{
 		return Utilisateur::convertPersonToUser($p);
 	}
-
+*/
 	public function addUserCAS($unknownData)
 	{
 		$returnValue = null;
