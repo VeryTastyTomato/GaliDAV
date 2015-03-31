@@ -12,9 +12,48 @@ require_once('class.Element_de_maquette.php');
 class Maquette
 {
 	// --- ASSOCIATIONS ---
+	private $listOfElemOfClassesModel = array();
 
 	// --- ATTRIBUTES ---
 
 	// --- OPERATIONS ---
+	// getters
+	public function getListOfElemOfClassesModel()
+	{
+		return $this->listOfElemOfClassesModel;
+	}
+
+	// others
+	public function addElemOfClassesModel($newElem)
+	{
+		if ($newElem instanceof Element_de_maquette)
+		{
+			$this->listOfElemOfClassesModel[] = $newElem;
+		}
+		else
+		{
+			echo 'Erreur dans la méthode addElemOfClassesModel() de la classe Maquette : l’argument donné n’est pas un élément de maquette.';
+		}
+	}
+
+	public function removeElemOfClassesModel($elemToRemove)
+	{
+		if ($elemToRemove instanceof Element_de_maquette)
+		{
+			$indice = array_search($elemToRemove, $this->listOfElemOfClassesModel);
+			if ($indice !== false)
+			{
+				unset($this->listOfElemOfClassesModel[$indice]);
+			}
+			else
+			{
+				echo 'L’élément de maquette donné n’est pas dans cette maquette.';
+			}
+		}
+		else
+		{
+			echo 'Erreur dans la méthode removeElemOfClassesModel() de la classe Maquette : l’argument donné n’est pas un élément de maquette.';
+		}
+	}
 }
 ?>

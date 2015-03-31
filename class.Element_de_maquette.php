@@ -13,6 +13,7 @@ require_once('class.Matiere.php');
 class Element_de_maquette
 {
 	// --- ASSOCIATIONS ---
+	private $subject = null;
 
 	// --- ATTRIBUTES ---
 	private $typeOfCourse = null;
@@ -30,6 +31,11 @@ class Element_de_maquette
 		return $this->numHours;
 	}
 
+	public function getSubject()
+	{
+		return $this->subject;
+	}
+
 	// setters
 	public function setTypeofCourse($newTypeOfCourse)
 	{
@@ -44,6 +50,18 @@ class Element_de_maquette
 		if (!empty($newNumHours))
 		{
 			$this->numHours = $newNumHours;
+		}
+	}
+
+	public function setSubject($newSubject)
+	{
+		if ($newSubject instanceof Matiere)
+		{
+			$this->subject = $newSubject;
+		}
+		else
+		{
+			echo 'Erreur dans la méthode setSubject() de la classe Element_de_maquette : l’argument donné n’est pas une matière.';
 		}
 	}
 }

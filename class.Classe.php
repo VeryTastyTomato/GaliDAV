@@ -15,6 +15,7 @@ require_once('class.Responsable.php');
 class Classe extends Groupe
 {
 	// --- ASSOCIATIONS ---
+	private $coursesModel;
 
 	// --- ATTRIBUTES ---
 
@@ -23,6 +24,18 @@ class Classe extends Groupe
 	public function __construct($newName)
 	{
 		parent::__construct($newName, true);
+	}
+
+	// getters
+	public function getCoursesModel()
+	{
+		return $this->coursesModel;
+	}
+
+	// setters
+	public function setCoursesModel($newCoursesModel)
+	{
+		$this->coursesModel = $newCoursesModel;
 	}
 
 	// others
