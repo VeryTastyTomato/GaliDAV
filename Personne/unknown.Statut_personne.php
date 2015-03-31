@@ -31,7 +31,7 @@ class Statut_personne
 	*/
 	
 	const TABLENAME="gstatus";
-	const SQLcolumns="id_person serial, status integer(1), constraint gstatus_pk primary key (id_person,status)";
+	const SQLcolumns="id_person serial references gperson(id), status smallint not null, constraint gstatus_pk primary key (id_person,status)";
 	protected $value;
 
 	function __construct($value)
@@ -52,13 +52,12 @@ class Statut_personne
 	}
 	
 	function toInt(){
-		if ($this->value==STUDENT) return 1;
-		else if ($this->value==SPEAKER) return 2;
-		else if ($this->value==TEACHER) return 3;
-		else if ($this->value==SECRETARY) return 4;
-		else if ($this->value==HEAD) return 5;
-		else if ($this->value==ADMINISTRATOR) return 6;
-		else if ($this->value==SPEAKER)return 2;
+		if ($this->value==self::STUDENT) return 1;
+		else if ($this->value==self::SPEAKER) return 2;
+		else if ($this->value==self::TEACHER) return 3;
+		else if ($this->value==self::SECRETARY) return 4;
+		else if ($this->value==self::HEAD) return 5;
+		else if ($this->value==self::ADMINISTRATOR) return 6;
 		else return 0;
 	}
 }

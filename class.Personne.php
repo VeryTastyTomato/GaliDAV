@@ -52,7 +52,6 @@ class Personne
 			$query="SELECT id from ".self::TABLENAME." order by date_creation desc ";
 			$result=BaseDeDonnees::currentDB()->executeQuery($query);
 			$this->sqlid=pg_fetch_assoc($result)['id'];
-			echo ("id créé: ".$this->sqlid);
 		}
 	
 	}
@@ -88,7 +87,7 @@ class Personne
 	{
 		if (!empty($newFamilyName))
 		{
-			$query="ALTER TABLE ".self::TABLENAME." set familyName=$1;";
+			$query="UPDATE ".self::TABLENAME." set familyName=$1;";
 			$params[]=$newFamilyName;
 			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
 			if($result)$this->familyName = $newFamilyName;
@@ -100,7 +99,7 @@ class Personne
 	{
 		if (!empty($newFirstName))
 		{
-			$query="ALTER TABLE ".self::TABLENAME." set firstName=$1;";
+			$query="UPDATE ".self::TABLENAME." set firstName=$1;";
 			$params[]=$newFirstName;
 			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
 			if($result)$this->firstName = $newFirstName;
@@ -113,7 +112,7 @@ class Personne
 		{
 			if (filter_var($newEmailAddress1, FILTER_VALIDATE_EMAIL))
 			{
-				$query="ALTER TABLE ".self::TABLENAME." set emailaddress1=$1;";
+				$query="UPDATE ".self::TABLENAME." set emailaddress1=$1;";
 				$params[]=$newEmailAddress1;
 				$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
 				if($result)$this->emailAddress1 = $newEmailAddress1;
@@ -131,7 +130,7 @@ class Personne
 		{
 			if (filter_var($newEmailAddress2, FILTER_VALIDATE_EMAIL))
 			{
-				$query="ALTER TABLE ".self::TABLENAME." set emailaddress2=$1;";
+				$query="UPDATE ".self::TABLENAME." set emailaddress2=$1;";
 				$params[]=$newEmailAddress2;
 				$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
 				if($result)$this->emailAddress2 = $newEmailAddress2;
@@ -145,7 +144,11 @@ class Personne
 	public function setAllStatus($arrayOfStatus){
 		foreach ($this->status as $oneStatus)
 		{
-			$this->remove($oneStatus);
+			$this->removeStatus($oneStatus);
+		}
+		foreach ($arrayOfStatus as $oneStatusbis)
+		{
+			$this->addStatus($oneStatusbis);
 		}
 		$this->status=$arrayOfStatus;
 	}

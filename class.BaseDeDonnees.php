@@ -76,39 +76,32 @@ class BaseDeDonnees
 	}	
 	
 	
-	public function executeQuery($query,$params=array()){
+	public function executeQuery($query,$params=array())
+	{
 		$conn=$this->connect();
 		if (!$conn) {
   			echo "Impossible de se connecter à la DB galidav.\n";
   			exit;
 		}
 		$result = pg_query_params($conn, $query, $params);
-		return $result;
-		/*$Q=new AwlQuery( $query, $params );
-		$connection=array();
-		$connection['dsn']='galidav';
-		$connection['dbuser']='galidav';
-		$Q->SetConnection($connection);
-		if ( $Q->Exec() ) {
-            $c->messages[] = i18n('GaliDAV query answered.');
-            dbg_error_log("GaliDAV",": ? : SQL Operation done" );
-          }
-          else {
-          	echo("GaliDAV SQL error: ".$Q->getErrorInfo());
-            $c->messages[] = i18n("There was an error reading/writing to the GaliDAV database.");
-          }*/
-          
+		return $result;          
 	}
 	
-	public function clear(){
-		$this->executeQuery("DELETE from ".Personne::TABLENAME." where true;");
-		$this->executeQuery("DELETE from ".Utilisateur::TABLENAME." where true;");
-		$this->executeQuery("DELETE from ".Statut_personne::TABLENAME." where true;");
+	public function clear()
+	{
+		$this->executeQuery("DELETE from ".Utilisateur::TABLENAME.";");
+		$this->executeQuery("DELETE from ".Statut_personne::TABLENAME.";");
+		$this->executeQuery("DELETE from ".Personne::TABLENAME.";");
+		
+		
 	}
-	public function dropall(){
-		$this->executeQuery("DROP TABLE ".Personne::TABLENAME." CASCADE;");
-		$this->executeQuery("DROP TABLE ".Utilisateur::TABLENAME." CASCADE;");
-		$this->executeQuery("DROP TABLE ".Statut_personne::TABLENAME." CASCADE;");
+	public function dropall()//KFK: NOTICE: L'ordre est important, on évite des warnings
+	{
+		$this->executeQuery("DROP TABLE IF EXISTS ".Utilisateur::TABLENAME." CASCADE;");
+		$this->executeQuery("DROP TABLE IF EXISTS ".Statut_personne::TABLENAME." CASCADE;");
+		$this->executeQuery("DROP TABLE IF EXISTS ".Personne::TABLENAME." CASCADE;");
+		
+		
 	}
 	
 	public function connect()
@@ -124,7 +117,7 @@ class BaseDeDonnees
 	{
 		$result=$this->executeQuery("CREATE TABLE ".Personne::TABLENAME." (".Personne::SQLcolumns.");");
 		if($result)$result=$this->executeQuery("CREATE TABLE ".Utilisateur::TABLENAME." (".Utilisateur::SQLcolumns.");");
-		if($result)$result=$this->executeQuery("CREATE TABLE ".Statut_personne::TABLENAME." (".Utilisateur::SQLcolumns.");");
+		if($result)$result=$this->executeQuery("CREATE TABLE ".Statut_personne::TABLENAME." (".Statut_personne::SQLcolumns.");");
 		/*** TODO Autres tables ***/
 		
 		return $result;

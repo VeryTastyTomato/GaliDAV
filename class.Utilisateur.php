@@ -52,6 +52,8 @@ class Utilisateur extends Personne
 	// Flora NOTE: La fonction ci-dessous peut ne pas être utile finalement
 	static public function convertPersonToUser(Personne $p, $login, $passwd)
 	{
+		$query="delete from ".Statut_personne::TABLENAME." where id_person=".$p->sqlid.";";
+		BaseDeDonnees::currentDB()->executeQuery($query);
 		$query="delete from ".parent::TABLENAME." where id=".$p->sqlid.";";
 		BaseDeDonnees::currentDB()->executeQuery($query);
 		$u = new Utilisateur($p->familyName, $p->firstName, $login, $passwd);
