@@ -88,7 +88,7 @@ class Secretaire extends Utilisateur
 
 	public function validateTimetable(EDT $e)
 	{
-		$e->applyModifications();
+		$e->emptyModifications();
 	}
 
 	// Flora TODO: implémenter des accesseurs pour la maquette dans la classe Classe

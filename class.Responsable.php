@@ -90,11 +90,11 @@ class Responsable extends Utilisateur
 
 	public function validateTimetable(EDT $e)
 	{
-		$e->applyModifications();
+		$e->emptyModifications();
 	}
 
 	// Flora TODO: implémenter des accesseurs pour la maquette dans la classe Classe
-	public function modifyClass_CoursesModel(Classe $c, Matiere $m, Type_cours $type, $numHours)
+	public function modifyClass_CoursesModel(Classe $c, Matiere $m, Type_cours $type, $numHours, $operation)
 	{
 	}
 }

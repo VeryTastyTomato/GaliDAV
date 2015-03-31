@@ -112,7 +112,7 @@ EDT
 		+extractExams(): Array (of Type_cours)
 		+addCourse(Cours newCourse)
 		+removeCourse(Cours courseToRemove)
-		+applyModifications()
+		+emptyModifications()
 ___________________________________________________________________________
 EdT_Classe
 	Fonctions

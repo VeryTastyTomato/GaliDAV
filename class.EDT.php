@@ -108,16 +108,9 @@ class EDT
 		}
 	}
 
-	public function applyModifications()
+	public function emptyModifications()
 	{
-		foreach ($this->listModif as $oneModif)
-		{
-			$indice = array_search($oneModif->getCourseModified(), $this->listCourses);
-			if ($indice !== false)
-			{
-				$this->listCourses[$indice] = $oneModif->getCourseModified();
-			}
-		}
+		$this->listModif = array();
 	}
 }
 ?>
