@@ -25,12 +25,20 @@ class Secretaire extends Utilisateur
 		$this->addStatus(new Statut_personne(Statut_personne::SECRETARY));
 	}
 
-	// Flora TODO: Utiliser les méthodes de la classe EDT pour compléter cette fonction
 	public function modifyTimetable(EDT $e, Cours $c, $operation)
 	{
-		$returnValue = null;
-
-		return $returnValue;
+		if ($operation == 'add')
+		{
+			$e->addCourse($c);
+		}
+		else if ($operation == 'remove')
+		{
+			$e->removeCourse($c);
+		}
+		else
+		{
+			echo 'Opération invalide';
+		}
 	}
 
 	public function addGroup(String $name)
@@ -38,20 +46,36 @@ class Secretaire extends Utilisateur
 		new Groupe($name, false);
 	}
 
-	// Flora TODO: Utiliser les fonctions de la classe Groupe (ajouter/supprimer un étudiant en l'occurence)
-	public function modifyGroup_Members(Personne $etu, $operation)
+	public function modifyGroup_Members(Groupe $group, Personne $etu, $operation)
 	{
-		$returnValue = null;
-
-		return $returnValue;
+		if ($operation == 'add')
+		{
+			$group->addStudent($etu);
+		}
+		else if ($operation == 'remove')
+		{
+			$group->removeStudent($etu);
+		}
+		else
+		{
+			echo 'Opération invalide';
+		}
 	}
 
-	// Flora TODO: Utiliser les fonctions de la classe Groupe (ajouter/supprimer un étudiant en l'occurence)
-	public function modifyGroup_LinkedClasses(Classe $c, $operation)
+	public function modifyGroup_LinkedClasses(Classe $c, Personne $etu, $operation)
 	{
-		$returnValue = null;
-
-		return $returnValue;
+		if ($operation == 'add')
+		{
+			$c->addStudent($etu);
+		}
+		else if ($operation == 'remove')
+		{
+			$c->removeStudent($etu);
+		}
+		else
+		{
+			echo 'Opération invalide';
+		}
 	}
 
 	// Flora NOTE: On va devoir faire appel aux commandes 'bas niveau' du serveur caldav
@@ -62,9 +86,9 @@ class Secretaire extends Utilisateur
 		return $returnValue;
 	}
 
-	// Flora TODO: Utiliser les fonctions de la classe EDT (valider l'ensemble des modifs en l'occurrrence)
 	public function validateTimetable(EDT $e)
 	{
+		$e->applyModifications();
 	}
 
 	// Flora TODO: implémenter des accesseurs pour la maquette dans la classe Classe
