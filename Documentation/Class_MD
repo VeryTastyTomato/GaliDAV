@@ -56,6 +56,9 @@ Matière
 	Attributs
 		−name: String
 		−teachedBy: Array (of Personne)
+	Constantes
+		const TABLENAME
+		const SQLcolumns
 	Constructeurs
 		+__construct(name)
 	Accesseurs
@@ -179,6 +182,13 @@ Groupe
 	Attributes
 		−name: String
 		−isAClass: Boolean
+	Constantes
+		const TABLENAME
+		const SQLcolumns
+		const composedOfTABLENAME
+		const composedOfSQLcolumns
+		const linkedToTABLENAME
+		const linkedToSQLcolumns
 	Constructeurs
 		+__construct(String newName, Boolean newIsAClass)
 	Accesseurs

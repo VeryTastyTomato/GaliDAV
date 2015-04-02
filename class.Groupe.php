@@ -18,6 +18,18 @@ class Groupe
 	// --- ATTRIBUTES ---
 	private $name = null;
 	private $isAClass = null;
+	
+	const TABLENAME="ggroup";
+	const SQLcolumns="id serial PRIMARY KEY, name varchar(30) NOT NULL, is_class boolean not null DEFAULT false, id_current_timetable serial REFERENCES gcalendar(id),id_validated_timetable serial REFERENCES gcalendar(id)";
+	
+		
+	const composedOfTABLENAME="ggroup_composed_of";
+	const composedOfSQLcolumns="id_person serial REFERENCES gperson(id), id_group serial REFERENCES ggroup(id), constraint ggroup_composed_of_pk PRIMARY KEY(id_person,id_group)";
+	
+	const linkedToTABLENAME="ggroup_linked_to";
+	const linkedToSQLcolumns="id_group serial REFERENCES ggroup(id), id_class serial REFERENCES ggroup(id), constraint ggroup_linked_to_pk PRIMARY KEY(id_group,id_class)";
+	
+	
 
 	// --- OPERATIONS ---
 	// buiders

@@ -24,6 +24,7 @@ class Personne
 	const SQLcolumns="id serial PRIMARY KEY, familyname varchar(30) NOT NULL, firstname varchar(30) NOT NULL, emailaddress1 varchar(60), emailaddress2 varchar(60), date_creation timestamp";
 	
 
+
 	// --- OPERATIONS ---
 	// builder
 	public function __construct($newFamilyName, $newFirstName,$email1=null)

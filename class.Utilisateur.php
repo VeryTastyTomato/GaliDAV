@@ -111,6 +111,26 @@ class Utilisateur extends Personne
 	{
 	}
 	
+	public function loadFromDB($login=null)
+	{
+		if($login==null){
+			if($this->login!=null){
+				$login=$this->login;
+			}
+		}
+		if($login==null){
+			$query="select * from ".Personne::TABLENAME.";";
+			$result=BaseDeDonnees::currentDB()->executeQuery($query);
+		}
+		else
+		{
+			$query="select * from ".Personne::TABLENAME." where id=(SELECT id_person from ".Utilisateur::TABLENAME." where login=$1);";
+			$params[]=$login
+			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params[]);
+		}
+		
+		//TODO donner des valeurs aux attributs
+	}
 	public function removeFromDB()
 	{
 	
