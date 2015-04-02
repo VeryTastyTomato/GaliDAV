@@ -51,13 +51,28 @@ class Statut_personne
 		}
 	}
 	
-	function toInt(){
+	function toInt()
+	{
+	/*
 		if ($this->value==self::STUDENT) return 1;
 		else if ($this->value==self::SPEAKER) return 2;
 		else if ($this->value==self::TEACHER) return 3;
 		else if ($this->value==self::SECRETARY) return 4;
 		else if ($this->value==self::HEAD) return 5;
 		else if ($this->value==self::ADMINISTRATOR) return 6;
+		else return 0;
+		*/
+		return self::getIntValue($this->value);
+	}
+	
+	static function getIntValue($Status)
+	{
+		if ($Status==self::STUDENT) return 1;
+		else if ($Status==self::SPEAKER) return 2;
+		else if ($Status==self::TEACHER) return 3;
+		else if ($Status==self::SECRETARY) return 4;
+		else if ($Status==self::HEAD) return 5;
+		else if ($Status==self::ADMINISTRATOR) return 6;
 		else return 0;
 	}
 }

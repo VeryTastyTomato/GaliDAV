@@ -41,6 +41,7 @@ class Utilisateur extends Personne
 					$result=BaseDeDonnees::currentDB()->executeQuery($query,$params2);
 					if(!$result)echo("GaliDAV: Impossible de créer cet utilisateur dans la base");
 					
+		$this->setPassword($passwd);					
 					//Flora: NOTICE, ai  déplacé la communication avec la BD de Davical ici. Pour l'instant, la partie ci-dessous rame
 		/*$BDD=new BaseDeDonnees("davical_app","davical");
 		if(!$BDD->connect())echo("pas de connexion vrs davical");
@@ -77,7 +78,16 @@ class Utilisateur extends Personne
 	{
 		return $givenPassword == $this->passwd;
 	}
+	
+	protected function setPassword($givenPassword)
+	{
+		$params[]=($givenPassword);
+		$params[]=$this->id;
+		$query="update ".self::TABLENAME." set password=crypt('$1',gen_salt('bf')) where login=$2;";
+		BaseDeDonnees::currentDB()->executeQuery($query,$param);
+	}
 
+	
 	// Flora NOTE: La fonction ci-dessous peut ne pas être utile finalement
 	static public function convertPersonToUser(Personne $p, $login, $passwd)
 	{
@@ -90,7 +100,6 @@ class Utilisateur extends Personne
 		$u->setEmailAddress2($p->getEmailAddress2());
 		$u->setAllStatus($p->getAllStatus());
 		$p = $u;
-
 		return $u;
 	}
 

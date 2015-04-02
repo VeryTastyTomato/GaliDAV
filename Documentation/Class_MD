@@ -315,6 +315,8 @@ Statut_personne
 	Fonctions
 		+toString()
 		+toInt()
+	Fonctions statiques
+		+getValue($statut);
 
 
 
