@@ -14,48 +14,6 @@ class calendarPDF extends phpToPDF
 	public function __construct()//paramètre EDTClasse à ajouter ensuite
 	{
 		parent::FPDF('P','cm','Letter');
-		
-		/*
-		$titletemp = "EDT Info2"; //titre à récup dans $edt ?
-		$version = "version du 30 mars 2015"; //à récup grâce à la classe Modification (?)
-
-		//hours display size 
-		$hourdisplayhg = 1;
-		$hourdisplaywd = 2;
-		//cells size (1 course) (cm)
-		$edtcellheight = $hourdisplayhg;
-		$edtcellwidth = 3.5;
-
-		//pdf creation
-		$pdf = new FPDF("P","cm","Letter");
-		$pdf->SetTitle($titletemp, true);
-		$pdf->AddPage();
-
-		//writing of title & date version
-		$pdf->SetFont("Courier","B",16);
-		$pdf->Cell(0,0.5,$titletemp,0,2,'C');//title
-		$pdf->SetFont("Courier","I",12);
-		$pdf->Cell(0,0.4,$version,0,1,'C');//version
-
-		for ($i = 0; $i < 4; $i++)
-		{
-			//1 week
-			//descritpion of table properties
-			$tableProperties = ;	
-			$this->pdf->SetFont("Courier","B",8);
-			$this->pdf->Cell($hourdisplaywd,5*$hourdisplayhg + 0.8,"Semaine du ...",1,0,'C');
-			$this->pdf->Cell($hourdisplaywd,$hourdisplayhg,"8h30 - 10h",1,2,'C');
-			$this->pdf->Cell($hourdisplaywd,$hourdisplayhg,"10h15-11h45",1,2,'C');
-			$this->pdf->Cell($hourdisplaywd,0.8,"12h - 13h30",1,2,'C');
-			$this->pdf->Cell($hourdisplaywd,$hourdisplayhg,"13h45-15h15",1,2,'C');
-			$this->pdf->Cell($hourdisplaywd,$hourdisplayhg,"15h30-17h",1,2,'C');
-			$this->pdf->Cell($hourdisplaywd,$hourdisplayhg,"17h15-19h45",1,1,'C');
-		}
-		//timetable display
-		$this->pdf->Rect($this->pdf->x,$this->pdf->y,5*$edtcellwidth,5*$edtcellheight);
-		
-		//pdf display (in the browser)
-		$pdf->Output();	*/
 	}
 
 	public function drawEDT() //EDTClasse parameter to take from EDTClasse
@@ -66,8 +24,11 @@ class calendarPDF extends phpToPDF
 		//title + version display
 		$this->drawTitle($title,$version);
 		
-		//1 week
-		$this->drawWeek();
+		for($w = 0; $w < 4; $w++)
+		{
+			//1 week
+			$this->drawWeek($w);
+		}		
 		//pdf display
 		$this->Output();
 	}
@@ -80,25 +41,66 @@ class calendarPDF extends phpToPDF
 		$this->Cell(0,0.4,'Version du '.$version,0,1,'C');//version
 	}
 
-	public function drawWeek()//à passer : nème semaine sur la page
+	public function drawWeek($w)//à passer : nème semaine sur la page
 	{
-	//BORDEL par tableau ça me paraît pas possible -> je repasse par une construction cellule par cellule (avec MultiCellTable cette fois)
-		$this->SetFont('Courier','B',6);
-		$this->SetY(2);
-		//time slots
-		$this->MultiCellTable(2,0.5,"Semaine du ../.. au ../..",1,'J','M',0,4.8);
-		$this->SetXY(3,2);
-		$this->Cell(2,0.4,"Horaires",1,2,'C');
-		$this->Cell(2,1,"8h30 - 10h",1,2,'C');
-		$this->Cell(2,1,"10h15-11h45",1,2,'C');
-		$this->Cell(2,0.4,"12h - 13h30",1,2,'C');
-		$this->Cell(2,1,"13h45-15h15",1,2,'C');
-		$this->Cell(2,1,"15h30-17h",1,2,'C');
-		$this->Cell(2,1,"17h15-19h45",1,0,'C');
 
-		//origin for courses table
-		$this->SetXY(8,2);
-		//courses & days
+		$this->SetFont('Courier','B',6);
+		$this->SetY(2+5.8*$w);
+		//time slots
+		$this->MultiCellTable(2,0.5,"Semaine du \n ../..  \n au \n ../..",1,'C','M',0,3.8);
+
+		//hours display
+		$this->SetXY(3,2+5.8*$w);
+		$this->Cell(1.7,0.4,"Horaires",1,2,'C');
+		$this->Cell(1.7,1,"8h30 - 10h",1,2,'C');
+		$this->Cell(1.7,1,"10h15-11h45",1,2,'C');
+		$this->Cell(1.7,0.4,"12h - 13h30",1,2,'C');
+		$this->Cell(1.7,1,"13h45-15h15",1,2,'C');
+		$this->Cell(1.7,1,"15h30-17h",1,2,'C');
+		$this->Cell(1.7,1,"17h15-19h45",1,0,'C');
+
+		for($d=0; $d<5; $d++)
+		{
+			//origin for courses table
+			$this->SetXY(4.7+$d*3,2+5.8*$w);
+			//which day ?
+			switch ($d) {
+				case 0:
+					$this->Cell(3,0.4,"Lundi ../..",1,2,'C');
+					break;
+				case 1:
+					$this->Cell(3,0.4,"Mardi ../..",1,2,'C');
+					break;
+				case 2:
+					$this->Cell(3,0.4,"Mercredi ../..",1,2,'C');
+					break;
+				case 3:
+					$this->Cell(3,0.4,"Jeudi ../..",1,2,'C');
+					break;
+				case 4:
+					$this->Cell(3,0.4,"Vendredi ../..",1,2,'C');
+					break;
+			}
+			$this->SetFillColor(255,0,0);
+			$this->MultiCell(3,0.33,"Zizi\nCM1\nG107",1,'C',1);
+			$this->SetXY(4.7+$d*3,3.4+5.8*$w);
+			$this->MultiCell(3,0.33,"Zizi\nTD1\nG107",1,'C',0);
+			$this->SetXY(4.7+$d*3,4.4+5.8*$w);
+			$this->MultiCell(3,0.39,"Lunch",1,'C',0);
+			$this->SetXY(4.7+$d*3,4.8+5.8*$w);
+			$this->MultiCell(3,0.33,"Zizi\nCM2\nG107",1,'C',0);
+			$this->SetXY(4.7+$d*3,5.8+5.8*$w);
+			$this->MultiCell(3,0.33,"Zizi\nTD2\nG107",1,'C',0);
+			$this->SetXY(4.7+$d*3,6.8+5.8*$w);
+			$this->MultiCell(3,0.33,"Zizi (Info)\nTP1\nG107",1,'C',0);
+		}
+	}
+}
+
+
+
+
+/* Solution with table : too complicated I think
 		$tableType = array(
 			'BRD_COLOR' => array(0,0,0),
 			'BRD_SIZE' => 0,
@@ -145,7 +147,6 @@ class calendarPDF extends phpToPDF
 			"zizi2","","","",
 			"Pause dejeuner. Bon app les gens !","COLSPAN2","COLSPAN2","COLSPAN2","COLSPAN2");
 		$this->drawTableau($this, $tableType, $headerType, $headerDatas, $datasType, $datas);
-	}
-}
+*/
 
 ?>
