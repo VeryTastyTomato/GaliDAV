@@ -34,7 +34,7 @@ class Utilisateur extends Personne
 		$fullname = $familyName." ".$firstName;
 		CreateUserAccount($login, $fullname, $passwd, $email1);
 		$params2[] = $this->sqlid;
-		$params2[]=$login;
+		$params2[] = $login;
 		$query = "INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2)";
 		$result = BaseDeDonnees::currentDB()->executeQuery($query, $params2);
 

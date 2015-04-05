@@ -88,7 +88,7 @@ class Administrateur extends Utilisateur
 		return new Classe($name);
 	}
 
-	public function modifyClass(Classe $c, Personne $etu = null, $operation)
+	public function modifyClass(Classe $c, Personne $etu, $operation)
 	{
 		if ($operation == 'add')
 		{

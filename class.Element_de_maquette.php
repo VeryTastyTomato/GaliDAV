@@ -37,7 +37,7 @@ class Element_de_maquette
 	}
 
 	// setters
-	public function setTypeofCourse($newTypeOfCourse)
+	public function setTypeOfCourse($newTypeOfCourse)
 	{
 		if (!empty($newTypeOfCourse))
 		{
