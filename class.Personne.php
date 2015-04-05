@@ -24,7 +24,6 @@ class Personne
 	const SQLcolumns="id serial PRIMARY KEY, familyname varchar(30) NOT NULL, firstname varchar(30) NOT NULL, emailaddress1 varchar(60), emailaddress2 varchar(60), date_creation timestamp";
 	
 
-
 	// --- OPERATIONS ---
 	// builder
 	public function __construct($newFamilyName, $newFirstName,$email1=null)
@@ -52,9 +51,9 @@ class Personne
 		{
 			$query="SELECT id from ".self::TABLENAME." order by date_creation desc ";
 			$result=BaseDeDonnees::currentDB()->executeQuery($query);
-			$this->sqlid=pg_fetch_assoc($result)['id'];
+			$tmp = pg_fetch_assoc($result);
+			$this->sqlid = $tmp['id'];
 		}
-	
 	}
 
 	

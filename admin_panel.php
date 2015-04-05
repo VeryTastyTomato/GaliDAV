@@ -15,7 +15,7 @@ error_reporting(E_ALL);
 <?php 
 require_once("test_davical_operations.php");
 require_once("ListePersonnes.php");
-BaseDeDonnees::currentDB()->clear();
+//BaseDeDonnees::currentDB()->initialize();
 ?>
 
 <div id=admin_panel style='width:80%;height:50%;padding:auto;margin-left:auto;margin-right:auto;'>
@@ -49,7 +49,7 @@ BaseDeDonnees::currentDB()->clear();
 				<tr><th>Prénom</th><td><input type="text" name="firstname"/></td>
 				<tr><th>email</th><td><input type="text" name="email"/></td>
 				</table>
-				<br/><input type="radio" name="status" value="student"/>Elève<br/>
+				<br/><input type="radio" name="status" value="student"/>Élève<br/>
 				<input type="radio" name="status" value="speaker"/>Intervenant<br/>
 				<input type="submit" value="Ajouter" style='width:80%;margin-left:auto;margin-right:auto;'/>
 			</form></td>
