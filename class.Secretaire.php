@@ -11,6 +11,7 @@ require_once('class.Matiere.php');
 require_once('Cours/unknown.Type_cours.php');
 require_once('class.Groupe.php');
 require_once('class.Classe.php');
+require_once('class.Element_de_maquette.php');
 
 class Secretaire extends Utilisateur
 {

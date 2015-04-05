@@ -10,6 +10,7 @@ require_once('Responsable/unknown.Type_responsable.php');
 require_once('class.Groupe.php');
 require_once('class.Classe.php');
 require_once('class.Utilisateur.php');
+require_once('class.Element_de_maquette.php');
 
 class Responsable extends Utilisateur
 {
