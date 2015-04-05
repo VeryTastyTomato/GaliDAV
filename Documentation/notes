@@ -1,0 +1,10 @@
+À faire :
+	– afficher le champ « lieu » d’un évènement
+	– gérer les quarts d’heure
+	– hiérarchie des calendriers
+	– afficher côte à côte les évènements qui ont lieu sur la même tranche horaire
+	– afficher le dernier emploi du temps validé à côté de l’emploi du temps en cours de modification
+
+Problèmes :
+	– avoir un moyen d’avoir un seul ICS pour tous les calendriers d’un utilisateur (actuellement le lien URL pointe vers un fichier ICS d’un seul calendrier, correspondant donc à une seule matière…)
+	– changer le lieu d’un évènement répétitif (actuellement toutes les occurrences d’un évènement répétitif ont le même lieu (c’est-à-dire la même salle) et si on le change alors c’est répercuté sur toutes les occurrences)
