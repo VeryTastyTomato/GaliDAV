@@ -16,22 +16,20 @@ class Statut_personne
 	const HEAD = "Responsable";
 	const ADMINISTRATOR = "Administrateur/trice";
 	const OTHER = "Autre";
-	
+
 	/* Entier associé aux statuts
-	
 		0> OTHER
-			
 		1 > STUDENT
 		2 > SPEAKER
 		3 > TEACHER
 		4 > SECRETARY
 		5 > HEAD
 		6 > ADMINISTRATOR
-	
 	*/
-	
-	const TABLENAME="gstatus";
-	const SQLcolumns="id_person serial references gperson(id), status smallint not null, constraint gstatus_pk primary key (id_person,status)";
+
+	const TABLENAME = "gstatus";
+	const SQLcolumns = "id_person serial references gperson(id), status smallint not null, constraint gstatus_pk primary key (id_person,status)";
+
 	protected $value;
 
 	function __construct($value)
@@ -50,7 +48,7 @@ class Statut_personne
 			return $this->value;
 		}
 	}
-	
+
 	function toInt()
 	{
 	/*
@@ -64,16 +62,26 @@ class Statut_personne
 		*/
 		return self::getIntValue($this->value);
 	}
-	
-	static function getIntValue($Status)
+
+	static function getIntValue($status)
 	{
-		if ($Status==self::STUDENT) return 1;
-		else if ($Status==self::SPEAKER) return 2;
-		else if ($Status==self::TEACHER) return 3;
-		else if ($Status==self::SECRETARY) return 4;
-		else if ($Status==self::HEAD) return 5;
-		else if ($Status==self::ADMINISTRATOR) return 6;
-		else return 0;
+		switch ($status)
+		{
+			case (self::STUDENT):
+				return 1;
+			case (self::SPEAKER):
+				return 2;
+			case (self::TEACHER):
+				return 3;
+			case (self::SECRETARY):
+				return 4;
+			case (self::HEAD):
+				return 5;
+			case (self::ADMINISTRATOR):
+				return 6;
+			default:
+				return 0;
+		}
 	}
 }
 ?>

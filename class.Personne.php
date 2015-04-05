@@ -15,48 +15,51 @@ class Personne
 	protected $status = array();
 
 	// --- ATTRIBUTES ---
-	protected $sqlid=null;
+	protected $sqlid = null;
 	protected $familyName = null;
 	protected $firstName = null;
 	protected $emailAddress1 = null;
 	protected $emailAddress2 = null;
-	const TABLENAME="gperson";
-	const SQLcolumns="id serial PRIMARY KEY, familyname varchar(30) NOT NULL, firstname varchar(30) NOT NULL, emailaddress1 varchar(60), emailaddress2 varchar(60), date_creation timestamp";
-	
+	const TABLENAME = "gperson";
+	const SQLcolumns = "id serial PRIMARY KEY, familyname varchar(30) NOT NULL, firstname varchar(30) NOT NULL, emailaddress1 varchar(60), emailaddress2 varchar(60), date_creation timestamp";
 
 	// --- OPERATIONS ---
 	// builder
-	public function __construct($newFamilyName, $newFirstName,$email1=null)
+	public function __construct($newFamilyName, $newFirstName, $email1 = null)
 	{
 		$this->familyName = $newFamilyName;
 		$this->firstName = $newFirstName;
-		$params=array();
-		$params[]=$newFamilyName;
-		$params[]=$newFirstName;
-		$params[]="'now'";
-		$query="";
-		if($email1==null)
+		$params = array();
+		$params[] = $newFamilyName;
+		$params[] = $newFirstName;
+		$params[] = "'now'";
+		$query = "";
+		if ($email1 == null)
 		{
-			$query="INSERT INTO ".self::TABLENAME." (familyName, firstName,date_creation) VALUES ($1, $2,$3)";
+			$query = "INSERT INTO ".self::TABLENAME." (familyName, firstName,date_creation) VALUES ($1, $2,$3)";
 		}
-		else 
-		{
-			$this->emailAddress1 = $email1;
-			$params[]=$email1;
-			$query="INSERT INTO ".self::TABLENAME." (familyName,firstName,date_creation,emailAddress1) VALUES ($1, $2, $3, $4)";
-		}
-		$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
-		if(!$result)echo("GaliDAV: Impossible de créer cette personne dans la base");
 		else
 		{
-			$query="SELECT id from ".self::TABLENAME." order by date_creation desc ";
-			$result=BaseDeDonnees::currentDB()->executeQuery($query);
+			$this->emailAddress1 = $email1;
+			$params[] = $email1;
+			$query = "INSERT INTO ".self::TABLENAME." (familyName,firstName,date_creation,emailAddress1) VALUES ($1, $2, $3, $4)";
+		}
+
+		$result = BaseDeDonnees::currentDB()->executeQuery($query,$params);
+
+		if (!$result)
+		{
+			echo("GaliDAV: Impossible de créer cette personne dans la base");
+		}
+		else
+		{
+			$query = "SELECT id from ".self::TABLENAME." order by date_creation desc ";
+			$result = BaseDeDonnees::currentDB()->executeQuery($query);
 			$tmp = pg_fetch_assoc($result);
 			$this->sqlid = $tmp['id'];
 		}
 	}
 
-	
 	// getters
 	public function getFamilyName()
 	{
@@ -78,7 +81,8 @@ class Personne
 		return $this->emailAddress2;
 	}
 	
-	public function getAllStatus(){
+	public function getAllStatus()
+	{
 		return $this->status;
 	}
 
@@ -87,11 +91,18 @@ class Personne
 	{
 		if (!empty($newFamilyName))
 		{
-			$query="UPDATE ".self::TABLENAME." set familyName=$1;";
-			$params[]=$newFamilyName;
-			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
-			if($result)$this->familyName = $newFamilyName;
-			else echo ('GaliDAV: Impossible de modifier le nom de famille de cette personne');
+			$query = "UPDATE ".self::TABLENAME." set familyName=$1;";
+			$params[] = $newFamilyName;
+			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+
+			if ($result)
+			{
+				$this->familyName = $newFamilyName;
+			}
+			else
+			{
+				echo ('GaliDAV: Impossible de modifier le nom de famille de cette personne');
+			}
 		}
 	}
 
@@ -99,10 +110,13 @@ class Personne
 	{
 		if (!empty($newFirstName))
 		{
-			$query="UPDATE ".self::TABLENAME." set firstName=$1;";
-			$params[]=$newFirstName;
-			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
-			if($result)$this->firstName = $newFirstName;
+			$query = "UPDATE ".self::TABLENAME." set firstName=$1;";
+			$params[] = $newFirstName;
+			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+			if ($result)
+			{
+				$this->firstName = $newFirstName;
+			}
 		}
 	}
 
@@ -112,10 +126,13 @@ class Personne
 		{
 			if (filter_var($newEmailAddress1, FILTER_VALIDATE_EMAIL))
 			{
-				$query="UPDATE ".self::TABLENAME." set emailaddress1=$1;";
-				$params[]=$newEmailAddress1;
-				$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
-				if($result)$this->emailAddress1 = $newEmailAddress1;
+				$query = "UPDATE ".self::TABLENAME." set emailaddress1=$1;";
+				$params[] = $newEmailAddress1;
+				$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+				if ($result)
+				{
+					$this->emailAddress1 = $newEmailAddress1;
+				}
 			}
 			else
 			{
@@ -130,10 +147,14 @@ class Personne
 		{
 			if (filter_var($newEmailAddress2, FILTER_VALIDATE_EMAIL))
 			{
-				$query="UPDATE ".self::TABLENAME." set emailaddress2=$1;";
-				$params[]=$newEmailAddress2;
-				$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
-				if($result)$this->emailAddress2 = $newEmailAddress2;
+				$query = "UPDATE ".self::TABLENAME." set emailaddress2=$1;";
+				$params[] = $newEmailAddress2;
+				$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+
+				if ($result)
+				{
+					$this->emailAddress2 = $newEmailAddress2;
+				}
 			}
 			else
 			{
@@ -141,37 +162,45 @@ class Personne
 			}
 		}
 	}
-	public function setAllStatus($arrayOfStatus){
+
+	public function setAllStatus($arrayOfStatus)
+	{
 		foreach ($this->status as $oneStatus)
 		{
 			$this->removeStatus($oneStatus);
 		}
+
 		foreach ($arrayOfStatus as $oneStatusbis)
 		{
 			$this->addStatus($oneStatusbis);
 		}
-		$this->status=$arrayOfStatus;
+
+		$this->status = $arrayOfStatus;
 	}
-	
+
 	public function addStatus(Statut_personne $s)
 	{
 		if (!$this->hasStatus($s))
 		{
-			$params[]=$this->sqlid;
-			$params[]=$s->toInt();
-			$query="INSERT INTO ".Statut_personne::TABLENAME." (id_person,status) VALUES ($1, $2)";
-			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
-			if($result)$this->status[]=$s;
+			$params[] = $this->sqlid;
+			$params[] = $s->toInt();
+			$query = "INSERT INTO ".Statut_personne::TABLENAME." (id_person,status) VALUES ($1, $2)";
+			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+
+			if ($result)
+			{
+				$this->status[] = $s;
+			}
 		}
 	}
 
-	
 	public function removeStatus(Statut_personne $s)
 	{
 		if ($this->hasStatus($s))
 		{
-			$query="DELETE FROM ".Statut_personne::TABLENAME." where id_person=".$this->sqlid." and status=".$s->toInt().";";
-			if(BaseDeDonnees::currentDB()->executeQuery($query,$params))
+			$query = "DELETE FROM ".Statut_personne::TABLENAME." where id_person=".$this->sqlid." and status=".$s->toInt().";";
+
+			if (BaseDeDonnees::currentDB()->executeQuery($query, $params))
 			{
 				$indice = 0;
 				foreach ($this->status as $oneStatus)
@@ -181,12 +210,12 @@ class Personne
 						unset($this->status[$indice]);
 						break;
 					}
+
 					$indice = $indice + 1;
 				}
 			}
 		}
 	}
-
 
 	public function hasStatus(Statut_personne $s)
 	{
@@ -200,9 +229,10 @@ class Personne
 
 		return false;
 	}
-	
-	public function removeFromDB(){
-		$query="delete from ".Personne::TABLENAME." where id=".$this->sqlid.";";
+
+	public function removeFromDB()
+	{
+		$query = "delete from ".Personne::TABLENAME." where id=".$this->sqlid.";";
 		BaseDeDonnees::currentDB()->executeQuery($query);
 	}
 

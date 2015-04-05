@@ -20,22 +20,25 @@ class Cours
 	private $end;
 	private $room = null;
 	private $typeOfCourse = null;
-	private $subject = null; 
-	
+	private $subject = null;
+
 	// --- OPERATIONS ---
 	// builders
 	public function __construct(Matiere $m, $begin, $end)
 	{
-		if(!is_int($begin)){
-			$begin=time();
+		if (!is_int($begin))
+		{
+			$begin = time();
 		}
-		if(!is_int($end)){
-			$end=time();
+
+		if (!is_int($end))
+		{
+			$end = time();
 		}
-		
-		$this->subject=$m;
-		$this->begin=$begin;
-		$this->end=$end;
+
+		$this->subject = $m;
+		$this->begin = $begin;
+		$this->end = $end;
 	}
 
 	// getters
@@ -51,18 +54,19 @@ class Cours
 
 	public function getBegin_string()
 	{
-		return date('d/m/Y H:i',$this->begin);
+		return date('d/m/Y H:i', $this->begin);
 	}
-	
+
 	public function getEnd()
 	{
 		return $this->end;
 	}
+
 	public function getEnd_string()
 	{
 		return date('d/m/Y H:i',$this->end);
 	}
-	
+
 	public function getRoom()
 	{
 		return $this->room;
@@ -72,7 +76,9 @@ class Cours
 	{
 		return $this->subject;
 	}
-	public function getTypeOfCourse(){
+
+	public function getTypeOfCourse()
+	{
 		return $this->getTypeOfCourse;
 	}
 
@@ -116,8 +122,10 @@ class Cours
 			$this->subject = $newSubject;
 		}
 	}
-	public function setTypeOfCourse($type){
-		$this->typeOfCourse=$type;
+
+	public function setTypeOfCourse($type)
+	{
+		$this->typeOfCourse = $type;
 	}
 
 	// others
@@ -131,7 +139,8 @@ class Cours
 		$timetable->addCourse($this);
 	}
 
-	public function getTypeOfCourse_string(){
+	public function getTypeOfCourse_string()
+	{
 		switch($this->typeOfCourse)
 		{
 			case(CM):
@@ -150,11 +159,12 @@ class Cours
 				return "Type inconnu";
 		}
 	}
-	
+
 	// -- Affichage texte --
 	public function toHTML()
 	{
 		$result = "<p>Matière:&emsp; &emsp; " . $this->subject->getName() . "<br/>Type de cours:&emsp; &emsp;". $this->typeOfCourse."&emsp; &emsp;&emsp; &emsp;Numero:&emsp; &emsp; " . $this->number . "<br/>Horaires:&emsp; du ".$this->getBegin_string()." au ".$this->getEnd_string()."<br/>Salle: &emsp; &emsp; ".$this->room."</p>";
+
 		return $result;
 	}
 }

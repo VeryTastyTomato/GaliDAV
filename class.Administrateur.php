@@ -16,9 +16,9 @@ class Administrateur extends Utilisateur
 
 	// --- OPERATIONS ---
 	// builder
-	public function __construct($familyName, $firstName, $login, $passwd,$email=null)
+	public function __construct($familyName, $firstName, $login, $passwd, $email = null)
 	{
-		parent::__construct($familyName, $firstName, $login, $passwd,$email);
+		parent::__construct($familyName, $firstName, $login, $passwd, $email);
 		$this->addStatus(new Statut_personne(Statut_personne::ADMINISTRATOR));
 		$this->addStatus(new Statut_personne(Statut_personne::HEAD));
 		$this->addStatus(new Statut_personne(Statut_personne::TEACHER));
@@ -33,10 +33,9 @@ class Administrateur extends Utilisateur
 	}
 
 	// others
-	public function addUser($familyName, $firstName, $login, $passwd,$email=null)
+	public function addUser($familyName, $firstName, $login, $passwd, $email = null)
 	{
 		return new Utilisateur($familyName, $firstName, $login, $passwd,$email);
-			
 	}
 
 /*
@@ -79,7 +78,7 @@ class Administrateur extends Utilisateur
 	public function deletePerson(Personne $p)
 	{
 		$p->__destroy();
-		$p = NULL;
+		$p = null;
 		// Flora TODO: Tester et voir s'il n'ya pas plus approprié
 		// + Supprimer de la BDD
 	}
