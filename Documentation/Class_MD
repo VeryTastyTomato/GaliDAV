@@ -279,7 +279,7 @@ Secrétaire extends Utilisateur
 		+modifyGroup_LinkedClasses(Classe c, Personne etu operation)
 		+compareTimetables(listOfTimetable, begin, end)
 		+validateTimetable(EDT e)
-		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, Integer numHours, String operation)
+		+modifyClass_CoursesModel(Classe c, Element_de_maquette elem, String operation)
 ________________________________________________________________________________________________________________________________________
 Enseignant (extends Utilisateur)
 	Attributs
@@ -303,7 +303,7 @@ Responsable (extends Utilisateur)
 		+modifyGroup_LinkedClasses(Classe c, Personne etu operation)
 		+compareTimetables(listOfTimetable, begin, end)
 		+validateTimetable(EDT e)
-		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, Integer numHours, String operation)
+		+modifyClass_CoursesModel(Classe c, Element_de_maquette elem, String operation)
 ___________________________________________________________________________
 Type_responsable
 	Constantes
