@@ -20,6 +20,14 @@ class Element_de_maquette
 	private $numHours = null;
 
 	// --- OPERATIONS ---
+	// builders
+	public function __construct($newSubject, $newTypeOfCourse, $newNumHours)
+	{
+		$this->subject = $newSubject;
+		$this->typeOfCourse = $newTypeOfCourse;
+		$this->numHours = $newNumHours;
+	}
+
 	// getters
 	public function getTypeOfCourse()
 	{

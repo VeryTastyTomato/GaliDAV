@@ -77,6 +77,8 @@ Element_de_maquette
 	Attributs
 		−typeOfCourse: Type_cours
 		−numHours: Integer
+	Constructeurs
+		–__construct(Matiere newSubject, Type_cours newTypeOfCourse, Integer newNumHours)
 	Accesseurs
 		+getTypeOfCourse(): String
 		+getNumHours(): Integer
@@ -277,7 +279,7 @@ Secrétaire extends Utilisateur
 		+modifyGroup_LinkedClasses(Classe c, Personne etu operation)
 		+compareTimetables(listOfTimetable, begin, end)
 		+validateTimetable(EDT e)
-		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, numHours)
+		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, Integer numHours, String operation)
 ________________________________________________________________________________________________________________________________________
 Enseignant (extends Utilisateur)
 	Attributs
@@ -301,7 +303,7 @@ Responsable (extends Utilisateur)
 		+modifyGroup_LinkedClasses(Classe c, Personne etu operation)
 		+compareTimetables(listOfTimetable, begin, end)
 		+validateTimetable(EDT e)
-		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, numHours)
+		+modifyClass_CoursesModel(Classe c,Matiere m, Type_cours type, Integer numHours, String operation)
 ___________________________________________________________________________
 Type_responsable
 	Constantes

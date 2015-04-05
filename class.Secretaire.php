@@ -92,8 +92,22 @@ class Secretaire extends Utilisateur
 	}
 
 	// Flora TODO: implémenter des accesseurs pour la maquette dans la classe Classe
-	public function modifyClass_CoursesModel(Classe $c, Matiere $m, Type_cours $type, $numHours)
+	public function modifyClass_CoursesModel(Classe $c, Matiere $m, Type_cours $type, $numHours, $operation)
 	{
+		$newElem = new Element_de_maquette($m, $type, $numHours);
+
+		if ($operation == 'add')
+		{
+			$c->getCoursesModel->addElemOfClassesModel($newElem);
+		}
+		else if ($operation == 'remove')
+		{
+			$c->getCoursesModel->removeElemOfClassesModel($newElem);
+		}
+		else
+		{
+			echo 'Opération invalide';
+		}
 	}
 }
 ?>
