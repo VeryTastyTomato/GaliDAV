@@ -8,7 +8,8 @@ function XListAll(){
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_people());
 		while(($person=pg_fetch_assoc($res))!=null)
 		{
-			$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
+			//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
+			$out.="<li>".XPerson($person)."</li>";
 		}
 		$out.="</ul>";
 		return $out;
@@ -19,7 +20,8 @@ function XListStudents(){
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_students());
 		while(($person=pg_fetch_assoc($res))!=null)
 		{
-			$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
+			//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
+			$out.="<li>".XPerson($person)."</li>";
 		}
 		$out.="</ul>";
 	return $out;
@@ -30,7 +32,8 @@ function XListTeachers(){
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_teachers());
 		while(($person=pg_fetch_assoc($res))!=null)
 		{
-			$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
+			//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
+			$out.="<li>".XPerson($person)."</li>";
 		}
 		$out.="</ul>";
 		return $out;
@@ -47,6 +50,15 @@ function XoptionSpeakers(){
 		}
 		//$out.="</datalist>";
 		return $out;
+}
+
+function XPerson($ressource){
+	if(is_array($ressource)){
+		$out="";
+		$out.="<form action='test_davical_operations.php' method='POST'>".$ressource['familyname']." ".$ressource['firstname'];
+		$out.="<input type='hidden' name='action' value='delete_person'/><input type='hidden' name='id' value=".$ressource['id']." /><input type='submit' value='Supprimer'/></form>";
+		return $out;	
+	}
 }
 function query_all_people(){
 	return "select * from ".Personne::TABLENAME." order by familyName;";

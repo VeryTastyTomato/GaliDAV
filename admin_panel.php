@@ -15,7 +15,10 @@ error_reporting(E_ALL);
 <?php 
 require_once("test_davical_operations.php");
 require_once("ListePersonnes.php");
-//BaseDeDonnees::currentDB()->initialize();
+/*
+	BaseDeDonnees::currentDB()->dropAll();
+	BaseDeDonnees::currentDB()->initialize();
+*/
 ?>
 
 <div id=admin_panel style='width:80%;height:50%;padding:auto;margin-left:auto;margin-right:auto;'>

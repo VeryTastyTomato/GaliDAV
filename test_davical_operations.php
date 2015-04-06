@@ -135,5 +135,11 @@ if(isset($_POST['action'])){
 		else if($_POST['status']=='speaker')$P->addStatus(new Statut_personne(Statut_personne::SPEAKER));
 		header('Location: ./admin_panel.php');
 	}
+	if($_POST['action']=='delete_person'){
+		$P=new Personne();
+		$P->loadFromDB($_POST['id']);
+		$P->removeFromDB();
+		header('Location: ./admin_panel.php');
+	}
 }
 ?>

@@ -25,48 +25,51 @@ class Utilisateur extends Personne
 	// builder
 	// Flora NOTE: Ailleurs devra être défini l'accès au CAS
 	// Flora PERSO: Rappel l'appel au constructeur de la classe mère n'est jamais implicite
-	public function __construct($familyName, $firstName, $login, $passwd, $email1 = null)
+	public function __construct($familyName=null, $firstName=null, $login=null, $passwd=null, $email1 = null)
 	{
 		parent::__construct($familyName, $firstName, $email1);
-		$this->id = $login;
-		$this->passwd = $passwd; //Il faut chiffrer le mot de passe pour le sauvegarder
+		if( $login=null or $passwd=null){
+			$this->id = $login;
+			$this->passwd = $passwd; //Il faut chiffrer le mot de passe pour le sauvegarder
 
-		$fullname = $familyName." ".$firstName;
-		CreateUserAccount($login, $fullname, $passwd, $email1);
-		$params2[] = $this->sqlid;
-		$params2[] = $login;
-		$query = "INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2)";
-		$result = BaseDeDonnees::currentDB()->executeQuery($query, $params2);
+			$fullname = $familyName." ".$firstName;
+			CreateUserAccount($login, $fullname, $passwd, $email1);
+			$params2[] = $this->sqlid;
+			$params2[] = $login;
+			$query = "INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2)";
+			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params2);
 
-		if (!$result)
-		{
-			echo("GaliDAV: Impossible de créer cet utilisateur dans la base");
-		}
-
-		$this->setPassword($passwd);
-					//Flora: NOTICE, ai  déplacé la communication avec la BD de Davical ici. Pour l'instant, la partie ci-dessous rame
-		/*$BDD=new BaseDeDonnees("davical_app","davical");
-		if(!$BDD->connect())echo("pas de connexion vrs davical");
-		else{
-			$params[]=$login;
-			$query="select user_no from dav_principal where username=$1;";
-			$result=$BDD->executeQuery($query,$params);
-			$BDD->close();
-			if($result)
+			if (!$result)
 			{
-				$userno=pg_fetch_assoc($result)['user_no'];
-				$U=new Utilisateur($familyName, $firstName, $login, $passwd,$email);
-				$query="update ".Utilisateur::TABLENAME." set id_principal=$userno where login=$1;";
-				if(BaseDeDonnees::currentDB()->executeQuery($query,$params))
-				{
-					$params2[]=$this->sqlid;
-					$params2[]=$login;
-					$query="INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2)";
-					$result=BaseDeDonnees::currentDB()->executeQuery($query,$params2);
-					if(!$result)echo("GaliDAV: Impossible de créer cet utilisateur dans la base");
-				}
+				echo("GaliDAV: Impossible de créer cet utilisateur dans la base");
 			}
-		}*/
+
+			$this->setPassword($passwd);
+			
+			//Flora: NOTICE, ai  déplacé la communication avec la BD de Davical ici. Pour l'instant, la partie ci-dessous rame
+			/*$BDD=new BaseDeDonnees("davical_app","davical");
+			if(!$BDD->connect())echo("pas de connexion vrs davical");
+			else{
+				$params[]=$login;
+				$query="select user_no from dav_principal where username=$1;";
+				$result=$BDD->executeQuery($query,$params);
+				$BDD->close();
+				if($result)
+				{
+					$userno=pg_fetch_assoc($result)['user_no'];
+					$U=new Utilisateur($familyName, $firstName, $login, $passwd,$email);
+					$query="update ".Utilisateur::TABLENAME." set id_principal=$userno where login=$1;";
+					if(BaseDeDonnees::currentDB()->executeQuery($query,$params))
+					{
+						$params2[]=$this->sqlid;
+						$params2[]=$login;
+						$query="INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2)";
+						$result=BaseDeDonnees::currentDB()->executeQuery($query,$params2);
+						if(!$result)echo("GaliDAV: Impossible de créer cet utilisateur dans la base");
+					}
+				}
+			}*/
+		}
 	}
 
 	// getters
@@ -113,7 +116,7 @@ class Utilisateur extends Personne
 	{
 	}
 	
-	public function loadFromDB($login = null)
+	public function loadFromDB($login = null,$notuseful=null)
 	{
 		if($login == null)
 		{
@@ -125,20 +128,31 @@ class Utilisateur extends Personne
 
 		if($login == null)
 		{
-			$query = "select * from ".Personne::TABLENAME.";";
+			$query = "select * from ".self::TABLENAME.";";
 			$result = BaseDeDonnees::currentDB()->executeQuery($query);
 		}
 		else
 		{
-			$query = "select * from ".Personne::TABLENAME." where id=(SELECT id_person from ".Utilisateur::TABLENAME." where login=$1);";
+			$query = "select * from ".self::TABLENAME." where login=$1;";
 			$params[] = $login;
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params[]);
 		}
-		//TODO donner des valeurs aux attributs
+		
+		$this->sqlid=$result['id_person'];
+		$this->login=$result['login'];
+		$this->passwd = $result['password']; // Corriger...
+		$query="DELETE FROM ".self::TABLENAME." where id_person=$1;";
+		$params=array($this->sqlid);
+		$result = BaseDeDonnees::currentDB()->executeQuery($query, $params[]);
+		
+		parent::loadFromDB();
+		//TODO valeurs des statuts
+
 	}
 
 	public function removeFromDB()
 	{
+	/*
 		$BDD = new BaseDeDonnees("davical_app", "davical");
 		if (!$BDD->connect())
 		{
@@ -148,12 +162,13 @@ class Utilisateur extends Personne
 		{
 			$params[] = $login;
 			$query = "remove from dav_principal where username=$1;";
-			$result = $BDD->executeQuery($query, $params);
+			$BDD->executeQuery($query, $params);
 			$BDD->close();
 			$query = "delete from ".self::TABLENAME." where id_person=".$this->sqlid.";";
 			BaseDeDonnees::currentDB()->executeQuery($query);
 			parent::removeFromDB();
-		}
+		}*/
+		parent::removeFromDB();
 	}
 
 	public function readTimetable(EDT $e)
