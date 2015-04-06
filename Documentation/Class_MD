@@ -158,7 +158,7 @@ BaseDeDonnées
 		+executeQuery(query, params)
 		+initialize()
 		+clear() //EFFACE TOUTES LES DONNEES
-		+dropall()//EFFACE TOUTES LES TABLES
+		+dropAll()//EFFACE TOUTES LES TABLES
 	Fonctions statiques
 		+currentDB(): BaseDeDonnees
 		
@@ -231,6 +231,8 @@ Personne
 		+setEmailAddress2(String newtEmailAddress1)
 		+setAllStatus(Array (of Statut_personne) arrayOfStatus)
 	Autres fonctions
+		+loadFromDB($id = null)
+		+removeFromDB()
 		+addStatus(Statut_personne s)
 		+removeStatus(Statut_personne s)
 		+hasStatus(Statut_personne s): Boolean
@@ -250,6 +252,8 @@ Utilisateur (extends Personne)
 	Fonctions statiques
 		+convertPersonToUser(Personne P, Integer id, String passwd)
 	Autres fonctions
+		+loadFromDB($login = null)
+		+removeFromDB()
 		+isPassword(String givenPassword): Boolean
 		+logIn()
 		+logOut()

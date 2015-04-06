@@ -21,7 +21,7 @@ class EDT
 	private $listModif = null;
 
 	const TABLENAME = "gcalendar";
-	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, is_class_calendar boolean, is_validated_calendar false, id_current_timetable serial,id_validated_timetable serial";
+	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, is_class_calendar boolean, is_validated_calendar boolean default false, id_current_timetable serial,id_validated_timetable serial";
 
 	// Attribut teacher_owner pour savoir si c'est un EDT de groupe/classe (null), ou EDT d'enseignant (celui-ci sera accessible depuis cet attribut)
 	private $teacherOwner = null;

@@ -98,13 +98,23 @@ class BaseDeDonnees
 	public function clear()
 	{
 		//TODO: clear aussi la DB de davical cad tous les comptes sauf admin
+		$this->executeQuery("DELETE from ".Matiere::TABLENAME.";");
+		$this->executeQuery("DELETE from ".Groupe::linkedToTABLENAME.";");
+		$this->executeQuery("DELETE from ".Groupe::composedOfTABLENAME.";");
+		$this->executeQuery("DELETE from ".Groupe::TABLENAME.";");
+		$this->executeQuery("DELETE from ".EDT::TABLENAME.";");
 		$this->executeQuery("DELETE from ".Utilisateur::TABLENAME.";");
 		$this->executeQuery("DELETE from ".Statut_personne::TABLENAME.";");
 		$this->executeQuery("DELETE from ".Personne::TABLENAME.";");
 	}
 
-	public function dropall()//KFK: NOTICE: L'ordre est important, on évite des warnings
+	public function dropAll()//KFK: NOTICE: L'ordre est important, on évite des warnings
 	{
+		$this->executeQuery("DROP TABLE IF EXISTS ".Matiere::TABLENAME." CASCADE;");
+		$this->executeQuery("DROP TABLE IF EXISTS ".Groupe::composedOfTABLENAME." CASCADE;");
+		$this->executeQuery("DROP TABLE IF EXISTS ".Groupe::linkedToTABLENAME." CASCADE;");
+		$this->executeQuery("DROP TABLE IF EXISTS ".Groupe::TABLENAME." CASCADE;");
+		$this->executeQuery("DROP TABLE IF EXISTS ".EDT::TABLENAME." CASCADE;");
 		$this->executeQuery("DROP TABLE IF EXISTS ".Utilisateur::TABLENAME." CASCADE;");
 		$this->executeQuery("DROP TABLE IF EXISTS ".Statut_personne::TABLENAME." CASCADE;");
 		$this->executeQuery("DROP TABLE IF EXISTS ".Personne::TABLENAME." CASCADE;");
@@ -136,6 +146,7 @@ class BaseDeDonnees
 		pg_close($this->connect());
 	}
 
+
 	public function initialize()
 	{
 		$result = $this->executeQuery("CREATE TABLE ".Personne::TABLENAME." (".Personne::SQLcolumns.");");
@@ -143,10 +154,29 @@ class BaseDeDonnees
 		{
 			$result = $this->executeQuery("CREATE TABLE ".Utilisateur::TABLENAME." (".Utilisateur::SQLcolumns.");");
 		}
-
 		if ($result)
 		{
 			$result = $this->executeQuery("CREATE TABLE ".Statut_personne::TABLENAME." (".Statut_personne::SQLcolumns.");");
+		}
+		if ($result)
+		{
+			$result = $this->executeQuery("CREATE TABLE ".EDT::TABLENAME." (".EDT::SQLcolumns.");");
+		}
+		if ($result)
+		{
+			$result = $this->executeQuery("CREATE TABLE ".Groupe::TABLENAME." (".Groupe::SQLcolumns.");");
+		}
+		if ($result)
+		{
+			$result = $this->executeQuery("CREATE TABLE ".Groupe::composedOfTABLENAME." (".Groupe::composedOfSQLcolumns.");");
+		}
+		if ($result)
+		{
+			$result = $this->executeQuery("CREATE TABLE ".Groupe::linkedToTABLENAME." (".Groupe::linkedToSQLcolumns.");");
+		}
+		if ($result)
+		{
+			$result = $this->executeQuery("CREATE TABLE ".Matiere::TABLENAME." (".Matiere::SQLcolumns.");");
 		}
 		/*** TODO Autres tables ***/
 
