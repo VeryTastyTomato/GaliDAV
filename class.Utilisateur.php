@@ -28,7 +28,7 @@ class Utilisateur extends Personne
 	public function __construct($familyName=null, $firstName=null, $login=null, $passwd=null, $email1 = null)
 	{
 		parent::__construct($familyName, $firstName, $email1);
-		if( $login=null or $passwd=null){
+		if( $login!=null and $passwd!=null){
 			$this->id = $login;
 			$this->passwd = $passwd; //Il faut chiffrer le mot de passe pour le sauvegarder
 
@@ -88,7 +88,7 @@ class Utilisateur extends Personne
 		$params[] = ($givenPassword);
 		$params[] = $this->id;
 		$query = "update ".self::TABLENAME." set password=crypt('$1',gen_salt('bf')) where login=$2;";
-		BaseDeDonnees::currentDB()->executeQuery($query, $param);
+		BaseDeDonnees::currentDB()->executeQuery($query, $params);
 	}
 
 	// Flora NOTE: La fonction ci-dessous peut ne pas être utile finalement

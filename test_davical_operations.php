@@ -127,7 +127,8 @@ if(isset($_POST['action'])){
 		else if($_POST['status']=='teacher')new Enseignant($_POST['familyname'], $_POST['firstname'], $_POST['login'],$_POST['password']);
 		else if($_POST['status']=='head')new Responsable($_POST['familyname'], $_POST['firstname'], $_POST['login'],$_POST['password']);
 		else if($_POST['status']=='administrator')new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'],$_POST['password']);
-		header('Location: ./admin_panel.php');
+		
+		//header('Location: ./admin_panel.php');
 	}
 	if($_POST['action']=='add_person'){
 		$P=new Personne($_POST['familyname'], $_POST['firstname'], $_POST['email']);

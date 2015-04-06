@@ -27,7 +27,7 @@ class Personne
 	// builder
 	public function __construct($newFamilyName=null, $newFirstName=null, $email1 = null)
 	{
-		if($newFamilyName=null or $newFirstName=null)
+		if($newFamilyName!=null and $newFirstName!=null)
 		{
 			$this->familyName = $newFamilyName;
 			$this->firstName = $newFirstName;
