@@ -16,19 +16,22 @@ class calendarPDF extends phpToPDF
 		parent::FPDF('P','cm','Letter');
 	}
 
-	public function drawEDT() //EDTClasse parameter to take from EDTClasse
+	public function drawEDT(EDTClasse $edt) //EDTClasse parameter to take from EDTClasse
 	{
-		$title = 'Informatique 2eme annee';//to auto take
+		$title = $edt->getClasse()->getName();//to auto take
 		$version = '31 mars 2015';//to auto take from Modification
+		
 		$this->AddPage();
 		//title + version display
 		$this->drawTitle($title,$version);
-		
+		/*
 		for($w = 0; $w < 4; $w++)
 		{
 			//1 week
 			$this->drawWeek($w);
-		}		
+		}*/
+		$this->SetFillColor(255,0,0);
+		$this->MultiCell(3,0.33,"Zizi\nCM1\nG107",1,'C',1);
 		//pdf display
 		$this->Output();
 	}
