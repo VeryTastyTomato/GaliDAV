@@ -1,9 +1,7 @@
 <?php
 ini_set('display_errors', 1); 
 error_reporting(E_ALL);
-?>
 
-<?php 
 //Flora NOTE: vous devez écrire dans votre hote.conf la ligne 
 //	php_value include_path /usr/share/davical/inc:/usr/share/awl/inc
 require_once("/usr/share/davical/htdocs/always.php");
