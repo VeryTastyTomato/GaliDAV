@@ -17,7 +17,7 @@ class Matiere
 	private $teachedBy = array();
 	
 	const TABLENAME = "gsubject";
-	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, id_speaker1 serial REFERENCES gperson(id), id_speaker2 serial REFERENCES gperson(id), id_speaker3 serial REFERENCES gperson(id), id_group serial REFERENCES ggroup(id), id_calendar serial REFERENCES gcalendar(id)";
+	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, id_speaker1 integer REFERENCES gperson(id), id_speaker2 integer REFERENCES gperson(id), id_speaker3 integer REFERENCES gperson(id), id_group integer REFERENCES ggroup(id), id_calendar integer REFERENCES gcalendar(id)";
 
 	public function __construct($n)
 	{

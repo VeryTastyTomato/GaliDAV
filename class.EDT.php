@@ -20,14 +20,32 @@ class EDT
 	protected $listCourses = null;
 	protected $listModif = null;
 	protected $group=null;
+	protected $subject=null; // Flora: For subject calendars: useful?
 
 	const TABLENAME = "gcalendar";
-	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, is_class_calendar boolean, is_validated_calendar boolean default false, id_current_timetable serial,id_validated_timetable serial";
+	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, is_class_calendar boolean, is_validated_calendar boolean default false";
+	/*Flora : 
+	An EDT or calendar in the GaliDAV database can be a calendar of a class, a group or a subject, since agendav doesn't implements a hierarchy of calendrs. Moreover, a class is linked to a current calendar and a validated calendar. Groups and subjects dont require a validated calendar.
+	
+	It is expected that every change to a current calendar affects all the calendars that are linked to it.
+	See the class Groupe and its table named linkedTo.
+	*/
 
 	// Attribut teacher_owner pour savoir si c'est un EDT de groupe/classe (null), ou EDT d'enseignant (celui-ci sera accessible depuis cet attribut)
-	private $teacherOwner = null;
+	protected $teacherOwner = null;
 	
-	//TODO constructor!!
+	
+	public __construct($Object=null){
+		//Flora: The object O is expected to be a Group or a Subject
+		
+		if(is_a($Object,"Groupe")){
+			//TODO attributs + requêtes SQL
+		}
+		else if(is_a($Object,"Matiere")){
+			//TODO attributs + requêtes SQL
+		}
+	
+	}
 
 	// --- OPERATIONS ---
 	// getters

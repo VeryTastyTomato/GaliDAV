@@ -21,13 +21,11 @@ class EDTClasse extends EDT
 
 	// builders
 	
-	//Flora: The constructor must use the parent constructor
-	/*
+
 	public function __construct(Classe $c)
 	{
-		$this->classe = $c;
+		parent::__construct($C);
 	}
-	*/
 	// getters
 	public function getClasse()
 	{

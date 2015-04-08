@@ -38,13 +38,13 @@ class Personne
 			$query = "";
 			if ($email1 == null)
 			{
-				$query = "INSERT INTO ".self::TABLENAME." (familyName, firstName,date_creation) VALUES ($1, $2,$3)";
+				$query = "INSERT INTO ".self::TABLENAME." (familyName, firstName,date_creation) VALUES ($1, $2,$3);";
 			}
 			else
 			{
 				$this->emailAddress1 = $email1;
 				$params[] = $email1;
-				$query = "INSERT INTO ".self::TABLENAME." (familyName,firstName,date_creation,emailAddress1) VALUES ($1, $2, $3, $4)";
+				$query = "INSERT INTO ".self::TABLENAME." (familyName,firstName,date_creation,emailAddress1) VALUES ($1, $2, $3, $4);";
 			}
 
 			$result = BaseDeDonnees::currentDB()->executeQuery($query,$params);
@@ -55,7 +55,7 @@ class Personne
 			}
 			else
 			{
-				$query = "SELECT id from ".self::TABLENAME." order by date_creation desc ";
+				$query = "SELECT id from ".self::TABLENAME." order by date_creation desc; ";
 				$result = BaseDeDonnees::currentDB()->executeQuery($query);
 				$tmp = pg_fetch_assoc($result);
 				$this->sqlid = $tmp['id'];
@@ -187,7 +187,7 @@ class Personne
 		{
 			$params[] = $this->sqlid;
 			$params[] = $s->toInt();
-			$query = "INSERT INTO ".Statut_personne::TABLENAME." (id_person,status) VALUES ($1, $2)";
+			$query = "INSERT INTO ".Statut_personne::TABLENAME." (id_person,status) VALUES ($1, $2);";
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 
 			if ($result)

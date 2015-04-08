@@ -106,6 +106,7 @@ EDT
 		listModif
 		teacherOwner: Personne
 		group: Groupe
+		subject: Matiere
 	Accesseurs
 		+getGroup():Groupe
 		+getIdTimetable(): Integer
@@ -182,11 +183,13 @@ Système
 		+generateExamList(EDT edt)
 ___________________________________________________________________________
 Groupe
-	Associations
-		listOfStudents: Array (of Personne)
+		
 	Attributes
+		sqlid: Integer
 		name: String
 		isAClass: Boolean
+		timeTable: EDT
+		listOfStudents: Array (of Personne)
 	Constantes
 		const TABLENAME
 		const SQLcolumns
@@ -202,7 +205,7 @@ Groupe
 		+getListOfStudents(): Array (of Personne)
 	Mutateurs
 		+setName(String newName)
-		+setIsAClass(Boolean newIsAClass)
+		-setIsAClass(Boolean newIsAClass)
 		+getTimetable(): EDT
 	Autres fonctions
 		+addStudent(Personne newStudent)
