@@ -16,9 +16,14 @@ class EDTClasse extends EDT
 
 	// --- OPERATIONS ---
 	// constructor
-	public function __construct($newIdTimetable, $newModifiedBy, $newGroup, $newTeacherOwner = null)
+	public function __construct(Classe $c)
 	{
-		parent::__construct($newIdTimetable, $newModifiedBy, $newGroup, $newTeacherOwner);
+		parent::__construct($c);
+	}
+
+	// getters
+	public function getClasse()
+	{
 	}
 
 	// others

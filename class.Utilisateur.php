@@ -20,7 +20,7 @@ class Utilisateur extends Personne
 	protected $passwd = null;
 
 	const TABLENAME = "guser";
-	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) NOT NULL, id_principal integer UNIQUE, password varchar, last_connection timestamp"; //Ce n'est pas ici, qu'on touche au paramètre id_principal
+	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) UNIQUE NOT NULL, id_principal integer UNIQUE, password varchar, last_connection timestamp"; //Ce n'est pas ici, qu'on touche au paramètre id_principal
 
 	// --- OPERATIONS ---
 	// constructeur
@@ -38,7 +38,7 @@ class Utilisateur extends Personne
 			CreateUserAccount($login, $fullname, $passwd, $email1);
 			$params2[] = $this->sqlid;
 			$params2[] = $login;
-			$query = "INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2)";
+			$query = "INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2);";
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params2);
 
 			if (!$result)

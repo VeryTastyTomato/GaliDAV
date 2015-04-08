@@ -109,6 +109,7 @@ EDT
 		#listModif: Array (of )
 		#group: Groupe
 		#teacherOwner: Personne
+		#subject: Matiere
 	Constructeur
 		+__construct(Integer newIdTimetable, Personne newModifiedBy, Groupe newGroup, Enseignant newTeacherOwner = null)
 	Accesseurs
@@ -202,6 +203,8 @@ Groupe
 	Attributes
 		#name: String
 		#isAClass: Boolean
+		#timetable: EDT
+		#sqlid: Integer
 	Constantes
 		const TABLENAME
 		const SQLcolumns
