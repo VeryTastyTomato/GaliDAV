@@ -2,30 +2,29 @@ ___________________________________________________________________________
 Cours
 	Attributs
 		−number: Integer
-		−begin
-		−end
+		−begin: Integer
+		−end: Integer
 		−room: String
 		−typeOfCourse: Type_cours
 		−subject: Matiere
 	Constructeurs
-		+__construct(Matiere m, begin, end)
+		+__construct(Matiere m, Integer begin, Integer end)
 	Accesseurs
 		+getNumber(): Integer
-		+getBegin()
+		+getBegin(): Integer
 		+getBegin_string: String
-		+getEnd()
+		+getEnd(): Integer
 		+getEnd_string: String
 		+getRoom(): String
-		+getSubject()
 		+getTypeOfCourse(): Type_cours
-		+getTypeOfCourse_string(): String
+		+getSubject(): Matiere
 	Mutateurs
 		+setNumber(Integer newNumber)
-		+setBegin(newBegin)
-		+setEnd(newEnd)
+		+setBegin(Integer newBegin)
+		+setEnd(Integer newEnd)
 		+setRoom(String newRoom)
+		+setTypeOfCourse(Type_cours newType)
 		+setSubject(Matiere newSubject)
-		+setTypeOfCourse(Type_cours type)
 	Autres fonctions
 		+integrateInTimetable(EDT timetable)
 		+remove()
@@ -60,7 +59,7 @@ Matière
 		const TABLENAME
 		const SQLcolumns
 	Constructeurs
-		+__construct(name)
+		+__construct(String newName)
 	Accesseurs
 		+getName(): String
 		+getTeachedBy(): Array (of Personne)
@@ -78,43 +77,54 @@ Element_de_maquette
 		−typeOfCourse: Type_cours
 		−numHours: Integer
 	Constructeurs
-		–__construct(Matiere newSubject, Type_cours newTypeOfCourse, Integer newNumHours)
+		+__construct(Matiere newSubject, Type_cours newTypeOfCourse, Integer newNumHours)
 	Accesseurs
+		+getSubject(): Matiere
 		+getTypeOfCourse(): String
 		+getNumHours(): Integer
-		+getSubject(): Matiere
 	Mutateurs
-		+setTypeOfCourse(newTypeOfCourse)
-		+setNumHours(newNumHours)
 		+setSubject(Matiere newSubject)
+		+setTypeOfCourse(Type_cours newTypeOfCourse)
+		+setNumHours(Integer newNumHours)
 
 ___________________________________________________________________________
 Maquette
 	Associations
 		–listOfElemOfClassesModel: Array (of Element_de_maquette)
+	Constructeurs
+		+__construct(Array (of Element_de_maquette) newListOfElemOfClassesModel)
 	Accesseurs
-		–getListOfElemOfClassesModel(): Array (of Element_de_maquette)
+		+getListOfElemOfClassesModel(): Array (of Element_de_maquette)
+	Mutateurs
+		+setListOfElemOfClassesModel(Array (of Element_de_maquette) newListOfElemOfClassesModel)
 	Autres fonctions
-		–addElemOfClassesModel(Element_de_maquette newElem)
-		–removeElemOfClassesModel(Element_de_maquette elemToRemove)
+		+addElemOfClassesModel(Element_de_maquette newElem)
+		+removeElemOfClassesModel(Element_de_maquette elemToRemove)
 ___________________________________________________________________________
 EDT
 	Attributs
-		idTimetable: Integer
-		modifiedBy: Personne
-		listCourses: Array (of Type_cours)
-		listModif
-		teacherOwner: Personne
-		group: Groupe
+		#idTimetable: Integer
+		#modifiedBy: Personne
+		#listCourses: Array (of Type_cours)
+		#listModif: Array (of )
+		#group: Groupe
+		#teacherOwner: Personne
+	Constructeur
+		+__construct(Integer newIdTimetable, Personne newModifiedBy, Groupe newGroup, Enseignant newTeacherOwner = null)
 	Accesseurs
-		+getGroup():Groupe
 		+getIdTimetable(): Integer
 		+getModifiedBy(): Personne
 		+getListCourses(): Array (of Type_cours)
-		+getListModif()
+		+getListModif(): Array (of )
+		+getGroup(): Groupe
 		+getTeacherOwner(): Personne
 	Mutateurs
+		+setIdTimetable(Integer newIdTimetable)
 		+setModifiedBy(Personne newModifiedBy)
+		+setListCourses(Array (of Type_cours) newListCourses)
+		+setListModif(Array (of ) newListModif)
+		+setGroup(Groupe newGroup)
+		+setTeacherOwner(Enseignant teacherOwner)
 	Autres fonctions
 		+extractExams(): Array (of Type_cours)
 		+addCourse(Cours newCourse)
@@ -122,21 +132,24 @@ EDT
 		+emptyModifications()
 ___________________________________________________________________________
 EdT_Classe
-	Fonctions
-		+getClasse() : Groupe
+	Constructeur
+		+__construct(Integer newIdTimetable, Personne newModifiedBy, Groupe newGroup, Enseignant newTeacherOwner = null)
+	Autres fonctions
 		+generatePDF()
 ___________________________________________________________________________
 Modification
 	Attributs
-		−date: Date
+		−date: Integer
 		−madeBy: Utilisateur
 		−courseModified: Cours
+	Constructeur
+		+__construct(Integer newDate, Utilisateur newMadeBy, Cours newCourseModified)
 	Accesseurs		
-		+getDate(): Date
+		+getDate(): Integer
 		+getMadeBy(): Utilisateur
 		+getCourseModified(): Cours
 	Mutateurs
-		+setDate(Date newDate)
+		+setDate(Integer newDate)
 		+setMadeBy(Utilisateur newMadeBy)
 		+setCourseModified(Cours newCourseModified)
 ___________________________________________________________________________
@@ -169,6 +182,8 @@ ___________________________________________________________________________
 Système
 	Attributs
 		−database: BaseDeDonnees
+	Constructeur
+		+__construct(BaseDeDonnees newDatabase)
 	Accesseurs
 		+getDatabase(): BaseDeDonnees
 	Mutateurs
@@ -183,10 +198,10 @@ Système
 ___________________________________________________________________________
 Groupe
 	Associations
-		listOfStudents: Array (of Personne)
+		#listOfStudents: Array (of Personne)
 	Attributes
-		name: String
-		isAClass: Boolean
+		#name: String
+		#isAClass: Boolean
 	Constantes
 		const TABLENAME
 		const SQLcolumns
@@ -194,80 +209,87 @@ Groupe
 		const composedOfSQLcolumns
 		const linkedToTABLENAME
 		const linkedToSQLcolumns
-	Constructeurs
+	Constructeur
 		+__construct(String newName, Boolean newIsAClass)
 	Accesseurs
+		+getListOfStudents(): Array (of Personne)
 		+getName(): String
 		+getIsAClass(): Boolean
-		+getListOfStudents(): Array (of Personne)
 	Mutateurs
+		+setListOfStudents(Array (of Personne) newListOfStudents)
 		+setName(String newName)
 		+setIsAClass(Boolean newIsAClass)
-		+getTimetable(): EDT
 	Autres fonctions
+		+getTimetable(): EDT
 		+addStudent(Personne newStudent)
 		+removeStudent(Personne studentToRemove)
 ___________________________________________________________________________
 Personne
 	Associations
-		status: Array (of Statut_personne)
+		#status: Array (of Statut_personne)
 	Attributs
-		familyName: String
-		firstName: String
-		emailAddress1: String
-		emailAddress2: String
+		#familyName: String
+		#firstName: String
+		#emailAddress1: String
+		#emailAddress2: String
 	Constantes
 		const TABLENAME
 		const SQLcolumns
 	Constructeurs
-		+__construct(String newFamilyName, String newFirstName, String email1=null)
+		+__construct(String newFamilyName = null, String newFirstName = null, String email1 = null)
 	Accesseurs
+		+getAllStatus(): Array (of Statut_personne)
+		+getSqlid(): Integer
 		+getFamilyName(): String
 		+getFirstName(): String
 		+getEmailAddress1(): String
 		+getEmailAddress2(): String
-		+getAllStatus(): Array (of Statut_personne)
 	Mutateurs
+		+setSqlid(Integer newSqlid)
 		+setFamilyName(String newFamilyName)
 		+setFirstName(String newFirsNameName)
 		+setEmailAddress1(String newEmailAddress1)
 		+setEmailAddress2(String newtEmailAddress1)
 		+setAllStatus(Array (of Statut_personne) arrayOfStatus)
 	Autres fonctions
-		+loadFromDB($id = null)
-		+removeFromDB()
 		+addStatus(Statut_personne s)
 		+removeStatus(Statut_personne s)
 		+hasStatus(Statut_personne s): Boolean
+		+loadFromDB(Integer id = null, Boolean can_be_user)
+		+loadFromRessource(ressource)
+		+loadStatusFromRessource(ressource)
+		+removeFromDB()
 		+toHTML(): String
 ___________________________________________________________________________
 Utilisateur (extends Personne)
 	Attributs
-		login: String
-		passwd: String
+		#login: String
+		#passwd: String
 	Constantes
 		const TABLENAME
 		const SQLcolumns
 	Constructeurs
-		+__construct(String familyName=null, String firstName=null, String login=null, String passwd=null,String email1=null)
+		+__construct(String familyName = null, String firstName = null, String login = null, String passwd = null, String email1 = null)
 	Accesseurs
 		+getLogin(): String
+		+getPasswd(): String
 	Fonctions statiques
 		+convertPersonToUser(Personne P, String login, String passwd)
 	Autres fonctions
-		+loadFromDB($login = null)
-		+removeFromDB()
 		+isPassword(String givenPassword): Boolean
+		+setPassword(String givenPassword)
 		+logIn()
 		+logOut()
+		+loadFromDB(login = null, notuseful = null)
+		+removeFromDB()
 		+readTimeTable(EDT e): Boolean
 		+toHTML(): String
 ___________________________________________________________
 Administrateur extends Utilisateur
-	Constructeurs
-		+__construct(String familyName, String firstName, Integer id, String passwd,String email1=null)
+	Constructeur
+		+__construct(String familyName, String firstName, Integer id, String passwd, String email1 = null)
 	Autres fonctions
-		+addUser(String familyName, String firstName, Integer id, String passwd): Utilisateur
+		+addUser(String familyName, String firstName, Integer id, String passwd, String email = null): Utilisateur
 		+convertPersonToUser(Personne p): Utilisateur
 		+addUserCAS(unknownData)
 		+changeUserStatus(Utilisateur u, Statut_personne s, operation)
@@ -277,8 +299,8 @@ Administrateur extends Utilisateur
 		+modifyClass(Classe c, Personne etu, String operation)
 ______________________________________________________________________________
 Secrétaire extends Utilisateur
-	Constructeurs
-		+__construct(String familyName, String firstName, Integer id, String passwd, String email1=null)
+	Constructeur
+		+__construct(String familyName, String firstName, Integer id, String passwd)
 	Autres fonctions
 		+modifyTimeTable(EDT e, Cours c, operation)
 		+addGroup(String name): Groupe
@@ -291,8 +313,8 @@ ________________________________________________________________________________
 Enseignant (extends Utilisateur)
 	Attributs
 		−personalTimetable: EDTClasse
-	Constructeurs
-		+__construct(String familyName, String firstName, Integer id, String passwd, String email1=null)
+	Constructeur
+		+__construct(String familyName, String firstName, Integer id, String passwd)
 	Accesseurs
 		+getPersonalTimetable(): EDTClasse
 	Autres fonctions
@@ -302,7 +324,7 @@ Responsable (extends Utilisateur)
 	Attributs
 		−type: Type_responsable
 	Constructeurs
-		+__construct(String familyName, String firstName, Integer id, String passwd, String email1=null)
+		+__construct(String familyName, String firstName, Integer id, String passwd)
 	Autres fonctions
 		+modifyTimetable(EDT e, Cours c, operation)
 		+addGroup(String name): Groupe
@@ -336,27 +358,3 @@ Statut_personne
 		+toInt()
 	Fonctions statiques
 		+getValue($statut);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

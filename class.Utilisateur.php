@@ -18,17 +18,19 @@ class Utilisateur extends Personne
 	// --- ATTRIBUTES ---
 	protected $login = null;
 	protected $passwd = null;
+
 	const TABLENAME = "guser";
 	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) NOT NULL, id_principal integer UNIQUE, password varchar, last_connection timestamp"; //Ce n'est pas ici, qu'on touche au paramètre id_principal
 
 	// --- OPERATIONS ---
-	// builder
+	// constructeur
 	// Flora NOTE: Ailleurs devra être défini l'accès au CAS
 	// Flora PERSO: Rappel l'appel au constructeur de la classe mère n'est jamais implicite
-	public function __construct($familyName=null, $firstName=null, $login=null, $passwd=null, $email1 = null)
+	public function __construct($familyName = null, $firstName = null, $login = null, $passwd = null, $email1 = null)
 	{
 		parent::__construct($familyName, $firstName, $email1);
-		if( $login!=null and $passwd!=null){
+		if ($login != null and $passwd != null)
+		{
 			$this->login = $login;
 			$this->passwd = $passwd; //Il faut chiffrer le mot de passe pour le sauvegarder
 
@@ -78,19 +80,12 @@ class Utilisateur extends Personne
 		return $this->login;
 	}
 
-	public function isPassword($givenPassword)
+	public function getPasswd()
 	{
-		return $givenPassword == $this->passwd;
+		return $this->passwd;
 	}
 
-	protected function setPassword($givenPassword)
-	{
-		$params[] = ($givenPassword);
-		$params[] = $this->login;
-		$query = "update ".self::TABLENAME." set password=crypt('$1',gen_salt('bf')) where login=$2;";
-		BaseDeDonnees::currentDB()->executeQuery($query, $params);
-	}
-
+	// static functions
 	// Flora NOTE: La fonction ci-dessous peut ne pas être utile finalement
 	static public function convertPersonToUser(Personne $p, $login, $passwd)
 	{
@@ -108,6 +103,20 @@ class Utilisateur extends Personne
 		return $u;
 	}
 
+	// others
+	public function isPassword($givenPassword)
+	{
+		return $givenPassword == $this->passwd;
+	}
+
+	protected function setPassword($givenPassword)
+	{
+		$params[] = ($givenPassword);
+		$params[] = $this->login;
+		$query = "update ".self::TABLENAME." set password=crypt('$1',gen_salt('bf')) where login=$2;";
+		BaseDeDonnees::currentDB()->executeQuery($query, $params);
+	}
+
 	public function logIn()
 	{
 	}
@@ -116,9 +125,9 @@ class Utilisateur extends Personne
 	{
 	}
 	
-	public function loadFromDB($login = null,$notuseful=null)
+	public function loadFromDB($login = null, $notuseful = null)
 	{
-		if($login == null)
+		if ($login == null)
 		{
 			if ($this->login != null)
 			{
@@ -126,7 +135,7 @@ class Utilisateur extends Personne
 			}
 		}
 
-		if($login == null)
+		if ($login == null)
 		{
 			$query = "select * from ".self::TABLENAME.";";
 			$result = BaseDeDonnees::currentDB()->executeQuery($query);
@@ -137,17 +146,16 @@ class Utilisateur extends Personne
 			$params[] = $login;
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params[]);
 		}
-		
-		$this->sqlid=$result['id_person'];
-		$this->login=$result['login'];
+
+		$this->sqlid = $result['id_person'];
+		$this->login = $result['login'];
 		$this->passwd = $result['password']; // Corriger...
-		$query="DELETE FROM ".self::TABLENAME." where id_person=$1;";
-		$params=array($this->sqlid);
+		$query = "DELETE FROM ".self::TABLENAME." where id_person=$1;";
+		$params = array($this->sqlid);
 		$result = BaseDeDonnees::currentDB()->executeQuery($query, $params[]);
-		
+
 		parent::loadFromDB();
 		//TODO valeurs des statuts
-
 	}
 
 	public function removeFromDB()

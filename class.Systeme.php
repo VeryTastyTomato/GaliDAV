@@ -12,18 +12,23 @@ class Systeme
 {
 	// --- ASSOCIATIONS ---
 
-
 	// --- ATTRIBUTES ---
 	private $database = null;
 
 	// --- OPERATIONS ---
-	//getters
+	// constructor
+	public function __construct($newDatabase)
+	{
+		$this->database = $newDatabase;
+	}
+
+	// getters
 	public function getDatabase()
 	{
 		return $this->database;
-	}	
+	}
 
-	//setters
+	// setters
 	public function setDatabase(BaseDeDonnees $newDatabase)
 	{
 		if (!empty($newDatabase))

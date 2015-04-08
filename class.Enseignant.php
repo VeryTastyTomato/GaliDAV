@@ -17,6 +17,7 @@ class Enseignant extends Utilisateur
 	private $personalTimetable = null;
 
 	// --- OPERATIONS ---
+	// constructor
 	public function __construct($familyName, $firstName, $id, $passwd)
 	{
 		parent::__construct($familyName, $firstName, $id, $passwd);
@@ -24,11 +25,13 @@ class Enseignant extends Utilisateur
 		$this->personalTimetable = new EDT();
 	}
 
+	// getters
 	public function getPersonalTimetable()
 	{
 		return $this->personalTimetable;
 	}
 
+	// others
 	public function readPersonalTimetable()
 	{
 		parent::readTimetable($this->personalTimetable);

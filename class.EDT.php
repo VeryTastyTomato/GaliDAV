@@ -19,17 +19,22 @@ class EDT
 	protected $modifiedBy = null;
 	protected $listCourses = null;
 	protected $listModif = null;
-	protected $group=null;
+	protected $group = null;
+	protected $teacherOwner = null; // if it’s a teacher’s timetable, else it’s value is null
 
 	const TABLENAME = "gcalendar";
 	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, is_class_calendar boolean, is_validated_calendar boolean default false, id_current_timetable serial,id_validated_timetable serial";
 
-	// Attribut teacher_owner pour savoir si c'est un EDT de groupe/classe (null), ou EDT d'enseignant (celui-ci sera accessible depuis cet attribut)
-	private $teacherOwner = null;
-	
-	//TODO constructor!!
-
 	// --- OPERATIONS ---
+	// constructor
+	public function __construct($newIdTimetable, $newModifiedBy, $newGroup, $newTeacherOwner = null)
+	{
+		$this->idTimetable = $newIdTimetable;
+		$this->modifiedBy = $newModifiedBy;
+		$this->group = $newGroup;
+		$this->teacherOwner = $newTeacherOwner;
+	}
+
 	// getters
 	public function getIdTimetable()
 	{
@@ -49,24 +54,64 @@ class EDT
 	public function getListModif()
 	{
 		return $this->listModif;
-	}	
-
-	public function getTeacherOwner()
-	{
-		return $this->teacherOwner;
 	}
-	
+
 	public function getGroup()
 	{
 		return $this->group;
 	}
 
+	public function getTeacherOwner()
+	{
+		return $this->teacherOwner;
+	}
+
 	// setters
+	public function setIdTimetable($newIdTimetable)
+	{
+		if (!empty($newIdTimetable))
+		{
+			$this->idTimetable = $newIdTimetable;
+		}
+	}
+
 	public function setModifiedBy($newModifiedBy)
 	{
 		if (!empty($newModifiedBy))
 		{
 			$this->modifiedBy = $newModifiedBy;
+		}
+	}
+
+	public function setListCourses($newListCourses)
+	{
+		if (!empty($newListCourses))
+		{
+			$this->listCourses = $newListCourses;
+		}
+	}
+
+	public function setListModif($newListModif)
+	{
+		if (!empty($newListModif))
+		{
+			$this->listModif = $newListModif;
+		}
+	}
+
+	public function setGroup($newGroup)
+	{
+		if (!empty($newGroup))
+		{
+			$this->group = $newGroup;
+		}
+	}
+
+	public function setTeacherOwner($newTeacherOwner)
+	{
+		if (!empty($newTeacherOwner))
+		{
+			$this->teacherOwner = $newTeacherOwner;
 		}
 	}
 

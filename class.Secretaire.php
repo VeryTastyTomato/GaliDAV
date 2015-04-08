@@ -20,12 +20,14 @@ class Secretaire extends Utilisateur
 	// --- ATTRIBUTES ---
 
 	// --- OPERATIONS ---
+	// constructor
 	public function __construct($familyName, $firstName, $id, $passwd)
 	{
 		parent::__construct($familyName, $firstName, $id, $passwd);
 		$this->addStatus(new Statut_personne(Statut_personne::SECRETARY));
 	}
 
+	// others
 	public function modifyTimetable(EDT $e, Cours $c, $operation)
 	{
 		if ($operation == 'add')

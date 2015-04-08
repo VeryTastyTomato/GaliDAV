@@ -23,7 +23,7 @@ class Cours
 	private $subject = null;
 
 	// --- OPERATIONS ---
-	// builders
+	// constructor
 	public function __construct(Matiere $m, $begin, $end)
 	{
 		if (!is_int($begin))
@@ -72,14 +72,35 @@ class Cours
 		return $this->room;
 	}
 
-	public function getSubject()
-	{
-		return $this->subject;
-	}
-
 	public function getTypeOfCourse()
 	{
 		return $this->getTypeOfCourse;
+	}
+
+	public function getTypeOfCourse_string()
+	{
+		switch($this->typeOfCourse)
+		{
+			case(CM):
+				return "CM";
+			case(TD):
+				return "TD";
+			case(TP):
+				return "TP";
+			case(Examen):
+				return "Partiel";
+			case(Conférence):
+				return "Conférence";
+			case(Rattrapage):
+				return "Rattrapage";
+			default:
+				return "Type inconnu";
+		}
+	}
+
+	public function getSubject()
+	{
+		return $this->subject;
 	}
 
 	// setters
@@ -115,6 +136,14 @@ class Cours
 		}
 	}
 
+	public function setTypeOfCourse($newType)
+	{
+		if (!empty($newType))
+		{
+			$this->typeOfCourse = $newType;
+		}
+	}
+
 	public function setSubject($newSubject)
 	{
 		if (!empty($newSubject))
@@ -123,41 +152,15 @@ class Cours
 		}
 	}
 
-	public function setTypeOfCourse($type)
-	{
-		$this->typeOfCourse = $type;
-	}
-
 	// others
-	public function remove()
-	{
-		// Etienne : accès à la BDD pour la delete ?
-	}
-
 	public function integrateInTimetable(EDT $timetable)
 	{
 		$timetable->addCourse($this);
 	}
 
-	public function getTypeOfCourse_string()
+	public function remove()
 	{
-		switch($this->typeOfCourse)
-		{
-			case(CM):
-				return "CM";
-			case(TD):
-				return "TD";
-			case(TP):
-				return "TP";
-			case(Examen):
-				return "Partiel";
-			case(Conférence):
-				return "Conférence";
-			case(Rattrapage):
-				return "Rattrapage";
-			default:
-				return "Type inconnu";
-		}
+		// Etienne : accès à la BDD pour la delete ?
 	}
 
 	// -- Affichage texte --

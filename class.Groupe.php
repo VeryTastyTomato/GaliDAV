@@ -29,7 +29,7 @@ class Groupe
 	const linkedToSQLcolumns = "id_group serial REFERENCES ggroup(id), id_class serial REFERENCES ggroup(id), constraint ggroup_linked_to_pk PRIMARY KEY(id_group,id_class)";
 
 	// --- OPERATIONS ---
-	// buiders
+	// constructor
 	public function __construct($newName, $newIsAClass)
 	{
 		$this->name = $newName;
@@ -37,6 +37,11 @@ class Groupe
 	}
 
 	// getters
+	public function getListOfStudents()
+	{
+		return $this->listOfStudents;
+	}
+
 	public function getName()
 	{
 		return $this->name;
@@ -47,12 +52,15 @@ class Groupe
 		return $this->isAClass;
 	}
 
-	public function getListOfStudents()
+	// setters
+	public function setListOfStudents($newListOfStudents)
 	{
-		return $this->listOfStudents;
+		if (!empty($newListOfStudents))
+		{
+			$this->listOfStudents = $newListOfStudents;
+		}
 	}
 
-	// setters
 	public function setName($newName)
 	{
 		if (!empty($newName))
@@ -69,6 +77,7 @@ class Groupe
 		}
 	}
 
+	// others
 	public function getTimetable()
 	{
 		$returnValue = null;
@@ -76,7 +85,6 @@ class Groupe
 		return $returnValue;
 	}
 
-	// others
 	public function addStudent($newStudent)
 	{
 		if ($newStudent instanceof Personne)

@@ -15,7 +15,7 @@ class Administrateur extends Utilisateur
 	// --- ATTRIBUTES ---
 
 	// --- OPERATIONS ---
-	// builder
+	// constructor
 	public function __construct($familyName, $firstName, $login, $passwd, $email = null)
 	{
 		parent::__construct($familyName, $firstName, $login, $passwd, $email);
@@ -35,7 +35,7 @@ class Administrateur extends Utilisateur
 	// others
 	public function addUser($familyName, $firstName, $login, $passwd, $email = null)
 	{
-		return new Utilisateur($familyName, $firstName, $login, $passwd,$email);
+		return new Utilisateur($familyName, $firstName, $login, $passwd, $email);
 	}
 
 /*
@@ -66,17 +66,16 @@ class Administrateur extends Utilisateur
 	// Deletes an user but preserves the person and all his/her references
 	public function deleteUser(Utilisateur $u)
 	{
-	
 		//First, the user is removed from dav_principal of davical and guser of galidav
-		$params[]=$u->login;
+		$params[] = $u->login;
 		$query = "remove from dav_principal where username=$1;";
 		$BDD->executeQuery($query, $params);
 		$BDD->close();
 		$query = "delete from ".Utilisateur::TABLENAME." where login=$1;";
 		BaseDeDonnees::currentDB()->executeQuery($query, $params);
-		
+
 		//Flora: TODO Manage the status : a person who cannot access the database can't be an admin/secretary/head. What about Teacher?
-		
+
 		//Then, the object is replaced by a similar object, instance of the class Personne rather than Utilisateur
 		$p = new Person($u->getFamilyName(), $u->getFirstName());
 		$p->setEmailAddress1($u->getEmailAddress1());

@@ -17,10 +17,22 @@ class Maquette
 	// --- ATTRIBUTES ---
 
 	// --- OPERATIONS ---
+	// constructor
+	public function __construct($newListOfElemOfClassesModel)
+	{
+		$this->listOfElemOfClassesModel = $newListOfElemOfClassesModel;
+	}
+
 	// getters
 	public function getListOfElemOfClassesModel()
 	{
 		return $this->listOfElemOfClassesModel;
+	}
+
+	// setters
+	public function setListOfElemOfClassesModel($newListOfElemOfClassesModel)
+	{
+		$this->listOfElemOfClassesModel = $newListOfElemOfClassesModel;
 	}
 
 	// others

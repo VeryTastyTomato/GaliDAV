@@ -20,22 +20,25 @@ class Personne
 	protected $firstName = null;
 	protected $emailAddress1 = null;
 	protected $emailAddress2 = null;
+
 	const TABLENAME = "gperson";
 	const SQLcolumns = "id serial PRIMARY KEY, familyname varchar(30) NOT NULL, firstname varchar(30) NOT NULL, emailaddress1 varchar(60), emailaddress2 varchar(60), date_creation timestamp";
 
 	// --- OPERATIONS ---
-	// builder
-	public function __construct($newFamilyName=null, $newFirstName=null, $email1 = null)
+	// constructor
+	public function __construct($newFamilyName = null, $newFirstName = null, $email1 = null)
 	{
-		if($newFamilyName!=null and $newFirstName!=null)
+		if ($newFamilyName != null and $newFirstName != null)
 		{
 			$this->familyName = $newFamilyName;
 			$this->firstName = $newFirstName;
+
 			$params = array();
 			$params[] = $newFamilyName;
 			$params[] = $newFirstName;
 			$params[] = "'now'";
 			$query = "";
+
 			if ($email1 == null)
 			{
 				$query = "INSERT INTO ".self::TABLENAME." (familyName, firstName,date_creation) VALUES ($1, $2,$3)";
@@ -43,11 +46,12 @@ class Personne
 			else
 			{
 				$this->emailAddress1 = $email1;
+
 				$params[] = $email1;
 				$query = "INSERT INTO ".self::TABLENAME." (familyName,firstName,date_creation,emailAddress1) VALUES ($1, $2, $3, $4)";
 			}
 
-			$result = BaseDeDonnees::currentDB()->executeQuery($query,$params);
+			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 
 			if (!$result)
 			{
@@ -64,6 +68,16 @@ class Personne
 	}
 
 	// getters
+	public function getAllStatus()
+	{
+		return $this->status;
+	}
+
+	public function getSqlid()
+	{
+		return $this->sqlid;
+	}
+
 	public function getFamilyName()
 	{
 		return $this->familyName;
@@ -83,13 +97,16 @@ class Personne
 	{
 		return $this->emailAddress2;
 	}
-	
-	public function getAllStatus()
-	{
-		return $this->status;
-	}
 
 	// setters
+	public function setSqlid($newSqlid)
+	{
+		if (!empty($newSqlid))
+		{
+			$this->sqlid = $newSqlid;
+		}
+	}
+
 	public function setFamilyName($newFamilyName)
 	{
 		if (!empty($newFamilyName))
@@ -116,6 +133,7 @@ class Personne
 			$query = "UPDATE ".self::TABLENAME." set firstName=$1;";
 			$params[] = $newFirstName;
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+
 			if ($result)
 			{
 				$this->firstName = $newFirstName;
@@ -132,6 +150,7 @@ class Personne
 				$query = "UPDATE ".self::TABLENAME." set emailaddress1=$1;";
 				$params[] = $newEmailAddress1;
 				$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+
 				if ($result)
 				{
 					$this->emailAddress1 = $newEmailAddress1;
@@ -181,6 +200,7 @@ class Personne
 		$this->status = $arrayOfStatus;
 	}
 
+	// others
 	public function addStatus(Statut_personne $s)
 	{
 		if (!$this->hasStatus($s))
@@ -232,10 +252,10 @@ class Personne
 
 		return false;
 	}
-	
-public function loadFromDB($id = null, $can_be_user=true)
+
+	public function loadFromDB($id = null, $can_be_user = true)
 	{
-		if($id == null)
+		if ($id == null)
 		{
 			if ($this->sqlid != null)
 			{
@@ -243,30 +263,35 @@ public function loadFromDB($id = null, $can_be_user=true)
 			}
 		}
 
-		if($id == null)
+		if ($id == null)
 		{
-			if($can_be_user){
+			if ($can_be_user)
+			{
 				$query = "select * from ".Personne::TABLENAME.";";
 			}
 			else
 			{
 				$query = "select * from ".Personne::TABLENAME." where id not in (select id_person from ".Utilisateur::TABLENAME.");";
 			}
+
 			$result = BaseDeDonnees::currentDB()->executeQuery($query);
 		}
 		else
 		{
-			if($can_be_user){
+			if ($can_be_user)
+			{
 				$query = "select * from ".Personne::TABLENAME." where id=$1;";
 			}
 			else
 			{
 				$query = "select * from ".Personne::TABLENAME." where id=$1 and not exists (select * from ".Utilisateur::TABLENAME." where id_person=$1);";
 			}
-			$params=array($id);
+
+			$params = array($id);
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
-			$result=pg_fetch_assoc($result);
+			$result = pg_fetch_assoc($result);
 		}
+
 		$this->sqlid = $result['id'];
 		$this->familyName = $result['familyname'];
 		$this->firstName = $result['firstname'];
@@ -274,10 +299,10 @@ public function loadFromDB($id = null, $can_be_user=true)
 		$this->emailAddress2 = $result['emailaddress2'];
 		//TODO valeurs des statuts
 	}
-	
+
 	public function loadFromRessource($ressource)
 	{
-		if(is_array($ressource))
+		if (is_array($ressource))
 		{
 			$this->sqlid = $ressource['id'];
 			$this->familyName = $ressource['familyname'];
@@ -285,30 +310,30 @@ public function loadFromDB($id = null, $can_be_user=true)
 			$this->emailAddress1 = $ressource['emailaddress1'];
 			$this->emailAddress2 = $ressource['emailaddress2'];
 		}
-
-	
 		//Flora: Remarque la valeurs des statuts nest pas chargée
-
 	}
+
 	public function loadStatusFromRessource($ressource)
 	{
-		if(is_array($ressource))
+		if (is_array($ressource))
 		{
 			$this->addStatus(intval($ressource['status']));
 		}
 	}
-	
+
 	public function removeFromDB()
 	{
-		$params=array($this->sqlid);
+		$params = array($this->sqlid);
 		$query = "delete from ".Statut_personne::TABLENAME." where id_person=$1;";
-		BaseDeDonnees::currentDB()->executeQuery($query,$params);
+		BaseDeDonnees::currentDB()->executeQuery($query, $params);
 		$query = "select * from ".Utilisateur::TABLENAME." where id_person=$1;";
-		$ressource=BaseDeDonnees::currentDB()->executeQuery($query,$params);
-		if($ressource){
-			$result=pg_fetch_assoc($ressource);
+		$ressource = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+
+		if ($ressource)
+		{
+			$result = pg_fetch_assoc($ressource);
 			$query = "delete from ".Utilisateur::TABLENAME." where id_person=$1;";
-			BaseDeDonnees::currentDB()->executeQuery($query,$params);
+			BaseDeDonnees::currentDB()->executeQuery($query, $params);
 			$BDD = new BaseDeDonnees("davical_app", "davical");
 			if (!$BDD->connect())
 			{
@@ -316,21 +341,23 @@ public function loadFromDB($id = null, $can_be_user=true)
 			}
 			else
 			{
-				$params=array($result['login']);
+				$params = array($result['login']);
 				$query = "delete from dav_principal where username=$1;";
 				$BDD->executeQuery($query, $params);
 				$BDD->close();
 			}
 		}
+
 		$query = "delete from ".Personne::TABLENAME." where id=$1;";
-		$params=array($this->sqlid);
-		BaseDeDonnees::currentDB()->executeQuery($query,$params);
+		$params = array($this->sqlid);
+		BaseDeDonnees::currentDB()->executeQuery($query, $params);
 	}
 
 	// -- Affichage texte --
 	public function toHTML()
 	{
 		$result = "<p>Nom:&emsp;&emsp; " . $this->familyName . "<br/>Prenom:&emsp; &emsp; " . $this->firstName . "</p>";
+
 		if ($this->getEmailAddress1() != NULL)
 		{
 			$result = $result . "<p>Adresse mail1 :&emsp; <i>" . $this->emailAddress1 . "</i>";

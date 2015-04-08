@@ -12,26 +12,13 @@ class EDTClasse extends EDT
 {
 	// --- ASSOCIATIONS ---
 
-
 	// --- ATTRIBUTES ---
-	//Flora: As I said in the issue, the property shouldn't be specific to EDTclasse
-	//private $classe = null; //"classe" in french because "class" is a keyword in PHP
- 
-	// --- OPERATIONS ---
 
-	// builders
-	
-	//Flora: The constructor must use the parent constructor
-	/*
-	public function __construct(Classe $c)
+	// --- OPERATIONS ---
+	// constructor
+	public function __construct($newIdTimetable, $newModifiedBy, $newGroup, $newTeacherOwner = null)
 	{
-		$this->classe = $c;
-	}
-	*/
-	// getters
-	public function getClasse()
-	{
-		return $this->getGroupe() //Flora: As I said in the issue, the property group/classe shouldn't be specific to EDTclasse
+		parent::__construct($newIdTimetable, $newModifiedBy, $newGroup, $newTeacherOwner);
 	}
 
 	// others

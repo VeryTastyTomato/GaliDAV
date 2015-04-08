@@ -20,7 +20,7 @@ class Element_de_maquette
 	private $numHours = null;
 
 	// --- OPERATIONS ---
-	// builders
+	// constructor
 	public function __construct($newSubject, $newTypeOfCourse, $newNumHours)
 	{
 		$this->subject = $newSubject;
@@ -29,6 +29,11 @@ class Element_de_maquette
 	}
 
 	// getters
+	public function getSubject()
+	{
+		return $this->subject;
+	}
+
 	public function getTypeOfCourse()
 	{
 		return $this->typeOfCourse;
@@ -39,12 +44,19 @@ class Element_de_maquette
 		return $this->numHours;
 	}
 
-	public function getSubject()
+	// setters
+	public function setSubject($newSubject)
 	{
-		return $this->subject;
+		if ($newSubject instanceof Matiere)
+		{
+			$this->subject = $newSubject;
+		}
+		else
+		{
+			echo 'Erreur dans la méthode setSubject() de la classe Element_de_maquette : l’argument donné n’est pas une matière.';
+		}
 	}
 
-	// setters
 	public function setTypeOfCourse($newTypeOfCourse)
 	{
 		if (!empty($newTypeOfCourse))
@@ -58,18 +70,6 @@ class Element_de_maquette
 		if (!empty($newNumHours))
 		{
 			$this->numHours = $newNumHours;
-		}
-	}
-
-	public function setSubject($newSubject)
-	{
-		if ($newSubject instanceof Matiere)
-		{
-			$this->subject = $newSubject;
-		}
-		else
-		{
-			echo 'Erreur dans la méthode setSubject() de la classe Element_de_maquette : l’argument donné n’est pas une matière.';
 		}
 	}
 }

@@ -15,20 +15,22 @@ class Matiere
 	// --- ATTRIBUTES ---
 	private $name = null;
 	private $teachedBy = array();
-	
+
 	const TABLENAME = "gsubject";
 	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, id_speaker1 serial REFERENCES gperson(id), id_speaker2 serial REFERENCES gperson(id), id_speaker3 serial REFERENCES gperson(id), id_group serial REFERENCES ggroup(id), id_calendar serial REFERENCES gcalendar(id)";
 
-	public function __construct($n)
+	// --- OPERATIONS ---
+	// constructor
+	public function __construct($newName)
 	{
-		if (!is_string($n))
+		if (!is_string($newName))
 		{
-			$n = "Pas de nom";
+			$newName = "Pas de nom";
 		}
-		$this->name = $n;
+
+		$this->name = $newName;
 	}
 
-	// --- OPERATIONS ---
 	// getters
 	public function getName()
 	{
@@ -38,19 +40,6 @@ class Matiere
 	public function getTeachedBy()
 	{
 		return $this->teachedBy;
-	}
-
-	public function isTeachedBy(Personne $P)
-	{
-		foreach($this->teachedBy as $person)
-		{
-			if ($person == $P)
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	// setters
@@ -68,6 +57,20 @@ class Matiere
 		{
 			$this->name = $newTeachedBy;
 		}
+	}
+
+	// others
+	public function isTeachedBy(Personne $P)
+	{
+		foreach($this->teachedBy as $person)
+		{
+			if ($person == $P)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public function addTeacher(Personne $P)

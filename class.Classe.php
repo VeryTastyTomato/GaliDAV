@@ -20,7 +20,7 @@ class Classe extends Groupe
 	// --- ATTRIBUTES ---
 
 	// --- OPERATIONS ---
-	// builders
+	// constructor
 	public function __construct($newName)
 	{
 		parent::__construct($newName, true);

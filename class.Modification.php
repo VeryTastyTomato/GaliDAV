@@ -19,6 +19,14 @@ class Modification
 	private $courseModified = null;
 
 	// --- OPERATIONS ---
+	// constructor
+	public function __constructor($newDate, $newMadeBy, $newCourseModified)
+	{
+		$this->date = $newDate;
+		$this->madeBy = $newMadeBy;
+		$this->courseModified = $newCourseModified;
+	}
+
 	// getters
 	public function getDate()
 	{
