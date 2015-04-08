@@ -16,8 +16,8 @@ class Utilisateur extends Personne
 	// --- ASSOCIATIONS ---
 
 	// --- ATTRIBUTES ---
-	protected $id = null;
-	private $passwd = null;
+	protected $login = null;
+	protected $passwd = null;
 	const TABLENAME = "guser";
 	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) NOT NULL, id_principal integer UNIQUE, password varchar, last_connection timestamp"; //Ce n'est pas ici, qu'on touche au paramètre id_principal
 
@@ -29,7 +29,7 @@ class Utilisateur extends Personne
 	{
 		parent::__construct($familyName, $firstName, $email1);
 		if( $login!=null and $passwd!=null){
-			$this->id = $login;
+			$this->login = $login;
 			$this->passwd = $passwd; //Il faut chiffrer le mot de passe pour le sauvegarder
 
 			$fullname = $familyName." ".$firstName;
@@ -73,9 +73,9 @@ class Utilisateur extends Personne
 	}
 
 	// getters
-	public function getId()
+	public function getLogin()
 	{
-		return $this->id;
+		return $this->login;
 	}
 
 	public function isPassword($givenPassword)
@@ -86,7 +86,7 @@ class Utilisateur extends Personne
 	protected function setPassword($givenPassword)
 	{
 		$params[] = ($givenPassword);
-		$params[] = $this->id;
+		$params[] = $this->login;
 		$query = "update ".self::TABLENAME." set password=crypt('$1',gen_salt('bf')) where login=$2;";
 		BaseDeDonnees::currentDB()->executeQuery($query, $params);
 	}
@@ -184,7 +184,7 @@ class Utilisateur extends Personne
 	// Affichage texte
 	public function toHTML()
 	{
-		$result = "<b>ID: &emsp;&emsp;" . $this->id . "</b><br/>";
+		$result = "<b>ID: &emsp;&emsp;" . $this->login . "</b><br/>";
 		$result = $result.parent::toHTML();
 
 		return $result;

@@ -210,12 +210,12 @@ Groupe
 ___________________________________________________________________________
 Personne
 	Associations
-		−status: Array (of Statut_personne)
+		status: Array (of Statut_personne)
 	Attributs
-		−familyName: String
-		−firstName: String
-		−emailAddress1: String
-		−emailAddress2: String
+		familyName: String
+		firstName: String
+		emailAddress1: String
+		emailAddress2: String
 	Constantes
 		const TABLENAME
 		const SQLcolumns
@@ -243,17 +243,17 @@ Personne
 ___________________________________________________________________________
 Utilisateur (extends Personne)
 	Attributs
-		−id: Integer
-		−passwd: String
+		login: String
+		passwd: String
 	Constantes
 		const TABLENAME
 		const SQLcolumns
 	Constructeurs
-		+__construct(String familyName, String firstName, Integer id, String passwd,String email1=null)
+		+__construct(String familyName=null, String firstName=null, String login=null, String passwd=null,String email1=null)
 	Accesseurs
-		+getId(): Integer
+		+getLogin(): String
 	Fonctions statiques
-		+convertPersonToUser(Personne P, Integer id, String passwd)
+		+convertPersonToUser(Personne P, String login, String passwd)
 	Autres fonctions
 		+loadFromDB($login = null)
 		+removeFromDB()
