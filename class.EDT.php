@@ -14,17 +14,20 @@ class EDT
 {
 	// --- ASSOCIATIONS ---
 
-	// --- ATTRIBUTES ---
-	private $idTimetable = null;
-	private $modifiedBy = null;
-	private $listCourses = null;
-	private $listModif = null;
+	// --- ATTRIBUTES --- //Flora: Attributes shouldn't be private since they are used by inheriting classes
+	protected $idTimetable = null;
+	protected $modifiedBy = null;
+	protected $listCourses = null;
+	protected $listModif = null;
+	protected $group=null;
 
 	const TABLENAME = "gcalendar";
 	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, is_class_calendar boolean, is_validated_calendar boolean default false, id_current_timetable serial,id_validated_timetable serial";
 
 	// Attribut teacher_owner pour savoir si c'est un EDT de groupe/classe (null), ou EDT d'enseignant (celui-ci sera accessible depuis cet attribut)
 	private $teacherOwner = null;
+	
+	//TODO constructor!!
 
 	// --- OPERATIONS ---
 	// getters
@@ -51,6 +54,11 @@ class EDT
 	public function getTeacherOwner()
 	{
 		return $this->teacherOwner;
+	}
+	
+	public function getGroup()
+	{
+		return $this->group;
 	}
 
 	// setters

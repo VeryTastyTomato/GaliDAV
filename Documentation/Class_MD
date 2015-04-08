@@ -100,12 +100,14 @@ Maquette
 ___________________________________________________________________________
 EDT
 	Attributs
-		−idTimetable: Integer
-		−modifiedBy: Personne
-		−listCourses: Array (of Type_cours)
-		−listModif
-		−teacherOwner: Personne
+		idTimetable: Integer
+		modifiedBy: Personne
+		listCourses: Array (of Type_cours)
+		listModif
+		teacherOwner: Personne
+		group: Groupe
 	Accesseurs
+		+getGroup():Groupe
 		+getIdTimetable(): Integer
 		+getModifiedBy(): Personne
 		+getListCourses(): Array (of Type_cours)
@@ -121,6 +123,7 @@ EDT
 ___________________________________________________________________________
 EdT_Classe
 	Fonctions
+		+getClasse() : Groupe
 		+generatePDF()
 ___________________________________________________________________________
 Modification
