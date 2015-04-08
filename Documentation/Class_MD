@@ -183,10 +183,10 @@ Système
 ___________________________________________________________________________
 Groupe
 	Associations
-		–listOfStudents: Array (of Personne)
+		listOfStudents: Array (of Personne)
 	Attributes
-		−name: String
-		−isAClass: Boolean
+		name: String
+		isAClass: Boolean
 	Constantes
 		const TABLENAME
 		const SQLcolumns

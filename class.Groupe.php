@@ -13,11 +13,11 @@ require_once('class.Personne.php');
 class Groupe
 {
 	// --- ASSOCIATIONS ---
-	private $listOfStudents = array();
+	protected $listOfStudents = array();
 
 	// --- ATTRIBUTES ---
-	private $name = null;
-	private $isAClass = null;
+	protected $name = null;
+	protected $isAClass = null;
 	
 	const TABLENAME = "ggroup";
 	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, is_class boolean not null DEFAULT false, id_current_timetable serial REFERENCES gcalendar(id),id_validated_timetable serial REFERENCES gcalendar(id)";
