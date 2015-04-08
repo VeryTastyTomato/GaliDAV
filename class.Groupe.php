@@ -10,30 +10,45 @@ require_once('class.Classe.php');
 require_once('class.EDT.php');
 require_once('class.Personne.php');
 
+/*flora: TODO  -Ecriture dans la BDD dans chaque setter
+		-loadFromBDD()
+		*/
+
 class Groupe
 {
 	// --- ASSOCIATIONS ---
 	protected $listOfStudents = array();
 
-	// --- ATTRIBUTES ---
+	// --- ATTRIBUTES ---//Flora: Attributes shouldn't be private since they are used by inheriting classes
 	protected $name = null;
 	protected $isAClass = null;
+	protected $timeTable=null;
+	protected $sqlid=null;
 	
 	const TABLENAME = "ggroup";
-	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, is_class boolean not null DEFAULT false, id_current_timetable serial REFERENCES gcalendar(id),id_validated_timetable serial REFERENCES gcalendar(id)";
+	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) UNIQUE NOT NULL, is_class boolean not null DEFAULT false, id_current_timetable integer REFERENCES gcalendar(id),id_validated_timetable integer REFERENCES gcalendar(id)";
 
 	const composedOfTABLENAME = "ggroup_composed_of";
-	const composedOfSQLcolumns = "id_person serial REFERENCES gperson(id), id_group serial REFERENCES ggroup(id), constraint ggroup_composed_of_pk PRIMARY KEY(id_person,id_group)";
+	const composedOfSQLcolumns = "id_person integer REFERENCES gperson(id), id_group integer REFERENCES ggroup(id), constraint ggroup_composed_of_pk PRIMARY KEY(id_person,id_group)";
 
 	const linkedToTABLENAME = "ggroup_linked_to";
-	const linkedToSQLcolumns = "id_group serial REFERENCES ggroup(id), id_class serial REFERENCES ggroup(id), constraint ggroup_linked_to_pk PRIMARY KEY(id_group,id_class)";
+	const linkedToSQLcolumns = "id_group integer REFERENCES ggroup(id), id_class integer REFERENCES ggroup(id), constraint ggroup_linked_to_pk PRIMARY KEY(id_group,id_class)";
 
 	// --- OPERATIONS ---
-	// buiders
-	public function __construct($newName, $newIsAClass)
+	// builders
+	public function __construct($newName=null, $newIsAClass=false)
 	{
-		$this->name = $newName;
-		$this->isAClass = $newIsAClass;
+		if($newName!=null){
+			$this->name = $newName;
+			$this->isAClass = $newIsAClass;
+			$query="insert into ". self::TABLENAME." (name,is_class) VALUES ($1,$newIsAClass);"
+			$params[]==$newName;
+			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+			$query="select id from ". self::TABLENAME." where name=$1;"
+			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+			$result=pg_fetch_assoc($result);
+			$this->sqlid=$result['id'];
+		}
 	}
 
 	// getters
@@ -51,6 +66,10 @@ class Groupe
 	{
 		return $this->listOfStudents;
 	}
+	public getId()
+	{
+		return $this->sqlid;
+	}
 
 	// setters
 	public function setName($newName)
@@ -61,7 +80,8 @@ class Groupe
 		}
 	}
 
-	public function setIsAClass($newIsAClass)
+	//Flora: this method is declared private because the attribute associated shouldn't change in time (eg: A group wont suddenly become a class). 
+	private function setIsAClass($newIsAClass)
 	{
 		if (!empty($newIsAClass))
 		{
