@@ -63,25 +63,30 @@ class Administrateur extends Utilisateur
 		}
 	}
 
-	// Flora: On veut supprimer le compte utilisateur mais pas la personne
+	// Deletes an user but preserves the person and all his/her references
 	public function deleteUser(Utilisateur $u)
 	{
+	
+		//First, the user is removed from dav_principal of davical and guser of galidav
 		$params[]=$u->login;
 		$query = "remove from dav_principal where username=$1;";
-			$BDD->executeQuery($query, $params);
-			$BDD->close();
-			$query = "delete from ".self::TABLENAME." where id_person=".$this->sqlid.";";
+		$BDD->executeQuery($query, $params);
+		$BDD->close();
+		$query = "delete from ".Utilisateur::TABLENAME." where login=$1;";
+		BaseDeDonnees::currentDB()->executeQuery($query, $params);
+		
+		//Flora: TODO Manage the status : a person who cannot access the database can't be an admin/secretary/head. What about Teacher?
+		
+		//Then, the object is replaced by a similar object, instance of the class Personne rather than Utilisateur
 		$p = new Person($u->getFamilyName(), $u->getFirstName());
 		$p->setEmailAddress1($u->getEmailAddress1());
 		$p->setEmailAddress2($u->getEmailAddress2());
 		$u = $p;
 
 		return $u;
-		
-		$query=
-		// Flora TODO Adapter l'entrée de la BDD
 	}
 
+	//Deletes a person (the object and the entries in the database)
 	public function deletePerson(Personne $p)
 	{
 		$p->removeFromDB();
