@@ -24,7 +24,7 @@ class EDT
 	protected $subject = null; // Flora: For subject calendars: useful?
 
 	const TABLENAME = "gcalendar";
-	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, is_class_calendar boolean, is_validated_calendar boolean default false";
+	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, is_class_calendar boolean, is_validated_calendar boolean default false, is_being_modified_by integer REFERENCES guser(id_person)";
 	/*Flora : 
 	An EDT or calendar in the GaliDAV database can be a calendar of a class, a group or a subject, since agendav doesn't implements a hierarchy of calendrs. Moreover, a class is linked to a current calendar and a validated calendar. Groups and subjects dont require a validated calendar.
 	
@@ -32,6 +32,16 @@ class EDT
 	See the class Groupe and its table named linkedTo.
 	*/
 
+/* TODO -containsCourse
+		-hasModification
+		-loadCourseFromRessource
+		-loadModificationFromRessource
+		
+		-loadFromDB
+		-loadFromRessource
+		-removeFromDB
+*/
+		
 	// --- OPERATIONS ---
 	// constructor
 	public function __construct($Object = null)
@@ -78,61 +88,59 @@ class EDT
 	}
 
 	// setters
-	public function setIdTimetable($newIdTimetable)
+	protected function setIdTimetable($newIdTimetable)
 	{
 		if (!empty($newIdTimetable))
 		{
 			$this->idTimetable = $newIdTimetable;
+			//TODO low priority: SQL query
 		}
 	}
 
-	public function setModifiedBy($newModifiedBy)
+	public function setModifiedBy(Personne $newModifiedBy=null)
 	{
 		if (!empty($newModifiedBy))
 		{
 			$this->modifiedBy = $newModifiedBy;
+			//TODO SQL query
 		}
+		//TODO a different SQL query //The timetable isn't being modified
 	}
 
-	public function setListCourses($newListCourses)
+	public function setListCourses($newListCourses=null)
 	{
-		if (!empty($newListCourses))
-		{
-			$this->listCourses = $newListCourses;
-		}
+		//TODO
 	}
 
-	public function setListModif($newListModif)
+	public function setListModif(Modification $newListModif=null)
 	{
-		if (!empty($newListModif))
-		{
-			$this->listModif = $newListModif;
-		}
+		//TODO
 	}
 
-	public function setGroup($newGroup)
+	public function setGroup(Groupe $newGroup)
 	{
-		if (!empty($newGroup))
-		{
-			$this->group = $newGroup;
-		}
+		$this->group = $newGroup;
+		//TODO SQL query
 	}
 
-	public function setTeacherOwner($newTeacherOwner)
+	public function setTeacherOwner(Enseignant $newTeacherOwner=null)
 	{
 		if (!empty($newTeacherOwner))
 		{
 			$this->teacherOwner = $newTeacherOwner;
+			//TODO SQL query
 		}
+		//TODO SQL query
 	}
 
 	// others
 	public function extractExams()
 	{
+	
 		$examList = array();
 		foreach ($this->listCourses as $tempCourse)
 		{
-			if ($tempCourse->getTypeOfCourse() == Examen)
+			if ($tempCourse->getTypeOfCourse() == Examen)//TODO : Modify
 			{
 				$examList[] = $tempCourse;
 			}
@@ -141,43 +149,31 @@ class EDT
 		return $examList;
 	}
 
-	public function addCourse($newCourse)
+	public function addCourse(Cours $newCourse)
 	{
-		if ($newCourse instanceof Cours)
-		{
 			$this->listCourses[] = $newCourse;
-		}
-		else
-		{
-			echo 'Erreur dans la méthode addCourse() de la classe EDT : l’argument donné n’est pas un cours.';
-		}
+			//TODO SQL query
 	}
 
-	public function removeCourse($courseToRemove)
+	public function removeCourse(Cours $courseToRemove)
 	{
-		$indice;
-
-		if ($courseToRemove instanceof Cours)
+	
+		//TODO SQL queries
+		$indice = array_search($courseToRemove, $this->listCourses);
+		if ($indice !== false)
 		{
-			$indice = array_search($courseToRemove, $this->listCourses);
-			if ($indice !== false)
-			{
-				unset($this->listCourses[$indice]);
-			}
-			else
-			{
-				echo 'Le cours n’est pas dans l’emploi du temps.';
-			}
+			unset($this->listCourses[$indice]);
 		}
 		else
 		{
-			echo 'Erreur dans la méthode removeCourse() de la classe EDT : l’argument donné n’est pas un cours.';
+			echo 'Le cours n’est pas dans l’emploi du temps.';
 		}
 	}
 
-	public function emptyModifications()
+	public function clearModifications()
 	{
 		$this->listModif = array();
+		//TODO SqlQueries
 	}
 }
 ?>

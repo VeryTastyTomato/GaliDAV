@@ -10,10 +10,6 @@ require_once('class.Classe.php');
 require_once('class.EDT.php');
 require_once('class.Personne.php');
 
-/*flora: TODO  
-		-loadFromBDD()
-		*/
-
 class Groupe
 {
 	
@@ -75,7 +71,14 @@ class Groupe
 	}
 	
 	public function isLinkedTo(Group $G){
-		//TODO
+		foreach ($this->listOfLinkedGroups as $oneGroup)
+		{
+			if ($oneGroup == $G)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
@@ -119,7 +122,17 @@ class Groupe
 	
 	public function setListOfLinkedGroups($newListOfGroups=null)
 	{
-		//TODO
+		foreach ($this->listOfLinkedGroups as $oneGroup)
+		{
+			$this->removeLinkedGroup($oneGroup);
+		}
+		if(is_array($newListOfGroups))
+		{
+			foreach ($newListOfGroupq as $aGroup)
+			{
+				$this->addLinkedGroup($aGroup);
+			}
+		}
 	}
 	
 	//Flora: this method is declared protected because the name of a group shouldn't change in time (or at least, groups should have different names)
@@ -178,7 +191,6 @@ class Groupe
 				echo("GaliDAV Error: Insertion in table ".self::composedOfTABLENAME." failed.<br/>(Query: $query )");
 			}			
 		}
-		
 	}
 
 	public function removeStudent(Personne $studentToRemove)
@@ -199,13 +211,56 @@ class Groupe
 		}
 	}
 	
-	public function addLinkedGroup(Groupe G)
+	public function addLinkedGroup(Groupe $G)
 	{
-	//TODO
+		if (!$this->isLinkedTo($G)){
+		
+			$params[] = $G->sqlid;
+			$params[] = $this->sqlid;
+			$query = "select * from ".self::linkedToTABLENAME." where (id_class=$1 and id_group=$2) or (id_class=$1 and id_group=$2);";
+			if(BaseDeDonnees::currentDB()->executeQuery($query, $params))
+			{
+				$this->listOfLinkedGroups[] = $G;
+				//there's nothing more to do since the DB seems to contain a link between the 2 groups
+				//$G should already have $this in its listOfLinkedGroups array.
+			}
+			else
+			{
+				if($this->isAClass){
+					$query = "INSERT INTO ".self::linkedToTABLENAME." (id_class,id_group) VALUES ($2, $1);";
+				}else{
+					$query = "INSERT INTO ".self::linkedToTABLENAME." (id_class,id_group) VALUES ($1, $2);";	
+				}
+				$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+				if ($result)
+				{
+					$this->listOfLinkedGroups[] = $G;
+					$G->addLinkedGroup($this);
+				}
+				else {
+					echo("GaliDAV Error: Insertion in table ".self::linkedToTABLENAME." failed.<br/>(Query: $query )");
+				}			
+			}
+		}
 	}
-	public function removeLinkedGroup(Groupe G){
-		//TODO
+	public function removeLinkedGroup(Groupe $G){
+		if ($this->isLinkedTo($G))
+		{
+			$query = "DELETE FROM ".self::linkedToTABLENAME." where (id_class=$1 and id_group=$2) or (id_class=$1 and id_group=$2);";
+
+			if (BaseDeDonnees::currentDB()->executeQuery($query))
+			{	
+				//Flora: We have already checked the array contains the group to remove
+				unset($this->listOfLinkedGroups[array_search($G, $this->listOfLinkedGroups)]);
+			}
+			else 
+			{
+				//No error shown because it could happen the entry has already been removed by the group $G
+			}
+			$G->removeLinkedGroup($this);
+		}
 	}
+	
 	public function loadFromDB($id = null, $can_be_class = true)
 	{
 		if ($id == null)
@@ -250,7 +305,7 @@ class Groupe
 		$this->isAClass = $result['is_class'];
 		
 		//Flora: TODO -implement constructor and loadFromDB in class EDT
-		//			-load students and linked groups
+
 		/*
 		if(is_int($result['id_current_timetable'])
 		{

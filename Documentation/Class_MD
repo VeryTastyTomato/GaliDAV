@@ -109,17 +109,17 @@ class EDT
 		+getGroup(): Groupe
 		+getTeacherOwner(): Personne
 	Mutateurs
-		+setIdTimetable(Integer newIdTimetable)
-		+setModifiedBy(Personne newModifiedBy)
-		+setListCourses(Array (of Type_cours) newListCourses)
-		+setListModif(Array (of ) newListModif)
+		#setIdTimetable(Integer newIdTimetable)
+		+setModifiedBy(Personne newModifiedBy=null)
+		+setListCourses(Array (of Type_cours) newListCourses=null)
+		+setListModif(Array (of ) newListModif=null)
 		+setGroup(Groupe newGroup)
-		+setTeacherOwner(Enseignant teacherOwner)
+		+setTeacherOwner(Enseignant teacherOwner=null)
 	Autres fonctions
 		+extractExams(): Array (of Type_cours)
 		+addCourse(Cours newCourse)
 		+removeCourse(Cours courseToRemove)
-		+emptyModifications()
+		+clearModifications()
 ___________________________________________________________________________
 class EdT_Classe extends EDT
 	Constructeur
