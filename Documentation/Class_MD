@@ -207,18 +207,27 @@ class Groupe
 		+__construct(String newName, Boolean newIsAClass)
 	Accesseurs
 		+getListOfStudents(): Array (of Personne)
+		+getListOfLinkedGroups(): Array (of Group)
 		+getName(): String
 		+getIsAClass(): Boolean
 		
 	Mutateurs
-		+setListOfStudents(Array (of Personne) newListOfStudents)
-		+setName(String newName)
+		+setListOfStudents(Array (of Personne) newListOfStudents=null)
+		+setListOfLinkedGroups(Array (of Group) newListOfGroup=null)
+		#setName(String newName)
 		-setIsAClass(Boolean newIsAClass)
 	Autres fonctions
 		+containsStudent(Personne student): Boolean
+		+isLinkedTo(Group G): Boolean
 		+getTimetable(): EDT
 		+addStudent(Personne newStudent)
 		+removeStudent(Personne studentToRemove)
+		+addLinkedGroup(Groupe G)
+		+removeLinkedGroup(Groupe G)
+		+loadFromDB(Integer id = null, Boolean can_be_user=true)
+		+loadFromRessource(ressource)
+		+loadStudentFromRessource(ressource)
+		+loadLinkedGroupFromRessource(ressource)
 ___________________________________________________________________________
 class Classe extends Groupe
 	Associations
@@ -253,7 +262,7 @@ class Personne
 		+getEmailAddress1(): String
 		+getEmailAddress2(): String
 	Mutateurs
-		+setSqlid(Integer newSqlid)
+		#setSqlid(Integer newSqlid)
 		+setFamilyName(String newFamilyName)
 		+setFirstName(String newFirsNameName)
 		+setEmailAddress1(String newEmailAddress1)
@@ -263,7 +272,7 @@ class Personne
 		+addStatus(Statut_personne s)
 		+removeStatus(Statut_personne s)
 		+hasStatus(Statut_personne s): Boolean
-		+loadFromDB(Integer id = null, Boolean can_be_user)
+		+loadFromDB(Integer id = null, Boolean can_be_user=true)
 		+loadFromRessource(ressource)
 		+loadStatusFromRessource(ressource)
 		+removeFromDB()

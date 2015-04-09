@@ -10,7 +10,7 @@ require_once('class.Classe.php');
 require_once('class.EDT.php');
 require_once('class.Personne.php');
 
-/*flora: TODO  -Ecriture dans la BDD dans chaque setter
+/*flora: TODO  
 		-loadFromBDD()
 		*/
 
@@ -58,6 +58,11 @@ class Groupe
 		return $this->listOfStudents;
 	}
 
+	public function getListOfLinkedGroups()
+	{
+		return $this->listOfLinkedGroups;
+	}
+
 	public function containsStudent(Personne $S){
 		foreach ($this->listOfStudents as $oneStudent)
 		{
@@ -68,6 +73,11 @@ class Groupe
 		}
 		return false;
 	}
+	
+	public function isLinkedTo(Group $G){
+		//TODO
+	}
+	
 	
 	public function getName()
 	{
@@ -92,16 +102,24 @@ class Groupe
 	}
 	
 	// setters
-	public function setListOfStudents($newListOfStudents)
+	public function setListOfStudents($newListOfStudents=null)
 	{
 		foreach ($this->listOfStudents as $oneStudent)
 		{
 			$this->removeStudent($oneStudent);
 		}
-		foreach ($newListOfStudents as $aStudent)
+		if(is_array($newListOfStudents))
 		{
-			$this->addStudent($aStudent);
+			foreach ($newListOfStudents as $aStudent)
+			{
+				$this->addStudent($aStudent);
+			}
 		}
+	}
+	
+	public function setListOfLinkedGroups($newListOfGroups=null)
+	{
+		//TODO
 	}
 	
 	//Flora: this method is declared protected because the name of a group shouldn't change in time (or at least, groups should have different names)
@@ -140,9 +158,8 @@ class Groupe
 		}
 	}
 
-	// others
+	// Other Methods -------------------------------------------
 	
-
 	public function addStudent(Personne $newStudent)
 	{
 		//Flora : TODO less prioritary -> check the person has a student. Not a real problem for the moment.
@@ -181,6 +198,180 @@ class Groupe
 			}
 		}
 	}
+	
+	public function addLinkedGroup(Groupe G)
+	{
+	//TODO
+	}
+	public function removeLinkedGroup(Groupe G){
+		//TODO
+	}
+	public function loadFromDB($id = null, $can_be_class = true)
+	{
+		if ($id == null)
+		{
+			if ($this->sqlid != null)
+			{
+				$id = $this->sqlid;
+			}
+		}
+
+		if ($id == null)
+		{
+			if ($can_be_class)
+			{
+				$query = "select * from ".self::TABLENAME.";";
+			}
+			else
+			{
+				$query = "select * from ".self::TABLENAME." where is_class=false";
+			}
+
+			$result = BaseDeDonnees::currentDB()->executeQuery($query);
+		}
+		else
+		{
+			if ($can_be_user)
+			{
+				$query = "select * from ".Personne::TABLENAME." where id=$1;";
+			}
+			else
+			{
+				$query = "select * from ".Personne::TABLENAME." where id=$1 and is_class=false;";
+			}
+
+			$params = array($id);
+			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+			$result = pg_fetch_assoc($result);
+		}
+
+		$this->sqlid = $result['id'];
+		$this->name = $result['name'];
+		$this->isAClass = $result['is_class'];
+		
+		//Flora: TODO -implement constructor and loadFromDB in class EDT
+		//			-load students and linked groups
+		/*
+		if(is_int($result['id_current_timetable'])
+		{
+			$this->timetable =new EDT();
+			($this->timetable)->loadFromDB($result['id_current_timetable']);
+		}
+		*/
+		$this->ListOfStudents=null;
+		$query="select * from ".self::composedOfTABLENAME." where id_group=".$this->sqlid.";";
+		$result = BaseDeDonnees::currentDB()->executeQuery($query);
+		$ressource = pg_fetch_assoc($result);
+		while($ressource)
+		{
+			$this->loadStudentFromRessource($ressource);
+			$ressource = pg_fetch_assoc($result);	
+		}
+		
+		$this->ListOfLinkedGroups=null;
+		$query="select * from ".self::linkedToTABLENAME." where id_group=".$this->sqlid.";";
+		$result = BaseDeDonnees::currentDB()->executeQuery($query);
+		$ressource = pg_fetch_assoc($result);
+		while($ressource)
+		{
+			$this->loadLinkedGroupFromRessource($ressource);
+			$ressource = pg_fetch_assoc($result);	
+		}		
+	}
+
+	public function loadFromRessource($ressource)
+	{
+		if (is_array($ressource))
+		{
+			$this->sqlid = $ressource['id'];
+			$this->name = $ressource['name'];
+			$this->isAClass = $ressource['is_class'];
+			//Flora: TODO -implement constructor and loadFromDB in class EDT
+			/*
+			if(is_int($result['id_current_timetable'])
+			{
+				$this->timetable =new EDT();
+				($this->timetable)->loadFromDB(intval($ressource['id_current_timetable']));
+			}
+			*/
+			$this->ListOfStudents=null;
+			$query="select * from ".self::composedOfTABLENAME." where id_group=".$this->sqlid.";";
+			$result = BaseDeDonnees::currentDB()->executeQuery($query);
+			$ressource = pg_fetch_assoc($result);
+			while($ressource)
+			{
+				$this->loadStudentFromRessource($ressource);
+				$ressource = pg_fetch_assoc($result);	
+			}
+			
+			$this->ListOfLinkedGroups=null;
+			$query="select * from ".self::linkedToTABLENAME." where id_group=".$this->sqlid.";";
+			$result = BaseDeDonnees::currentDB()->executeQuery($query);
+			$ressource = pg_fetch_assoc($result);
+			while($ressource)
+			{
+				$this->loadLinkedGroupFromRessource($ressource);
+				$ressource = pg_fetch_assoc($result);	
+			}
+		}
+		
+	}
+	
+	//This method expects a ressource resulting of a select query on composedOf table
+	public function loadStudentFromRessource($ressource)
+	{
+		if (is_array($ressource))
+		{
+			$P=new Personne();
+			$P->loadFromDB(intval($ressource['id_person']));
+			$this->addStudent($P);
+		}
+	}
+	
+	//This method expects a ressource resulting of a select query on linkedTo table
+	public function loadLinkedGroupFromRessource($ressource)
+	{
+		if (is_array($ressource))
+		{
+			$G=new Groupe();
+			$G->loadFromDB(intval($ressource['id_group']));
+			$this->addLinkedGroup($G);
+		}
+	}
+	//Flora: Beware, this method may imply many irreversible changes in dataBase
+	//After this method, all Groupe instances should be reloaded from DB, to stay reliable
+	public function removeFromDB()
+	{
+		$this->setListOfStudents(); //Remove all students from the group (DB)
+		$this->setListOfLinkedGroups();//Remove all links with other groups/classes (DB)
+		
+		
+		$params = array($this->sqlid);
+		$query = "delete from ".self::TABLENAME." where id=$1;";
+		if(BaseDeDonnees::currentDB()->executeQuery($query, $params))
+		{
+			//TODO remove that group from davical DB
+			/*
+			$BDD = new BaseDeDonnees("davical_app", "davical");
+			if (!$BDD->connect())
+			{
+				echo("pas de connexion vrs davical");
+			}
+			else
+			{
+				//$params = array($result['login']);
+				//$query2 = "delete from dav_principal where username=$1;";
+				$BDD->executeQuery($query2, $params);
+				$BDD->close();
+			}
+			*/
+		}else
+		{
+			echo("GaliDAV Error: Deletion in table ".self::TABLENAME." failed.<br/>(Query: $query )");
+		}
+		
+	}
+
 
 }
 ?>

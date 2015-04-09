@@ -99,11 +99,14 @@ class Personne
 	}
 
 	// setters
-	public function setSqlid($newSqlid)
+	
+	//Flora: this method is declared protected because the id of a person shouldn't change in time (given by SQL)
+	protected function setSqlid($newSqlid)
 	{
 		if (!empty($newSqlid))
 		{
 			$this->sqlid = $newSqlid;
+			//TODO non prioritary: SQL query
 		}
 	}
 
@@ -303,7 +306,7 @@ class Personne
 		$this->firstName = $result['firstname'];
 		$this->emailAddress1 = $result['emailaddress1'];
 		$this->emailAddress2 = $result['emailaddress2'];
-		//TODO valeurs des statuts
+		//TODO valeurs des statuts with loadStatusFromRessource
 	}
 
 	public function loadFromRessource($ressource)
