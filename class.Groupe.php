@@ -42,9 +42,9 @@ class Groupe
 			$this->name = $newName;
 			$this->isAClass = $newIsAClass;
 			$query="insert into ". self::TABLENAME." (name,is_class) VALUES ($1,$newIsAClass);";
-			$params[] == $newName;
+			$params[] =$newName;
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
-			$query = "select id from ". self::TABLENAME." where name=$1;"
+			$query = "select id from ". self::TABLENAME." where name=$1;";
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 			$result = pg_fetch_assoc($result);
 			$this->sqlid=$result['id'];
@@ -79,7 +79,7 @@ class Groupe
 		return $this->isAClass;
 	}
 	
-	public getId()
+	public function getId()
 	{
 		return $this->sqlid;
 	}
