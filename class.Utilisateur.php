@@ -20,7 +20,7 @@ class Utilisateur extends Personne
 	protected $passwd = null;
 
 	const TABLENAME = "guser";
-	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) UNIQUE NOT NULL, id_principal integer UNIQUE, password varchar, last_connection timestamp"; //Ce n'est pas ici, qu'on touche au paramètre id_principal
+	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) UNIQUE NOT NULL, id_principal integer UNIQUE, password varchar, last_connection timestamp"; //Ce n'est pas ici qu'on touche au paramètre id_principal
 
 	// --- OPERATIONS ---
 	// constructeur
@@ -185,8 +185,9 @@ class Utilisateur extends Personne
 
 		// Flora NOTE: Si c" un RESP,ADMIN,SECRETAIRE OK. Si c'est un enseignant, vérifier que c'est le bon edt
 		// S'il y a un souci par rapport à l'accès à l'edt renvoyer une erreur
+		//TODO Complete
 
-	return $returnValue;
+		return $returnValue;
 	}
 
 	// Affichage texte

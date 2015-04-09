@@ -15,51 +15,95 @@ class EDT
 	// --- ASSOCIATIONS ---
 
 	// --- ATTRIBUTES --- //Flora: Attributes shouldn't be private since they are used by inheriting classes
-	protected $idTimetable = null;
-	protected $modifiedBy = null;
-	protected $listCourses = null;
-	protected $listModif = null;
+	protected $sqlid = null;
+	protected $modifiedBy = false;
+	protected $listCourses = array();
+	protected $listModif = array();
 	protected $group = null;
 	protected $teacherOwner = null; // if it’s a teacher’s timetable, else it’s value is null
 	protected $subject = null; // Flora: For subject calendars: useful?
 
 	const TABLENAME = "gcalendar";
-	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, is_class_calendar boolean, is_validated_calendar boolean default false, is_being_modified_by integer REFERENCES guser(id_person)";
+	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, is_class_calendar boolean default false, is_validated_calendar boolean default false, is_being_modified_by integer REFERENCES guser(id_person), date_creation timestamp default 'now'";
 	/*Flora : 
-	An EDT or calendar in the GaliDAV database can be a calendar of a class, a group or a subject, since agendav doesn't implements a hierarchy of calendrs. Moreover, a class is linked to a current calendar and a validated calendar. Groups and subjects dont require a validated calendar.
+	An EDT or calendar in the GaliDAV database can be a calendar of a class, a group, a subject or a teacher, since agendav doesn't implements a hierarchy of calendrs. Moreover, a class is linked to a current calendar and a validated calendar. Groups,subjects and teachers dont require a validated calendar.
 	
 	It is expected that every change to a current calendar affects all the calendars that are linked to it.
 	See the class Groupe and its table named linkedTo.
+	
+	User changes are possible on class and subject current calendars. The system is in charge of updating all calendars related
 	*/
 
-/* TODO -containsCourse
-		-hasModification
-		-loadCourseFromRessource
-		-loadModificationFromRessource
-		
-		-loadFromDB
-		-loadFromRessource
-		-removeFromDB
-*/
 		
 	// --- OPERATIONS ---
 	// constructor
-	public function __construct($Object = null)
+	public function __construct($Object = null,$validated=false)
 	{
-		if (is_a($Object, "Groupe"))
-		{
-			//TODO attributs + requêtes SQL
-		}
-		else if (is_a($Object, "Matiere"))
-		{
-			//TODO attributs + requêtesSQL
+		if(is_a($Object, "Groupe") or is_a($Object, "Matiere") or is_a($Object, "Enseignant")){
+			$query="insert into ". self::TABLENAME.";";
+			BaseDeDonnees::currentDB()->executeQuery($query);
+			$query = "select id from ". self::TABLENAME." order by date_creation desc;";
+			$result = BaseDeDonnees::currentDB()->executeQuery($query);
+			$result = pg_fetch_assoc($result);
+			$this->sqlid=$result['id'];
+			
+			if (is_a($Object, "Groupe"))
+			{
+				$G=$Object;
+			
+				if($G->getIsAClass()){
+					$query="update ". self::TABLENAME." set is_class_calendar=true where id=".$this->sqlid.";";
+					if(!BaseDeDonnees::currentDB()->executeQuery($query))
+					{
+						echo("GaliDAV Error: Update on table ".self::TABLENAME." failed.<br/>(Query: $query )");
+					}
+					
+					if($validated){
+						$query="update ". self::TABLENAME." set is_validated_calendar=true where id=".$this->sqlid.";";
+						if(!BaseDeDonnees::currentDB()->executeQuery($query))
+						{
+							echo("GaliDAV Error: Update on table ".self::TABLENAME." failed.<br/>(Query: $query )");
+						}
+					}
+				}else
+				{
+					$validated=false; //Only Classes have validated calendars (->PDF)
+				}
+				if($validated)
+				{
+					$query="update ".Groupe::TABLENAME." set id_validated_timetable=".$this->sqlid." where id=".$G->getId().";";
+				}
+				else
+				{
+					$query="update ".Groupe::TABLENAME." set id_current_timetable=".$this->sqlid." where id=".$G->getId().";";
+				}
+				if(!BaseDeDonnees::currentDB()->executeQuery($query))
+				{
+					echo("GaliDAV Error: Update on table ".Groupe::TABLENAME." failed.<br/>(Query: $query )");
+				}
+			}
+			else if (is_a($Object, "Matiere"))
+			{
+				//TODO attributs + requêtesSQL
+				
+				$M=$Object;
+			}
+			else if (is_a($Object, "Enseignant"))
+			{
+				$E=$Object;
+				$query="update ". Utilisateur::TABLENAME." set id_calendar=".$this->sqlid.";";
+					if(!BaseDeDonnees::currentDB()->executeQuery($query))
+					{
+						echo("GaliDAV Error: Update on table ".Utilisateur::TABLENAME." failed.<br/>(Query: $query )");
+					}
+			}
 		}
 	}
 
 	// getters
-	public function getIdTimetable()
+	public function getId()
 	{
-		return $this->idTimetable;
+		return $this->sqlid;
 	}
 
 	public function getModifiedBy()
@@ -86,13 +130,37 @@ class EDT
 	{
 		return $this->teacherOwner;
 	}
+	
+	public function containsCourse(Cours $C)
+	{
+		foreach ($this->listCourses as $oneCourse)
+		{
+			if ($oneCourse == $C)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public function hasModification(Modification $M)
+	{
+		foreach ($this->listModif as $oneModif)
+		{
+			if ($oneModif == $M)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	// setters
-	protected function setIdTimetable($newIdTimetable)
+	protected function setId($newIdTimetable)
 	{
-		if (!empty($newIdTimetable))
+		if (is_int($newIdTimetable))
 		{
-			$this->idTimetable = $newIdTimetable;
+			$this->sqlid = $newIdTimetable;
 			//TODO low priority: SQL query
 		}
 	}
@@ -151,29 +219,75 @@ class EDT
 
 	public function addCourse(Cours $newCourse)
 	{
+		if(!$this->containsCourse($newCourse)){
 			$this->listCourses[] = $newCourse;
 			//TODO SQL query
+			
+		}
 	}
 
 	public function removeCourse(Cours $courseToRemove)
 	{
-	
-		//TODO SQL queries
-		$indice = array_search($courseToRemove, $this->listCourses);
-		if ($indice !== false)
+		if(!$this->containsCourse($newCourse))
 		{
-			unset($this->listCourses[$indice]);
-		}
-		else
-		{
-			echo 'Le cours n’est pas dans l’emploi du temps.';
+			//TODO SQL queries
+			
+			unset($this->listCourses[array_search($courseToRemove, $this->listCourses)]);
 		}
 	}
 
+	public function addModification(Modification $M)
+	{
+		if(!hasModification($M))
+		{
+			//TODO SQL queries
+			$this->listModif[]=$M;
+			
+		}
+	}
+	
+	
+	//This method shouldnt be called outside this class because there's no reason that only one modification of timetable to be removed
+	protected function removeModification(Modification $M)
+	{
+		if(!hasModification($M))
+		{
+			//TODO SQL queries
+			
+			unset($this->listModif[array_search($M, $this->listModif)]);	
+		}
+	
+	}
 	public function clearModifications()
 	{
-		$this->listModif = array();
 		//TODO SqlQueries
+		$this->listModif = array();
+	}
+	
+	public function loadCourseFromRessource($ressource){
+		$C=new Cours();
+		//TODO
+	}
+	public function loadModificationFromRessource($ressource){
+		$M=new Modification();
+		//TODO
+	}
+	
+	public function loadFromDB()
+	{
+		//TODO
+	}
+	
+	public function loadFromRessource()
+	{
+		//TODO
+		
+	}
+	
+	public function removeFromDB()
+	{
+		//TODO
+		
 	}
 }
 ?>

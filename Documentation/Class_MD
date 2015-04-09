@@ -92,7 +92,7 @@ class Maquette
 ___________________________________________________________________________
 class EDT
 	Attributs
-		#idTimetable: Integer
+		#sqlid: Integer
 		#modifiedBy: Personne
 		#listCourses: Array (of Type_cours)
 		#listModif: Array (of )
@@ -102,12 +102,13 @@ class EDT
 	Constructeur
 		+__construct(Integer newIdTimetable, Personne newModifiedBy, Groupe newGroup, Enseignant newTeacherOwner = null)
 	Accesseurs
-		+getIdTimetable(): Integer
+		+getId(): Integer
 		+getModifiedBy(): Personne
 		+getListCourses(): Array (of Type_cours)
 		+getListModif(): Array (of )
 		+getGroup(): Groupe
 		+getTeacherOwner(): Personne
+		
 	Mutateurs
 		#setIdTimetable(Integer newIdTimetable)
 		+setModifiedBy(Personne newModifiedBy=null)
@@ -116,10 +117,19 @@ class EDT
 		+setGroup(Groupe newGroup)
 		+setTeacherOwner(Enseignant teacherOwner=null)
 	Autres fonctions
+		+hasModification(Modification M):Boolean
+		+containsCourse(Cours c): Boolean
+		+addModification(Modification M)
+		#removeModification(Modification M)
 		+extractExams(): Array (of Type_cours)
 		+addCourse(Cours newCourse)
 		+removeCourse(Cours courseToRemove)
 		+clearModifications()
+		+loadCourseFromRessource(ressource)
+		+loadModificationFromRessource(ressource)
+		+loadFromDB()
+		+loadFromRessource(ressource)
+		+removeFromDB()
 ___________________________________________________________________________
 class EdT_Classe extends EDT
 	Constructeur
@@ -210,12 +220,15 @@ class Groupe
 		+getListOfLinkedGroups(): Array (of Group)
 		+getName(): String
 		+getIsAClass(): Boolean
+		+getId():int
+		+getTimetable():EDT
 		
 	Mutateurs
 		+setListOfStudents(Array (of Personne) newListOfStudents=null)
 		+setListOfLinkedGroups(Array (of Group) newListOfGroup=null)
 		#setName(String newName)
 		-setIsAClass(Boolean newIsAClass)
+		
 	Autres fonctions
 		+containsStudent(Personne student): Boolean
 		+isLinkedTo(Group G): Boolean
@@ -329,11 +342,11 @@ class Secrétaire extends Utilisateur
 ________________________________________________________________________________________________________________________________________
 class Enseignant (extends Utilisateur)
 	Attributs
-		−personalTimetable: EDTClasse
+		−personalTimetable: EDT
 	Constructeur
-		+__construct(String familyName, String firstName, Integer id, String passwd)
+		+__construct(String familyName=null, String firstName=null, Integer id=null, String passwd=null)
 	Accesseurs
-		+getPersonalTimetable(): EDTClasse
+		+getPersonalTimetable(): EDT
 	Autres fonctions
 		+readPersonalTimetable()
 ___________________________________________________________________________

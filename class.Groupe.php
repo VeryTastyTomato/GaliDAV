@@ -99,9 +99,7 @@ class Groupe
 
 	public function getTimetable()
 	{
-		$returnValue = null;
-
-		return $returnValue;
+		return $this->timetable;
 	}
 	
 	// setters
@@ -286,7 +284,7 @@ class Groupe
 		}
 		else
 		{
-			if ($can_be_user)
+			if ($can_be_class)
 			{
 				$query = "select * from ".Personne::TABLENAME." where id=$1;";
 			}

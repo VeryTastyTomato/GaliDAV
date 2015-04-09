@@ -18,24 +18,25 @@ class Enseignant extends Utilisateur
 
 	// --- OPERATIONS ---
 	// constructor
-	public function __construct($familyName, $firstName, $id, $passwd)
+	public function __construct($familyName=null, $firstName=null, $login=null, $passwd=null,$email1 = null)
 	{
-		parent::__construct($familyName, $firstName, $id, $passwd);
-		$this->addStatus(new Statut_personne(Statut_personne::TEACHER));
-		$this->personalTimetable = new EDT();
+		parent::__construct($familyName, $firstName, $login, $passwd);
+		if ($login != null and $passwd != null){
+			$this->addStatus(new Statut_personne(Statut_personne::TEACHER));
+			$this->personalTimetable = new EDT($this);
+		}
 	}
 
 	// getters
 	public function getPersonalTimetable()
 	{
 		return $this->personalTimetable;
+		
 	}
 
 	// others
 	public function readPersonalTimetable()
 	{
-		parent::readTimetable($this->personalTimetable);
-
 		return parent::readTimetable($this->personalTimetable);
 	}
 }

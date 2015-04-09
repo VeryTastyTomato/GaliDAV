@@ -22,7 +22,7 @@ class Personne
 	protected $emailAddress2 = null;
 
 	const TABLENAME = "gperson";
-	const SQLcolumns = "id serial PRIMARY KEY, familyname varchar(30) NOT NULL, firstname varchar(30) NOT NULL, emailaddress1 varchar(60), emailaddress2 varchar(60), date_creation timestamp";
+	const SQLcolumns = "id serial PRIMARY KEY, familyname varchar(30) NOT NULL, firstname varchar(30) NOT NULL, emailaddress1 varchar(60), emailaddress2 varchar(60), id_calendar integer REFERENCES gcalendar(id), date_creation timestamp default 'now'";
 
 	// --- OPERATIONS ---
 	// constructor
