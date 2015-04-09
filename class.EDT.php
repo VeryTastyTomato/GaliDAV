@@ -24,7 +24,7 @@ class EDT
 	protected $subject = null; // Flora: For subject calendars: useful?
 
 	const TABLENAME = "gcalendar";
-	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, is_class_calendar boolean default false, is_validated_calendar boolean default false, is_being_modified_by integer REFERENCES guser(id_person), date_creation timestamp default 'now'";
+	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, id_teacher integer REFERENCES guser(id_person), is_class_calendar boolean default false, is_validated_calendar boolean default false, is_being_modified_by integer REFERENCES guser(id_person), date_creation timestamp default 'now'";
 	/*Flora : 
 	An EDT or calendar in the GaliDAV database can be a calendar of a class, a group, a subject or a teacher, since agendav doesn't implements a hierarchy of calendrs. Moreover, a class is linked to a current calendar and a validated calendar. Groups,subjects and teachers dont require a validated calendar.
 	
@@ -32,6 +32,7 @@ class EDT
 	See the class Groupe and its table named linkedTo.
 	
 	User changes are possible on class and subject current calendars. The system is in charge of updating all calendars related
+	Rq: There's no SQL reference to a group id or a subject id in this table since there's already one in group table and subject table
 	*/
 
 		
@@ -55,14 +56,14 @@ class EDT
 					$query="update ". self::TABLENAME." set is_class_calendar=true where id=".$this->sqlid.";";
 					if(!BaseDeDonnees::currentDB()->executeQuery($query))
 					{
-						echo("GaliDAV Error: Update on table ".self::TABLENAME." failed.<br/>(Query: $query )");
+						BaseDeDonnees::currentDB()->show_error();
 					}
 					
 					if($validated){
 						$query="update ". self::TABLENAME." set is_validated_calendar=true where id=".$this->sqlid.";";
 						if(!BaseDeDonnees::currentDB()->executeQuery($query))
 						{
-							echo("GaliDAV Error: Update on table ".self::TABLENAME." failed.<br/>(Query: $query )");
+							BaseDeDonnees::currentDB()->show_error();
 						}
 					}
 				}else
@@ -79,7 +80,7 @@ class EDT
 				}
 				if(!BaseDeDonnees::currentDB()->executeQuery($query))
 				{
-					echo("GaliDAV Error: Update on table ".Groupe::TABLENAME." failed.<br/>(Query: $query )");
+					BaseDeDonnees::currentDB()->show_error();
 				}
 			}
 			else if (is_a($Object, "Matiere"))
@@ -91,10 +92,10 @@ class EDT
 			else if (is_a($Object, "Enseignant"))
 			{
 				$E=$Object;
-				$query="update ". Utilisateur::TABLENAME." set id_calendar=".$this->sqlid.";";
-					if(!BaseDeDonnees::currentDB()->executeQuery($query))
+				$query="update ". self::TABLENAME." set id_teacher=".$E->getSqlid().";";
+					if(BaseDeDonnees::currentDB()->executeQuery($query))
 					{
-						echo("GaliDAV Error: Update on table ".Utilisateur::TABLENAME." failed.<br/>(Query: $query )");
+						BaseDeDonnees::currentDB()->show_error();
 					}
 			}
 		}

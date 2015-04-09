@@ -30,6 +30,7 @@ class BaseDeDonnees
 	private $user = 'galidav';
 	private $password = null;
 	private $host = null;
+	public $error_sql_message ="";
 	// TODO : attributs des éléments enregistrés (1attribut != pour chaque élément ?)
 
 	// --- OPERATIONS ---
@@ -83,6 +84,7 @@ class BaseDeDonnees
 
 	public function executeQuery($query, $params = array())
 	{
+		$this->error_sql_message="";
 		$conn = $this->connect();
 		if (!$conn)
 		{
@@ -91,7 +93,7 @@ class BaseDeDonnees
 		}
 
 		$result = pg_query_params($conn, $query, $params);
-
+		if(!$result)$this->error_sql_message="<div><p><b>GaliDAV Error</b>: The following query has failed: <br/>&emsp;$query<br/>(".var_dump($params).")</p><p><b>&emsp;&emsp;&emsp;Details on SQL</b> ".pg_last_error($conn)."</p></div>";
 		return $result;
 	}
 
@@ -146,38 +148,40 @@ class BaseDeDonnees
 		pg_close($this->connect());
 	}
 
-
+	public function show_error(){
+		echo $this->error_sql_message;
+	}
 	public function initialize()
 	{
 		$result = $this->executeQuery("CREATE TABLE ".Personne::TABLENAME." (".Personne::SQLcolumns.");");
 		if ($result)
 		{
 			$result = $this->executeQuery("CREATE TABLE ".Utilisateur::TABLENAME." (".Utilisateur::SQLcolumns.");");
-		}
+		}else $this->show_error();
 		if ($result)
 		{
 			$result = $this->executeQuery("CREATE TABLE ".Statut_personne::TABLENAME." (".Statut_personne::SQLcolumns.");");
-		}
+		}else $this->show_error();
 		if ($result)
 		{
 			$result = $this->executeQuery("CREATE TABLE ".EDT::TABLENAME." (".EDT::SQLcolumns.");");
-		}
+		}else $this->show_error();
 		if ($result)
 		{
 			$result = $this->executeQuery("CREATE TABLE ".Groupe::TABLENAME." (".Groupe::SQLcolumns.");");
-		}
+		}else $this->show_error();
 		if ($result)
 		{
 			$result = $this->executeQuery("CREATE TABLE ".Groupe::composedOfTABLENAME." (".Groupe::composedOfSQLcolumns.");");
-		}
+		}else $this->show_error();
 		if ($result)
 		{
 			$result = $this->executeQuery("CREATE TABLE ".Groupe::linkedToTABLENAME." (".Groupe::linkedToSQLcolumns.");");
-		}
+		}else $this->show_error();
 		if ($result)
 		{
 			$result = $this->executeQuery("CREATE TABLE ".Matiere::TABLENAME." (".Matiere::SQLcolumns.");");
-		}
+		}else $this->show_error();
 		/*** TODO Autres tables ***/
 
 		return $result;
