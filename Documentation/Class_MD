@@ -58,6 +58,13 @@ class Matière
 	Autres fonctions
 		+isTeachedBy(Personne P): Boolean
 		+addTeacher(Personne P)
+		+removeTeacher(Enseignant E)
+		+loadTeacherFromRessource(ressource)
+		+loadGroupFromRessource(ressource)
+		+loadTimetableFromRessource(ressource)
+		+loadFromDB()
+		+loadFromRessource(ressource)
+		+removeFromDB()
 ___________________________________________________________________________
 class Element_de_maquette
 	Associations

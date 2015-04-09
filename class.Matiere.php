@@ -129,5 +129,48 @@ class Matiere
 			}
 		}
 	}
+
+	public function removeTeacher(Enseignant $E)
+	{
+		//TODO
+	}
+
+	public function loadTeacherFromRessource($ressource)
+	{
+		$E = new Enseignant();
+		//TODO
+		
+	}
+
+	public function loadGroupFromRessource($ressource)
+	{
+		$G = new Groupe();
+		//TODO
+		
+	}
+
+	public function loadTimetableFromRessource($ressource)
+	{
+		$E = new EDT();
+		//TODO
+		
+	}
+
+	public function loadFromDB()
+	{
+		//TODO
+	}
+	
+	public function loadFromRessource($ressource)
+	{
+		//TODO
+		
+	}
+	
+	public function removeFromDB()
+	{
+		//TODO
+		
+	}
 }
 ?>
