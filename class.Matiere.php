@@ -29,6 +29,21 @@ class Matiere
 		}
 
 		$this->name = $newName;
+		$params = array();
+		$params[] = $newName;
+
+		$query = "INSERT INTO ".self::TABLENAME." (name) VALUES ($1);";
+
+		$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+
+		if (!$result)
+		{
+			echo("GaliDAV: Impossible de créer cette matière dans la base");
+		}
+		else
+		{
+			echo("GaliDAV: matière créée avec succès !"); 
+		}
 	}
 
 	// getters
@@ -74,10 +89,44 @@ class Matiere
 	}
 
 	public function addTeacher(Personne $P)
-	{
-		if (!isTeachedBy($P))
+	{	
+		if (!($this->teachedBy[0] == null) && !($this->teachedBy[1] == null) && !($this->teachedBy[2] == null))
 		{
-			$this->teachedBy[] = $P;
+			echo ('GaliDAV: 3 personnes enseignent déjà cette matière ! Remplacez-en un.');
+		}
+		else
+		{
+			if (!isTeachedBy($P))
+			{
+				$query = "SELECT id from ".self::TABLENAME." where name=".$this->name.";";
+				$result1 = BaseDeDonnees::currentDB()->executeQuery($query);
+				if(!$result1)
+				{
+					echo('GaliDAV: Aucune matière de ce nom');
+				}
+				else
+				{
+					if($this->teachedBy[0] == null)
+					{
+						$query = "UPDATE ".self::TABLENAME." set id_speaker1=$1 where id=".$result1.";";
+					}
+					elseif($this->teachedBy[1] == null)
+					{
+						$query = "UPDATE ".self::TABLENAME." set id_speaker2=$1 where id=".$result1.";";
+					}
+					else
+					{
+						$query = "UPDATE ".self::TABLENAME." set id_speaker3=$1 where id=".$result1.";";
+					}
+					$params[] = $P;
+					$result2 = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+					$this->teachedBy[] = $P;
+				}			
+			}
+			else
+			{
+				echo ('GaliDAV: cette personne enseigne déjà cette matière'); 
+			}
 		}
 	}
 }
