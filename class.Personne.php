@@ -306,7 +306,16 @@ class Personne
 		$this->firstName = $result['firstname'];
 		$this->emailAddress1 = $result['emailaddress1'];
 		$this->emailAddress2 = $result['emailaddress2'];
-		//TODO valeurs des statuts with loadStatusFromRessource
+
+		$this->status=null;
+		$query="select * from ".Statut_personne::TABLENAME." where id_person=".$this->sqlid.";";
+		$result = BaseDeDonnees::currentDB()->executeQuery($query);
+		$ressource = pg_fetch_assoc($result);
+		while($ressource)
+		{
+			$this->loadStatusFromRessource($ressource);
+			$ressource = pg_fetch_assoc($result);	
+		}		
 	}
 
 	public function loadFromRessource($ressource)
@@ -319,7 +328,16 @@ class Personne
 			$this->emailAddress1 = $ressource['emailaddress1'];
 			$this->emailAddress2 = $ressource['emailaddress2'];
 		}
-		//Flora: Remarque la valeurs des statuts nest pas chargée
+		
+		$this->status=null;
+		$query="select * from ".Statut_personne::TABLENAME." where id_person=".$this->sqlid.";";
+		$result = BaseDeDonnees::currentDB()->executeQuery($query);
+		$ressource = pg_fetch_assoc($result);
+		while($ressource)
+		{
+			$this->loadStatusFromRessource($ressource);
+			$ressource = pg_fetch_assoc($result);	
+		}	
 	}
 
 	public function loadStatusFromRessource($ressource)
