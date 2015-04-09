@@ -111,7 +111,7 @@ class Personne
 	{
 		if (!empty($newFamilyName))
 		{
-			$query = "UPDATE ".self::TABLENAME." set familyName=$1;";
+			$query = "UPDATE ".self::TABLENAME." set familyName=$1 where id=".$this->sqlid.";";
 			$params[] = $newFamilyName;
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 
@@ -130,7 +130,7 @@ class Personne
 	{
 		if (!empty($newFirstName))
 		{
-			$query = "UPDATE ".self::TABLENAME." set firstName=$1;";
+			$query = "UPDATE ".self::TABLENAME." set firstName=$1 where id=".$this->sqlid.";";
 			$params[] = $newFirstName;
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 
@@ -147,7 +147,7 @@ class Personne
 		{
 			if (filter_var($newEmailAddress1, FILTER_VALIDATE_EMAIL))
 			{
-				$query = "UPDATE ".self::TABLENAME." set emailaddress1=$1;";
+				$query = "UPDATE ".self::TABLENAME." set emailaddress1=$1 where id=".$this->sqlid.";";
 				$params[] = $newEmailAddress1;
 				$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 
@@ -169,7 +169,7 @@ class Personne
 		{
 			if (filter_var($newEmailAddress2, FILTER_VALIDATE_EMAIL))
 			{
-				$query = "UPDATE ".self::TABLENAME." set emailaddress2=$1;";
+				$query = "UPDATE ".self::TABLENAME." set emailaddress2=$1 where id=".$this->sqlid.";";
 				$params[] = $newEmailAddress2;
 				$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 
@@ -214,6 +214,9 @@ class Personne
 			{
 				$this->status[] = $s;
 			}
+			else {
+				echo("GaliDAV Error: Insertion in table ".Statut_personne::TABLENAME." failed.<br/>(Query: $query )");
+			}
 		}
 	}
 
@@ -223,7 +226,7 @@ class Personne
 		{
 			$query = "DELETE FROM ".Statut_personne::TABLENAME." where id_person=".$this->sqlid." and status=".$s->toInt().";";
 
-			if (BaseDeDonnees::currentDB()->executeQuery($query, $params))
+			if (BaseDeDonnees::currentDB()->executeQuery($query))
 			{
 				$indice = 0;
 				foreach ($this->status as $oneStatus)
@@ -236,6 +239,9 @@ class Personne
 
 					$indice = $indice + 1;
 				}
+			}
+			else {
+				echo("GaliDAV Error: Deletion in table ".Statut_personne::TABLENAME." failed.<br/>(Query: $query )");
 			}
 		}
 	}
