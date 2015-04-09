@@ -16,15 +16,14 @@ require_once('class.Personne.php');
 
 class Groupe
 {
-	// --- ASSOCIATIONS ---
-	protected $listOfStudents = array();
-
+	
 	// --- ATTRIBUTES ---//Flora: Attributes shouldn't be private since they are used by inheriting classes
 	protected $name = null;
 	protected $isAClass = null;
 	protected $timetable = null;
 	protected $sqlid = null;
-	
+	protected $listOfStudents = array();
+	protected $listOfLinkedGroups=array(); //Flora: A Classe object shouldn't be linked to other Classe objects
 	const TABLENAME = "ggroup";
 	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) UNIQUE NOT NULL, is_class boolean not null DEFAULT false, id_current_timetable integer REFERENCES gcalendar(id),id_validated_timetable integer REFERENCES gcalendar(id)";
 
@@ -49,6 +48,7 @@ class Groupe
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 			$result = pg_fetch_assoc($result);
 			$this->sqlid=$result['id'];
+			$this->timetable=new EDT($this);
 		}
 	}
 
@@ -58,6 +58,17 @@ class Groupe
 		return $this->listOfStudents;
 	}
 
+	public function containsStudent(Personne $S){
+		foreach ($this->listOfStudents as $oneStudent)
+		{
+			if ($oneStudent == $S)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public function getName()
 	{
 		return $this->name;
@@ -67,75 +78,109 @@ class Groupe
 	{
 		return $this->isAClass;
 	}
-
-	// setters
-	public function setListOfStudents($newListOfStudents)
-	{
-		if (!empty($newListOfStudents))
-		{
-			$this->listOfStudents = $newListOfStudents;
-		}
-	}
+	
 	public getId()
 	{
 		return $this->sqlid;
 	}
 
-	public function setName($newName)
-	{
-		if (!empty($newName))
-		{
-			$this->name = $newName;
-		}
-	}
-
-	//Flora: this method is declared private because the attribute associated shouldn't change in time (eg: A group wont suddenly become a class). 
-	private function setIsAClass($newIsAClass)
-	{
-		if (!empty($newIsAClass))
-		{
-			$this->isAClass = $newIsAClass;
-		}
-	}
-
-	// others
 	public function getTimetable()
 	{
 		$returnValue = null;
 
 		return $returnValue;
 	}
-
-	public function addStudent($newStudent)
+	
+	// setters
+	public function setListOfStudents($newListOfStudents)
 	{
-		if ($newStudent instanceof Personne)
+		foreach ($this->listOfStudents as $oneStudent)
 		{
-			$this->listOfStudents[] = $newStudent;
+			$this->removeStudent($oneStudent);
 		}
-		else
+		foreach ($newListOfStudents as $aStudent)
 		{
-			echo 'Erreur dans la méthode addStudent() de la classe Groupe, l’argument donné n’est pas une personne.';
+			$this->addStudent($aStudent);
 		}
 	}
-
-	public function removeStudent($studentToRemove)
+	
+	//Flora: this method is declared protected because the name of a group shouldn't change in time (or at least, groups should have different names)
+	protected function setName($newName)
 	{
-		if ($studentToRemove instanceof Personne)
+		if (is_string($newName))
 		{
-			$indice = array_search($studentToRemove, $this->listOfStudents);
-			if ($indice !== false)
+			$query = "UPDATE ".self::TABLENAME." set name=$1 where id=".$this->sqlid.";";
+			$params[] = $newName;
+			
+			if (BaseDeDonnees::currentDB()->executeQuery($query, $params))
 			{
-				unset($this->listOfStudents[$indice]);
+				$this->name = $newName;
 			}
 			else
 			{
-				echo 'L’étudiant donné n’est pas dans ce groupe.';
+				echo("GaliDAV Error: Update on table ".self::TABLENAME." failed.<br/>(Query: $query )");
 			}
 		}
-		else
+	}
+
+	//Flora: this method is declared private because the attribute associated shouldn't change in time (eg: A group wont suddenly become a class). 
+	private function setIsAClass($newIsAClass)
+	{
+		if (is_boolean($newIsAClass))
 		{
-			echo 'Erreur dans la méthode removeStudent() de la classe Groupe, l’argument donné n’est pas une personne.';
+			$query = "UPDATE ".self::TABLENAME." set is_class=".$newIsAClass." where id=".$this->sqlid.";";			
+			if (BaseDeDonnees::currentDB()->executeQuery($query))
+			{
+				$this->isAClass = $newIsAClass;
+			}
+			else
+			{
+				echo("GaliDAV Error: Update on table ".self::TABLENAME." failed.<br/>(Query: $query )");
+			}
 		}
 	}
+
+	// others
+	
+
+	public function addStudent(Personne $newStudent)
+	{
+		//Flora : TODO less prioritary -> check the person has a student. Not a real problem for the moment.
+		if (!$this->containsStudent($newStudent)){
+		
+			$params[] = $newStudent->sqlid;
+			$params[] = $this->sqlid;
+			$query = "INSERT INTO ".self::composedOfTABLENAME." (id_person,id_group) VALUES ($1, $2);";
+			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+
+			if ($result)
+			{
+				$this->listOfStudents[] = $newStudent;
+			}
+			else {
+				echo("GaliDAV Error: Insertion in table ".self::composedOfTABLENAME." failed.<br/>(Query: $query )");
+			}			
+		}
+		
+	}
+
+	public function removeStudent(Personne $studentToRemove)
+	{
+		if ($this->containsStudent($studentToRemove))
+		{
+			$query = "DELETE FROM ".self::composedOfTABLENAME." where id_person=".$studentToRemove->getSqlid()." and id_group=".$this->sqlid.";";
+
+			if (BaseDeDonnees::currentDB()->executeQuery($query))
+			{	
+				//Flora: We have already checked the array contains the student to remove
+				unset($this->listOfStudents[array_search($studentToRemove, $this->listOfStudents)]);
+			}
+			else 
+			{
+				echo("GaliDAV Error: Deletion in table ".self::composedOfTABLENAME." failed.<br/>(Query: $query )");
+			}
+		}
+	}
+
 }
 ?>

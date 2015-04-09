@@ -1,5 +1,5 @@
 ___________________________________________________________________________
-Cours
+class Cours
 	Attributs
 		−number: Integer
 		−begin: Integer
@@ -39,19 +39,8 @@ Type_cours
 		−EXAM
 		−RESIT
 ___________________________________________________________________________
-Classe
-	Associations
-		–coursesModel: Maquette
-	Constructeurs
-		+__construct(String newName)
-	Accesseurs
-		+getCoursesModel(): Maquette
-	Mutateurs
-		+setCoursesModel(Maquette newCoursesModel)
-	Autres fonctions
-		+getTimetableOfClass(): EDT
-___________________________________________________________________________
-Matière
+
+class Matière
 	Attributs
 		−name: String
 		−teachedBy: Array (of Personne)
@@ -70,7 +59,7 @@ Matière
 		+isTeachedBy(Personne P): Boolean
 		+addTeacher(Personne P)
 ___________________________________________________________________________
-Element_de_maquette
+class Element_de_maquette
 	Associations
 		–subject: Matiere
 	Attributs
@@ -88,7 +77,7 @@ Element_de_maquette
 		+setNumHours(Integer newNumHours)
 
 ___________________________________________________________________________
-Maquette
+class Maquette
 	Associations
 		–listOfElemOfClassesModel: Array (of Element_de_maquette)
 	Constructeurs
@@ -101,7 +90,7 @@ Maquette
 		+addElemOfClassesModel(Element_de_maquette newElem)
 		+removeElemOfClassesModel(Element_de_maquette elemToRemove)
 ___________________________________________________________________________
-EDT
+class EDT
 	Attributs
 		#idTimetable: Integer
 		#modifiedBy: Personne
@@ -132,13 +121,13 @@ EDT
 		+removeCourse(Cours courseToRemove)
 		+emptyModifications()
 ___________________________________________________________________________
-EdT_Classe
+class EdT_Classe extends EDT
 	Constructeur
 		+__construct(Integer newIdTimetable, Personne newModifiedBy, Groupe newGroup, Enseignant newTeacherOwner = null)
 	Autres fonctions
 		+generatePDF()
 ___________________________________________________________________________
-Modification
+class Modification
 	Attributs
 		−date: Integer
 		−madeBy: Utilisateur
@@ -154,7 +143,7 @@ Modification
 		+setMadeBy(Utilisateur newMadeBy)
 		+setCourseModified(Cours newCourseModified)
 ___________________________________________________________________________
-BaseDeDonnées
+class BaseDeDonnées
 	Attributs
 		—save: Boolean	
 		—location
@@ -180,7 +169,7 @@ BaseDeDonnées
 		+currentDB(): BaseDeDonnees
 		
 ___________________________________________________________________________
-Système
+class Système
 	Attributs
 		−database: BaseDeDonnees
 	Constructeur
@@ -197,14 +186,16 @@ Système
 		+recoverData(location): BaseDeDonnees
 		+generateExamList(EDT edt)
 ___________________________________________________________________________
-Groupe
-	Associations
-		#listOfStudents: Array (of Personne)
+class Groupe
+	
+		
 	Attributes
 		#name: String
 		#isAClass: Boolean
 		#timetable: EDT
 		#sqlid: Integer
+		#listOfStudents: Array (of Personne)
+		#listOfLinkedGroups: Array (of Groupe)
 	Constantes
 		const TABLENAME
 		const SQLcolumns
@@ -218,16 +209,30 @@ Groupe
 		+getListOfStudents(): Array (of Personne)
 		+getName(): String
 		+getIsAClass(): Boolean
+		
 	Mutateurs
 		+setListOfStudents(Array (of Personne) newListOfStudents)
 		+setName(String newName)
-		+setIsAClass(Boolean newIsAClass)
+		-setIsAClass(Boolean newIsAClass)
 	Autres fonctions
+		+containsStudent(Personne student): Boolean
 		+getTimetable(): EDT
 		+addStudent(Personne newStudent)
 		+removeStudent(Personne studentToRemove)
 ___________________________________________________________________________
-Personne
+class Classe extends Groupe
+	Associations
+		–coursesModel: Maquette
+	Constructeurs
+		+__construct(String newName)
+	Accesseurs
+		+getCoursesModel(): Maquette
+	Mutateurs
+		+setCoursesModel(Maquette newCoursesModel)
+	Autres fonctions
+		+getTimetableOfClass(): EDT
+___________________________________________________________________________
+class Personne
 	Associations
 		#status: Array (of Statut_personne)
 	Attributs
@@ -264,7 +269,7 @@ Personne
 		+removeFromDB()
 		+toHTML(): String
 ___________________________________________________________________________
-Utilisateur (extends Personne)
+class Utilisateur (extends Personne)
 	Attributs
 		#login: String
 		#passwd: String
@@ -288,7 +293,7 @@ Utilisateur (extends Personne)
 		+readTimeTable(EDT e): Boolean
 		+toHTML(): String
 ___________________________________________________________
-Administrateur extends Utilisateur
+class Administrateur extends Utilisateur
 	Constructeur
 		+__construct(String familyName, String firstName, Integer id, String passwd, String email1 = null)
 	Autres fonctions
@@ -301,7 +306,7 @@ Administrateur extends Utilisateur
 		+addClass(String name): Classe
 		+modifyClass(Classe c, Personne etu, String operation)
 ______________________________________________________________________________
-Secrétaire extends Utilisateur
+class Secrétaire extends Utilisateur
 	Constructeur
 		+__construct(String familyName, String firstName, Integer id, String passwd)
 	Autres fonctions
@@ -313,7 +318,7 @@ Secrétaire extends Utilisateur
 		+validateTimetable(EDT e)
 		+modifyClass_CoursesModel(Classe c, Element_de_maquette elem, String operation)
 ________________________________________________________________________________________________________________________________________
-Enseignant (extends Utilisateur)
+class Enseignant (extends Utilisateur)
 	Attributs
 		−personalTimetable: EDTClasse
 	Constructeur
@@ -323,7 +328,7 @@ Enseignant (extends Utilisateur)
 	Autres fonctions
 		+readPersonalTimetable()
 ___________________________________________________________________________
-Responsable (extends Utilisateur)
+class Responsable (extends Utilisateur)
 	Attributs
 		−type: Type_responsable
 	Constructeurs
