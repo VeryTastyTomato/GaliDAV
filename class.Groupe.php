@@ -261,15 +261,15 @@ class Groupe
 	
 	public function loadFromDB($id = null, $can_be_class = true)
 	{
-		if ($id == null)
+		if ($id == null) //if we do not want to load a particular group
 		{
-			if ($this->sqlid != null)
+			if ($this->sqlid != null) //Check if the current group object is defined
 			{
-				$id = $this->sqlid;
+				$id = $this->sqlid; //if yes, we want to 'reload' data about this object from the database (UPDATE)
 			}
 		}
 
-		if ($id == null)
+		if ($id == null)//if no, the first group object of the DB, will be chosen to be loaded
 		{
 			if ($can_be_class)
 			{
@@ -282,22 +282,22 @@ class Groupe
 
 			$result = BaseDeDonnees::currentDB()->executeQuery($query);
 		}
-		else
+		else //From here, we load data about the group that has $id as sqlid
 		{
-			if ($can_be_class)
+			if ($can_be_class)//We load any group that matches the criteria
 			{
 				$query = "select * from ".Personne::TABLENAME." where id=$1;";
 			}
-			else
+			else //We load only basic group (not class) that matches the criteria
 			{
 				$query = "select * from ".Personne::TABLENAME." where id=$1 and is_class=false;";
 			}
 
 			$params = array($id);
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
-			$result = pg_fetch_assoc($result);
+			$result = pg_fetch_assoc($result); //$result is now an array containing values for each SQLcolumn of the group table
 		}
-
+		//We change the value of attributes
 		$this->sqlid = $result['id'];
 		$this->name = $result['name'];
 		$this->isAClass = $result['is_class'];
@@ -311,6 +311,8 @@ class Groupe
 			($this->timetable)->loadFromDB($result['id_current_timetable']);
 		}
 		*/
+		
+		//We load each element of the arraylist of students (students are people registered in people table)
 		$this->ListOfStudents=null;
 		$query="select * from ".self::composedOfTABLENAME." where id_group=".$this->sqlid.";";
 		$result = BaseDeDonnees::currentDB()->executeQuery($query);
@@ -321,6 +323,7 @@ class Groupe
 			$ressource = pg_fetch_assoc($result);	
 		}
 		
+		//We load each element of the arraylist of linked groups (which are groups registerd in group table)
 		$this->ListOfLinkedGroups=null;
 		$query="select * from ".self::linkedToTABLENAME." where id_group=".$this->sqlid.";";
 		$result = BaseDeDonnees::currentDB()->executeQuery($query);
