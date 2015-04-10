@@ -45,5 +45,10 @@ class Classe extends Groupe
 
 		return $returnValue;
 	}
+	public function loadFromDB($id = null,$canbeaclass=true){
+		parent::loadFromDB($id);
+		//TODO -load CourseModel
+				//-implement loadFromDB in Maquette
+	}
 }
 ?>

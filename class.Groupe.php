@@ -286,59 +286,27 @@ class Groupe
 		{
 			if ($can_be_class)//We load any group that matches the criteria
 			{
-				$query = "select * from ".Personne::TABLENAME." where id=$1;";
+				$query = "select * from ".self::TABLENAME." where id=$1;";
 			}
 			else //We load only basic group (not class) that matches the criteria
 			{
-				$query = "select * from ".Personne::TABLENAME." where id=$1 and is_class=false;";
+				$query = "select * from ".self::TABLENAME." where id=$1 and is_class=false;";
 			}
 
 			$params = array($id);
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
-			$result = pg_fetch_assoc($result); //$result is now an array containing values for each SQLcolumn of the group table
+			
 		}
-		//We change the value of attributes
-		$this->sqlid = $result['id'];
-		$this->name = $result['name'];
-		$this->isAClass = $result['is_class'];
+		$result = pg_fetch_assoc($result); //$result is now an array containing values for each SQLcolumn of the group table
 		
-		//Flora: TODO -implement constructor and loadFromDB in class EDT
-
-		/*
-		if(is_int($result['id_current_timetable'])
-		{
-			$this->timetable =new EDT();
-			($this->timetable)->loadFromDB($result['id_current_timetable']);
-		}
-		*/
-		
-		//We load each element of the arraylist of students (students are people registered in people table)
-		$this->ListOfStudents=null;
-		$query="select * from ".self::composedOfTABLENAME." where id_group=".$this->sqlid.";";
-		$result = BaseDeDonnees::currentDB()->executeQuery($query);
-		$ressource = pg_fetch_assoc($result);
-		while($ressource)
-		{
-			$this->loadStudentFromRessource($ressource);
-			$ressource = pg_fetch_assoc($result);	
-		}
-		
-		//We load each element of the arraylist of linked groups (which are groups registerd in group table)
-		$this->ListOfLinkedGroups=null;
-		$query="select * from ".self::linkedToTABLENAME." where id_group=".$this->sqlid.";";
-		$result = BaseDeDonnees::currentDB()->executeQuery($query);
-		$ressource = pg_fetch_assoc($result);
-		while($ressource)
-		{
-			$this->loadLinkedGroupFromRessource($ressource);
-			$ressource = pg_fetch_assoc($result);	
-		}		
+		$this->loadFromRessource($result);		
 	}
 
 	public function loadFromRessource($ressource)
 	{
 		if (is_array($ressource))
 		{
+			//We change the value of attributes
 			$this->sqlid = $ressource['id'];
 			$this->name = $ressource['name'];
 			$this->isAClass = $ressource['is_class'];
@@ -350,6 +318,8 @@ class Groupe
 				($this->timetable)->loadFromDB(intval($ressource['id_current_timetable']));
 			}
 			*/
+			
+			//We load each element of the arraylist of students (students are people registered in people table)
 			$this->ListOfStudents=null;
 			$query="select * from ".self::composedOfTABLENAME." where id_group=".$this->sqlid.";";
 			$result = BaseDeDonnees::currentDB()->executeQuery($query);
@@ -360,6 +330,7 @@ class Groupe
 				$ressource = pg_fetch_assoc($result);	
 			}
 			
+			//We load each element of the arraylist of linked groups (which are groups registerd in group table)
 			$this->ListOfLinkedGroups=null;
 			$query="select * from ".self::linkedToTABLENAME." where id_group=".$this->sqlid.";";
 			$result = BaseDeDonnees::currentDB()->executeQuery($query);

@@ -16,7 +16,7 @@ class EDT
 
 	// --- ATTRIBUTES --- //Flora: Attributes shouldn't be private since they are used by inheriting classes
 	protected $sqlid = null;
-	protected $modifiedBy = false;
+	protected $modifiedBy = null;
 	protected $listCourses = array();
 	protected $listModif = array();
 	protected $group = null;
@@ -315,21 +315,84 @@ class EDT
 		$this->addCourse($C);
 	}
 	
-	//TODO comment here bcz Modif dont have id thus, the select query should be done on Modification table
+	//TODO comment here, bcz Modif dont have id thus, the select query should be done on Modification table
 	public function loadModificationFromRessource($ressource){
 		$M=new Modification();
-		//TODO set attributes (no need for queries)
+		//TODO set attributes (no need for queries)//Implements setter in Matiere
 		$this->addModification($M);
 	}
 	
-	public function loadFromDB()
+	public function loadFromDB($id = null,$onlyclasscalendar=false)
 	{
-		//TODO
+		if ($id == null) //if we do not want to load a particularEDT
+		{
+			if ($this->sqlid != null) //Check if the current EDT object is defined
+			{
+				$id = $this->sqlid; //if yes, we want to 'reload' data about this object from the database (UPDATE)
+			}
+		}
+
+		if ($id == null)//if no, the first EDT object of the DB, will be chosen to be loaded
+		{
+			if (!$onlyclasscalendar)
+			{
+				$query = "select * from ".self::TABLENAME.";";
+			}
+			else
+			{
+				$query = "select * from ".self::TABLENAME." where is_class_calendar=true;";
+			}
+
+			$result = BaseDeDonnees::currentDB()->executeQuery($query);
+		}
+		else //(if yes) From here, we load data about the EDT that has $id as sqlid
+		{
+			if ($onlyclasscalendar)//We load any EDT that matches the criteria
+			{
+				$query = "select * from ".self::TABLENAME." where id=$1;";
+			}
+			else //We load only EDTclasse that matches the criteria
+			{
+				$query = "select * from ".self::TABLENAME." where id=$1 and is_class_calendar=true;";
+			}
+
+			$params = array($id);
+			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+			
+		}
+		$ressource = pg_fetch_assoc($result); //$ressource is now an array containing values for each SQLcolumn of the EDT table
+		$this->loadFromRessource($ressource);
+		
 	}
 	
-	public function loadFromRessource()
+	public function loadFromRessource($ressource)
 	{
-		//TODO
+		//We change values of attributes
+		$this->sqlid = $ressource['id'];
+		$U=new Utilisateur();
+		$U->loadFromDB(int_val($ressource['is_being_modified_by']));
+		$this->modifiedBy = $U;
+		$U=new Utilisateur();
+		$U->loadFromDB(int_val($ressource['id_teacher']));
+		$this->teacher = $U;
+		$params=array($this->sqlid);
+		
+		if($ressource['is_validated_calendar'])
+			$query = "select id from ".Groupe::TABLENAME." where id_validated_calendar=$1;";
+		else 
+		if($result2=BaseDeDonnees::currentDB()->executeQuery($query, $params)){
+			$result2 = pg_fetch_assoc($result2);
+			$G=new Groupe();
+			$G->loadFromDB(int_val($result2['id']));
+			$this->group = $G;
+		}
+		$query = "select id from ".Matiere::TABLENAME." where id_calendar=$1;";
+		if($result2=BaseDeDonnees::currentDB()->executeQuery($query, $params)){
+			$result2 = pg_fetch_assoc($result2);
+			$M=new Matiere();
+			$M->loadFromDB(int_val($result2['id']));
+			$this->subject = $M;
+		}
 		
 	}
 	
