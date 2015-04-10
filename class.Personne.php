@@ -298,24 +298,10 @@ class Personne
 
 			$params = array($id);
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
-			$result = pg_fetch_assoc($result);
+			
 		}
-
-		$this->sqlid = $result['id'];
-		$this->familyName = $result['familyname'];
-		$this->firstName = $result['firstname'];
-		$this->emailAddress1 = $result['emailaddress1'];
-		$this->emailAddress2 = $result['emailaddress2'];
-
-		$this->status=null;
-		$query="select * from ".Statut_personne::TABLENAME." where id_person=".$this->sqlid.";";
-		$result = BaseDeDonnees::currentDB()->executeQuery($query);
-		$ressource = pg_fetch_assoc($result);
-		while($ressource)
-		{
-			$this->loadStatusFromRessource($ressource);
-			$ressource = pg_fetch_assoc($result);	
-		}		
+		$result = pg_fetch_assoc($result);
+		$this->loadFromRessource($result);
 	}
 
 	public function loadFromRessource($ressource)

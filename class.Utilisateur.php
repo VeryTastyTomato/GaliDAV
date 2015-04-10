@@ -160,22 +160,6 @@ class Utilisateur extends Personne
 
 	public function removeFromDB()
 	{
-	/*
-		$BDD = new BaseDeDonnees("davical_app", "davical");
-		if (!$BDD->connect())
-		{
-			echo("pas de connexion vrs davical");
-		}
-		else
-		{
-			$params[] = $login;
-			$query = "remove from dav_principal where username=$1;";
-			$BDD->executeQuery($query, $params);
-			$BDD->close();
-			$query = "delete from ".self::TABLENAME." where id_person=".$this->sqlid.";";
-			BaseDeDonnees::currentDB()->executeQuery($query);
-			parent::removeFromDB();
-		}*/
 		parent::removeFromDB();
 	}
 
