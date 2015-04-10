@@ -26,7 +26,7 @@ class Cours
 	const TABLENAME = "gcourse";
 	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, room varchar(30), begin timestamp without timezone NOT NULL, end timestamp without timezone NOT NULL, id_subject integer REFERENCES gsubject(id), type integer";
 	const belongsToTABLENAME = "gcourse_belongs_to";
-	const SQLcolumns = "id_course integer REFERENCES gcourse(id), id_calendar integer REFERENCES gcalendar(id), constraint gcourse_belongs_to_pk PRIMARY KEY(id_course,id_calendar)";
+	const belongsToSQLcolumns = "id_course integer REFERENCES gcourse(id), id_calendar integer REFERENCES gcalendar(id), constraint gcourse_belongs_to_pk PRIMARY KEY(id_course,id_calendar)";
 	
 	/* Flora: A Course in GaliDAV DataBase doesnt correspond to a collection_item (event) in Davical DB.
 		In fact, a collection item has repetition rules that could be translated in several courses in GaliDAV database.
@@ -174,7 +174,7 @@ class Cours
 		$timetable->addCourse($this);
 	}
 
-	public function remove()
+	public function removeFromDB()
 	{
 		// Etienne : accès à la BDD pour la delete ?
 	}
