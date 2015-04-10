@@ -99,7 +99,10 @@ class BaseDeDonnees
 
 	public function clear()
 	{
-		//TODO: clear aussi la DB de davical cad tous les comptes sauf admin
+		//TODO: clear aussi la DB de davical cad tous les comptes sauf admin, toutes les collectionx et item_collection
+		$this->executeQuery("DELETE from ".Modification::TABLENAME.";");
+		$this->executeQuery("DELETE from ".Cours::belongsToTABLENAME.";");
+		$this->executeQuery("DELETE from ".Cours::TABLENAME.";");
 		$this->executeQuery("DELETE from ".Matiere::TABLENAME.";");
 		$this->executeQuery("DELETE from ".Groupe::linkedToTABLENAME.";");
 		$this->executeQuery("DELETE from ".Groupe::composedOfTABLENAME.";");
@@ -111,7 +114,10 @@ class BaseDeDonnees
 	}
 
 	public function dropAll()//KFK: NOTICE: L'ordre est important, on évite des warnings
-	{
+	{	
+		$this->executeQuery("DROP TABLE IF EXISTS ".Modification::TABLENAME." CASCADE;");
+		$this->executeQuery("DROP TABLE IF EXISTS ".Cours::belongsToTABLENAME." CASCADE;");
+		$this->executeQuery("DROP TABLE IF EXISTS ".Cours::TABLENAME." CASCADE;");
 		$this->executeQuery("DROP TABLE IF EXISTS ".Matiere::TABLENAME." CASCADE;");
 		$this->executeQuery("DROP TABLE IF EXISTS ".Groupe::composedOfTABLENAME." CASCADE;");
 		$this->executeQuery("DROP TABLE IF EXISTS ".Groupe::linkedToTABLENAME." CASCADE;");
@@ -181,6 +187,18 @@ class BaseDeDonnees
 		if ($result)
 		{
 			$result = $this->executeQuery("CREATE TABLE ".Matiere::TABLENAME." (".Matiere::SQLcolumns.");");
+		}else $this->show_error();
+		if ($result)
+		{
+			$result = $this->executeQuery("CREATE TABLE ".Cours::TABLENAME." (".Cours::SQLcolumns.");");
+		}else $this->show_error();
+		if ($result)
+		{
+			$result = $this->executeQuery("CREATE TABLE ".Cours::belongsToTABLENAME." (".Cours::belongsToSQLcolumns.");");
+		}else $this->show_error();
+		if ($result)
+		{
+			$result = $this->executeQuery("CREATE TABLE ".Modification::TABLENAME." (".Modification::SQLcolumns.");");
 		}else $this->show_error();
 		/*** TODO Autres tables ***/
 

@@ -24,7 +24,7 @@ class Cours
 	private $subject = null;
 	
 	const TABLENAME = "gcourse";
-	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, room varchar(30), begin timestamp without timezone NOT NULL, end timestamp without timezone NOT NULL, id_subject integer REFERENCES gsubject(id), type integer";
+	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, room varchar(30), begins_at timestamp without time zone NOT NULL, ends_at timestamp without time zone NOT NULL, id_subject integer REFERENCES gsubject(id), type integer";
 	const belongsToTABLENAME = "gcourse_belongs_to";
 	const belongsToSQLcolumns = "id_course integer REFERENCES gcourse(id), id_calendar integer REFERENCES gcalendar(id), constraint gcourse_belongs_to_pk PRIMARY KEY(id_course,id_calendar)";
 	
