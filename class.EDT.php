@@ -252,7 +252,7 @@ class EDT
 	public function addCourse(Cours $newCourse)
 	{
 		if(!$this->containsCourse($newCourse)){
-			$query="insert ".Cours::belongsToTABLENAME." (id_course,id_calendar) VALUES(".$newCourse->getSqlid().","$this->sqlid.";";
+			$query="insert ".Cours::belongsToTABLENAME." (id_course,id_calendar) VALUES(".$newCourse->getSqlid().",".$this->sqlid.";";
 			if(BaseDeDonnees::currentDB()->executeQuery($query))
 			{
 				$this->listCourses[] = $newCourse;
