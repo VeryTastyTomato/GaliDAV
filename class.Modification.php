@@ -18,6 +18,9 @@ class Modification
 	private $madeBy = null;
 	private $courseModified = null;
 
+	const TABLENAME = "gmodification";
+	const SQLcolumns = "id_course integer REFERENCES gcourse(id), id_user integer REFERENCES guser(id_person), date timestamp default 'now'";
+	
 	// --- OPERATIONS ---
 	// constructor
 	public function __constructor($newDate, $newMadeBy, $newCourseModified)

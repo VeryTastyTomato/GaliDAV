@@ -78,25 +78,40 @@ class EDT
 				{
 					$query="update ".Groupe::TABLENAME." set id_current_timetable=".$this->sqlid." where id=".$G->getId().";";
 				}
-				if(!BaseDeDonnees::currentDB()->executeQuery($query))
+				if(BaseDeDonnees::currentDB()->executeQuery($query))
+				{
+					$this->group=$G;
+				}
+				else
 				{
 					BaseDeDonnees::currentDB()->show_error();
 				}
 			}
 			else if (is_a($Object, "Matiere"))
-			{
-				//TODO attributs + requêtesSQL
-				
+			{	
 				$M=$Object;
+				$query="update ". Matiere::TABLENAME." set id_calendar=".$this->sqlid.";";
+				if(BaseDeDonnees::currentDB()->executeQuery($query))
+				{
+					$this->subject=$M;
+				}
+				else
+				{
+					BaseDeDonnees::currentDB()->show_error();
+				}
 			}
 			else if (is_a($Object, "Enseignant"))
 			{
 				$E=$Object;
 				$query="update ". self::TABLENAME." set id_teacher=".$E->getSqlid().";";
-					if(BaseDeDonnees::currentDB()->executeQuery($query))
-					{
-						BaseDeDonnees::currentDB()->show_error();
-					}
+				if(BaseDeDonnees::currentDB()->executeQuery($query))
+				{
+					$this->group=$G;
+				}
+				else
+				{
+					BaseDeDonnees::currentDB()->show_error();
+				}
 			}
 		}
 	}
@@ -170,10 +185,26 @@ class EDT
 	{
 		if (!empty($newModifiedBy))
 		{
-			$this->modifiedBy = $newModifiedBy;
-			//TODO SQL query
+			$query="update ". self::TABLENAME." set is_being_modified_by=".$newModifiedBy->getSqlid()." where id=".$this->sqlid.";";
+			if(BaseDeDonnees::currentDB()->executeQuery($query))
+			{
+				$this->modifiedBy = $newModifiedBy;
+			}
+			else
+			{
+				BaseDeDonnees::currentDB()->show_error();
+			}
+		}else{
+			$query="update ". self::TABLENAME." set is_being_modified_by=null where id=".$this->sqlid.";";
+			if(BaseDeDonnees::currentDB()->executeQuery($query))
+			{
+				$this->modifiedBy = null;
+			}
+			else
+			{
+				BaseDeDonnees::currentDB()->show_error();
+			}
 		}
-		//TODO a different SQL query //The timetable isn't being modified
 	}
 
 	public function setListCourses($newListCourses=null)
@@ -221,29 +252,40 @@ class EDT
 	public function addCourse(Cours $newCourse)
 	{
 		if(!$this->containsCourse($newCourse)){
-			$this->listCourses[] = $newCourse;
-			//TODO SQL query
-			
+			$query="insert ".Cours::belongsToTABLENAME." (id_course,id_calendar) VALUES(".$newCourse->getSqlid().","$this->sqlid.";";
+			if(BaseDeDonnees::currentDB()->executeQuery($query))
+			{
+				$this->listCourses[] = $newCourse;
+			}
+			else
+			{
+				BaseDeDonnees::currentDB()->show_error();
+			}			
 		}
 	}
 
 	public function removeCourse(Cours $courseToRemove)
 	{
-		if(!$this->containsCourse($newCourse))
+		if($this->containsCourse($newCourse))
 		{
-			//TODO SQL queries
-			
-			unset($this->listCourses[array_search($courseToRemove, $this->listCourses)]);
+			$query="delete from ".Cours::belongsToTABLENAME." where id_course=".$newCourse->getSqlid()." and id_calendar=".$this->sqlid.";";
+			if(BaseDeDonnees::currentDB()->executeQuery($query))
+			{
+				unset($this->listCourses[array_search($courseToRemove, $this->listCourses)]);
+			}
+			else
+			{
+				BaseDeDonnees::currentDB()->show_error();
+			}			
 		}
 	}
 
 	public function addModification(Modification $M)
 	{
 		if(!hasModification($M))
-		{
-			//TODO SQL queries
+		{			
 			$this->listModif[]=$M;
-			
+			//No need for a SQL query, the modification should already have been registered in the DB
 		}
 	}
 	
@@ -253,25 +295,31 @@ class EDT
 	{
 		if(!hasModification($M))
 		{
-			//TODO SQL queries
-			
-			unset($this->listModif[array_search($M, $this->listModif)]);	
+			//$M->removeFromDB(); //TODO implement the fonction
+			unset($this->listModif[array_search($M, $this->listModif)]);
 		}
 	
 	}
 	public function clearModifications()
 	{
-		//TODO SqlQueries
+		foreach($this->listModif as $oneModif)
+		{
+			//$oneModif->removeFromDB(); //TODO implement the fonction
+		}
 		$this->listModif = array();
 	}
 	
 	public function loadCourseFromRessource($ressource){
 		$C=new Cours();
-		//TODO
+		$C->loadFromDB(int_val($ressource['id_course']));
+		$this->addCourse($C);
 	}
+	
+	//TODO comment here bcz Modif dont have id thus, the select query should be done on Modification table
 	public function loadModificationFromRessource($ressource){
 		$M=new Modification();
-		//TODO
+		//TODO set attributes (no need for queries)
+		$this->addModification($M);
 	}
 	
 	public function loadFromDB()

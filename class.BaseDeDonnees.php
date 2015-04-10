@@ -93,7 +93,7 @@ class BaseDeDonnees
 		}
 
 		$result = pg_query_params($conn, $query, $params);
-		if(!$result)$this->error_sql_message="<div><p><b>GaliDAV Error</b>: The following query has failed: <br/>&emsp;$query<br/>(".var_dump($params).")</p><p><b>&emsp;&emsp;&emsp;Details on SQL</b> ".pg_last_error($conn)."</p></div>";
+		if(!$result)$this->error_sql_message="<div style='z-index:2;border-style:solid;'><p><b>GaliDAV Error</b>: The following query has failed: <br/>&emsp;$query<br/>(".var_dump($params).")</p><p><b>&emsp;&emsp;&emsp;Details on SQL</b> ".pg_last_error($conn)."</p></div>";
 		return $result;
 	}
 
