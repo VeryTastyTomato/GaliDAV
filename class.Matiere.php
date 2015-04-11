@@ -13,6 +13,7 @@ class Matiere
 	// --- ASSOCIATIONS ---
 
 	// --- ATTRIBUTES ---
+	private $sqlid = null;
 	private $name = null;
 	private $teachedBy = array();
 
@@ -70,7 +71,7 @@ class Matiere
 	{
 		if (!empty($newTeachedBy))
 		{
-			$this->name = $newTeachedBy;
+			$this->teachedBy[] = $newTeachedBy;
 		}
 	}
 
@@ -102,7 +103,7 @@ class Matiere
 				$result1 = BaseDeDonnees::currentDB()->executeQuery($query);
 				if(!$result1)
 				{
-					echo('GaliDAV: Aucune matière de ce nom');
+					echo('GaliDAV: Aucune matière de ce nom');//weird if Matiere is instantiated ?
 				}
 				else
 				{
@@ -118,7 +119,7 @@ class Matiere
 					{
 						$query = "UPDATE ".self::TABLENAME." set id_speaker3=$1 where id=".$result1.";";
 					}
-					$params[] = $P;
+					$params = array($P);
 					$result2 = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 					$this->teachedBy[] = $P;
 				}			
@@ -135,11 +136,11 @@ class Matiere
 		//TODO
 	}
 
-	public function loadTeacherFromRessource($ressource)
+	public function loadTeacherFromRessource($ressource) //we must have the teacher id
 	{
 		$E = new Enseignant();
-		//TODO
-		
+		$E->loadFromDB(intval($ressource));
+		$this->addTeacher($E);
 	}
 
 	public function loadGroupFromRessource($ressource)
@@ -156,15 +157,64 @@ class Matiere
 		
 	}
 
-	public function loadFromDB()
+	public function loadFromDB($id = null)
 	{
-		//TODO
+		if ($id == null)
+		{
+			if ($this->sqlid != null)
+			{
+				$id = $this->sqlid;
+			}
+		}
+
+		else
+		{
+			$query = "select * from ".self::TABLENAME." where id=$1;";
+			$params = array($id);
+			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+			$result = pg_fetch_assoc($result);
+		}
+
+		$this->sqlid = $result['id'];
+		$this->name = $result['name'];
+		
+		$this->teachedBy = null;
+
+		if($result['id_speaker1'])
+		{
+			$this->loadTeacherFromRessource($result['id_speaker1']);
+			if($result['id_speaker2'])
+			{
+				$this->loadTeacherFromRessource($result['id_speaker2']);
+				if($result['id_speaker3'])
+				{
+					$this->loadTeacherFromRessource($result['id_speaker3']);
+				}
+			}
+		}
 	}
 	
 	public function loadFromRessource($ressource)
 	{
-		//TODO
-		
+		if (is_array($ressource))
+		{
+			$this->sqlid = $ressource['id'];
+			$this->name = $ressource['name'];
+			
+			$this->teachedBy=null;
+			if($ressource['id_speaker1'])
+			{
+				$this->loadTeacherFromRessource($ressource['id_speaker1']);
+				if($ressource['id_speaker2'])
+				{
+					$this->loadTeacherFromRessource($ressource['id_speaker2']);
+					if($ressource['id_speaker3'])
+					{
+						$this->loadTeacherFromRessource($ressource['id_speaker3']);
+					}
+				}
+			}
+		}
 	}
 	
 	public function removeFromDB()
