@@ -100,7 +100,7 @@ function CreateUserAccount($username,$fullname,$password,$email=null,$privileges
 
 
 
-function CreateClassAccount($classname,$password,$email,$privilege){//pour l'instant le mot de passe n'est pas utile, on n'est pas censé se connecter en tant que class
+function CreateGroupAccount($classname,$password,$email=null,$privilege=null){//pour l'instant le mot de passe n'est pas utile, on n'est pas censé se connecter en tant que class
 
 	$param['username']=$classname;
 	$param['fullname']=$classname;
@@ -128,6 +128,11 @@ if(isset($_POST['action'])){
 		else if($_POST['status']=='head')new Responsable($_POST['familyname'], $_POST['firstname'], $_POST['login'],$_POST['password']);
 		else if($_POST['status']=='administrator')new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'],$_POST['password']);
 		
+		header('Location: ./admin_panel.php');
+	}
+	
+	if($_POST['action']=='add_group'){
+		$G=new Groupe($_POST['name'], $_POST['isaclass']);
 		//header('Location: ./admin_panel.php');
 	}
 	
@@ -137,7 +142,6 @@ if(isset($_POST['action'])){
 		else if($_POST['status']=='speaker')$P->addStatus(new Statut_personne(Statut_personne::SPEAKER));
 		header('Location: ./admin_panel.php');
 	}
-	
 	if($_POST['action']=='delete_person'){
 		$P=new Personne();
 		$P->loadFromDB($_POST['id']);

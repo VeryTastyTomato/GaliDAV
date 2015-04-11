@@ -26,7 +26,7 @@ require_once("ListePersonnes.php");
 		<tr>
 			<th style="width:33%">Ajouter un utilisateur</th>
 			<th style="width:33%">Ajouter une personne</th>
-			<th style="width:33%">Ajouter une matière</th>
+			<th style="width:33%">Ajouter une classe (ou un groupe)</th>
 		</tr>
 		<tr style="border-left:solid;border-right:solid">
 			<td style="border-left:solid;border-right:solid; padding:auto;">
@@ -38,7 +38,7 @@ require_once("ListePersonnes.php");
 				<tr><th>login</th><td><input type="text" name="login"/></td>
 				<tr><th>Mot de passe</th><td><input type="password" name="password"/></td>
 				</table>
-				<br/><input type="radio" name="status" value="teacher"/>Enseignant<br/>
+				<br/><input type="radio" name="status" value="teacher" checked/>Enseignant<br/>
 				<input type="radio" name="status" value="secretary"/>Secrétaire<br/>
 				<input type="radio" name="status" value="head"/>Responsable<br/>
 				<input type="radio" name="status" value="administrator"/>Administrateur<br/>
@@ -52,15 +52,35 @@ require_once("ListePersonnes.php");
 				<tr><th>Prénom</th><td><input type="text" name="firstname"/></td>
 				<tr><th>email</th><td><input type="text" name="email"/></td>
 				</table>
-				<br/><input type="radio" name="status" value="student"/>Élève<br/>
+				<br/><input type="radio" name="status" value="student" checked/>Élève<br/>
 				<input type="radio" name="status" value="speaker"/>Intervenant<br/>
 				<input type="submit" value="Ajouter" style='width:80%;margin-left:auto;margin-right:auto;'/>
 			</form></td>
+	
+			<td style="border-left:solid;border-right:solid; padding:auto;">
+			<form action="test_davical_operations.php" method="POST">
+				<input type='hidden' name='action' value="add_group"/>
+				<table style=margin-left:auto;margin-right:auto;>
+				<tr><th>Nom:</th><td><input type="text" name="name"/></td></tr>
+				<tr><td><input type="radio" name="isaclass" value=true checked/>Classe<br/>
+				<input type="radio" name="status" value=false />Groupe<br/>
+				</td></tr></table>
+				<input type="submit" value="Ajouter" style='width:80%;margin-left:auto;margin-right:auto;'/><br/>
+			</form></td>
+	
+		</tr>
+		<tr>
+			<th style="width:33%">Ajouter une matière</th>
+			<th style="width:33%">?</th>
+			<th style="width:33%">?</th>
+			
+		</tr>
+		<tr>
 			<td style="border-left:solid;border-right:solid; padding:auto;">
 			<form action="test_davical_operations.php" method="POST">
 				<input type='hidden' name='action' value="add_subject"/>
 				<table style=margin-left:auto;margin-right:auto;>
-				<tr><th>Classe</th><td><input type="text" name="classname"/></td></tr>
+				<tr><th>Classe</th><td><select name="speaker1"/><?php echo XoptionGroups();?></td></tr>
 				<tr><th>Matière </th><td><input type="text" name="subjectname"/></td></tr>
 				<tr><th>Intervenant1:</th><td><select name="speaker1"/><?php echo XoptionSpeakers();?></select></td></tr>
 				<tr><th>Intervenant2: </th><td><select name="speaker2"/><?php echo XoptionSpeakers();?></select></td></tr>
@@ -69,6 +89,7 @@ require_once("ListePersonnes.php");
 				<input type="submit" value="Ajouter" style='width:80%;margin-left:auto;margin-right:auto;'/><br/>
 			</form></td>
 		</tr>
+		
 	</table>
 </div>
 
@@ -83,6 +104,12 @@ require_once("ListePersonnes.php");
 			<td><?php echo XListAll();?></td>
 			<td><?php echo XListTeachers();?></td>
 			<td><?php echo XListStudents();?></td>
+		</tr>
+		<tr>
+			<th style="width:33%">Tous les groupes et classes</th>
+		</tr>
+		<tr>
+			<td><?php echo XListAllGroups();?></td>
 		</tr>
 	</table>
 

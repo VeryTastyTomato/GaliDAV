@@ -35,6 +35,7 @@ class Groupe
 	{
 		if ($newName != null)
 		{
+			CreateGroupAccount($newName,$newIsAClass);
 			$this->name = $newName;
 			$this->isAClass = $newIsAClass;
 			$query="insert into ". self::TABLENAME." (name,is_class) VALUES ($1,$newIsAClass);";

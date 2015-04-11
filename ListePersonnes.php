@@ -18,10 +18,12 @@ function XListAll(){
 function XListStudents(){
 	$out="<ul class=listOfPeople style='overflow:scroll;'>";
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_students());
-		while(($person=pg_fetch_assoc($res))!=null)
-		{
-			//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
-			$out.="<li>".XPerson($person)."</li>";
+		if($res){
+			while(($person=pg_fetch_assoc($res))!=null)
+			{
+				//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
+				$out.="<li>".XPerson($person)."</li>";
+			}
 		}
 		$out.="</ul>";
 	return $out;
@@ -30,11 +32,29 @@ function XListStudents(){
 function XListTeachers(){
 	$out="<ul class=listOfPeople style='overflow:scroll;'>";
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_teachers());
-		while(($person=pg_fetch_assoc($res))!=null)
-		{
-			//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
-			$out.="<li>".XPerson($person)."</li>";
+		if($res){
+			while(($person=pg_fetch_assoc($res))!=null)
+			{
+				//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
+				$out.="<li>".XPerson($person)."</li>";
+			}
 		}
+		$out.="</ul>";
+		return $out;
+}
+
+function XListAllGroups(){
+	$out="<ul class=listOfGroup style='overflow:scroll;'>";
+		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_groups());
+		if($res){
+			while(($group=pg_fetch_assoc($res))!=null)
+			{
+				//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
+				$out.="<li>".XGroup($group)."</li>";
+			}
+		}
+		else
+			BaseDeDonnees::currentDB()->show_error();
 		$out.="</ul>";
 		return $out;
 }
@@ -51,12 +71,33 @@ function XoptionSpeakers(){
 		//$out.="</datalist>";
 		return $out;
 }
+function XoptionGroups(){
+	//$out="<datalist class=optionOfGroup id=listgroups'>";
+	$out="";
+		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_groups());
+		while(($group=pg_fetch_assoc($res))!=null)
+		{
+			//$out.="<option value='".$person['familyname']." ".$person['firstname']."'>";
+			$out.="<option>".$group['name'];
+		}
+		//$out.="</datalist>";
+		return $out;
+}
 
 function XPerson($ressource){
 	if(is_array($ressource)){
 		$out="";
 		$out.="<form action='test_davical_operations.php' method='POST'>".$ressource['familyname']." ".$ressource['firstname'];
 		$out.="<input type='hidden' name='action' value='delete_person'/><input type='hidden' name='id' value=".$ressource['id']." /><input type='submit' value='Supprimer'/></form>";
+		return $out;	
+	}
+}
+
+function XGroup($ressource){
+	if(is_array($ressource)){
+		$out="";
+		$out.="<form action='test_davical_operations.php' method='POST'>".$ressource['name'];
+		$out.="<input type='hidden' name='action' value='delete_group'/><input type='hidden' name='id' value=".$ressource['id']." /><input type='submit' value='Supprimer'/></form>";
 		return $out;	
 	}
 }
@@ -76,4 +117,8 @@ function query_all_teachers(){
 }
 function query_all_speakers(){
 	return "select * from ".Personne::TABLENAME." as P where exists(select * from ".Statut_personne::TABLENAME." as S where S.id_person=P.id and S.status IN (2,3)) order by familyName;";
+}
+
+function query_all_groups(){
+	return "select * from ".Groupe::TABLENAME." order by name;";
 }
