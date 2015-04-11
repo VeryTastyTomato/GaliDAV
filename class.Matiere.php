@@ -136,7 +136,7 @@ class Matiere
 		//TODO
 	}
 
-	/*This method doesn't exists anymore, due to a high difficulty. We load directly the teacher in "loadFromDB" and "loadFromRessource" methods
+	/*This method doesn't exist anymore, due to a high difficulty. We load directly the teacher in "loadFromDB" and "loadFromRessource" methods
 	public function loadTeacherFromRessource($ressource)
 	{
 		if(!empty($ressource['speaker1']))
@@ -152,6 +152,7 @@ class Matiere
 		
 	}
 
+	//don't know if it's useful since the calendar is loaded easily in "loadFromRessource"
 	public function loadTimetableFromRessource($ressource)
 	{
 		$E = new EDT();
@@ -168,38 +169,20 @@ class Matiere
 				$id = $this->sqlid;
 			}
 		}
-
+		if ($id == null)
+		{
+			$query = "select * from ".self::TABLENAME.";";
+			$result = BaseDeDonnees::currentDB()->executeQuery($query);
+		}
 		else
 		{
 			$query = "select * from ".self::TABLENAME." where id=$1;";
 			$params = array($id);
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
-			$result = pg_fetch_assoc($result);
 		}
 
-		$this->sqlid = $result['id'];
-		$this->name = $result['name'];
-		
-		$this->teachedBy = null;
-
-		if($result['id_speaker1'])
-		{
-			$E = new Enseignant();
-			$E->loadFromDB(intval($result['id_speaker1']));
-			$this->addTeacher($E);
-			if($result['id_speaker2'])
-			{
-				$E = new Enseignant();
-				$E->loadFromDB(intval($result['id_speaker2']));
-				$this->addTeacher($E);
-				if($result['id_speaker3'])
-				{
-					$E = new Enseignant();
-					$E->loadFromDB(intval($result['id_speaker3']));
-					$this->addTeacher($E);
-				}
-			}
-		}
+		$result = pg_fetch_assoc($result);
+		$this->loadFromRessource($result);
 	}
 	
 	public function loadFromRessource($ressource)
@@ -227,6 +210,12 @@ class Matiere
 						$this->addTeacher($E);
 					}
 				}
+			}
+
+			if($result['id_calendar'])
+			{
+				$this->agdvCalendar =new EDT();
+				$this->agdvCalendar->loadFromDB(intval($ressource['id_calendar']));	
 			}
 		}
 	}
