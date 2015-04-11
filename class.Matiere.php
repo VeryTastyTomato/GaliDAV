@@ -17,6 +17,7 @@ class Matiere
 	private $name = null;
 	private $teachedBy = array();
 
+
 	private $timetable=null; //may be we'll use severals calendars for one subject ? (1 calendar for CMs, 1 for TDs...) to settle
 	//Flora: No, calendars are managed in davical. Ther's one calendar for one subject + we do not care in this class about davical calendars
 
