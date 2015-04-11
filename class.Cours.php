@@ -31,6 +31,7 @@ class Cours
 	/* Flora: A Course in GaliDAV DataBase doesnt correspond to a collection_item (event) in Davical DB.
 		In fact, a collection item has repetition rules that could be translated in several courses in GaliDAV database.
 		On the other hand, a GaliDAV course can be shared by
+		TODO : Make the links with davical and name davical events differently depending on the collection (timetable) they belong to
 	*/
 
 	// --- OPERATIONS ---

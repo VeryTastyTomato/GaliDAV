@@ -87,6 +87,10 @@ class Personne
 	{
 		return $this->firstName;
 	}
+	
+	public function getFullName(){
+		return $this->familyName." ".$this->firstName;
+	}
 
 	public function getEmailAddress1()
 	{

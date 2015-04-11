@@ -286,6 +286,7 @@ class Personne
 		+getSqlid(): Integer
 		+getFamilyName(): String
 		+getFirstName(): String
+		+getFullName():String
 		+getEmailAddress1(): String
 		+getEmailAddress2(): String
 	Mutateurs

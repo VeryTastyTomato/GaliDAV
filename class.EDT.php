@@ -26,7 +26,7 @@ class EDT
 	const TABLENAME = "gcalendar";
 	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, id_teacher integer REFERENCES guser(id_person), is_class_calendar boolean default false, is_validated_calendar boolean default false, is_being_modified_by integer REFERENCES guser(id_person), date_creation timestamp default 'now'";
 	/*Flora : 
-	An EDT or calendar in the GaliDAV database can be a calendar of a class, a group, a subject or a teacher, since agendav doesn't implements a hierarchy of calendrs. Moreover, a class is linked to a current calendar and a validated calendar. Groups,subjects and teachers dont require a validated calendar.
+	An EDT or calendar in the GaliDAV database can be a calendar of a class, a group, a subject or a teacher, since agendav doesn't implement a hierarchy of calendrs. Moreover, a class is linked to a current calendar and a validated calendar. Groups,subjects and teachers dont require a validated calendar.
 	
 	It is expected that every change to a current calendar affects all the calendars that are linked to it.
 	See the class Groupe and its table named linkedTo.
@@ -52,7 +52,6 @@ class EDT
 			if (is_a($Object, "Groupe"))
 			{
 				$G=$Object;
-			
 				if($G->getIsAClass()){
 					$query="update ". self::TABLENAME." set is_class_calendar=true where id=".$this->sqlid.";";
 					if(!BaseDeDonnees::currentDB()->executeQuery($query))
@@ -82,6 +81,7 @@ class EDT
 				}
 				if(BaseDeDonnees::currentDB()->executeQuery($query))
 				{
+					CreateCalendar($G->getName(), $G->getName()." EDT");
 					$this->group=$G;
 				}
 				else
@@ -95,6 +95,8 @@ class EDT
 				$query="update ". Matiere::TABLENAME." set id_calendar=".$this->sqlid.";";
 				if(BaseDeDonnees::currentDB()->executeQuery($query))
 				{
+					//CreateCalendar($M->getGroup()->getName(), $M->getName()." ".$M->getGroup()->getName());
+					//TODO gestion of a group attribute in Matière
 					$this->subject=$M;
 				}
 				else
@@ -108,7 +110,8 @@ class EDT
 				$query="update ". self::TABLENAME." set id_teacher=".$E->getSqlid().";";
 				if(BaseDeDonnees::currentDB()->executeQuery($query))
 				{
-					$this->group=$G;
+					CreateCalendar($E->getFullName(), $E->getFullName()." EDT");
+					$this->teacherOwner=$E;
 				}
 				else
 				{
@@ -353,7 +356,7 @@ class EDT
 		return $examList;
 	}
 
-	public function addCourse(Cours $newCourse)
+	public function addCourse(Cours $newCourse) //TODO adapt davical dB en créant des évènements de même nom/horaires et salle pour tous lesEDT concernés
 	{
 		if(!$this->containsCourse($newCourse)){
 			$query="insert ".Cours::belongsToTABLENAME." (id_course,id_calendar) VALUES(".$newCourse->getSqlid().",".$this->sqlid.";";

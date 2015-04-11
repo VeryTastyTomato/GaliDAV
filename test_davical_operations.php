@@ -14,7 +14,7 @@ require_once("class.Responsable.php");
 
 
 //Créer un calendrier de nom, $calendarNameGiven pour l'utilisateur d'identifiant $username
-function CreateSubject( $username, $calendarNameGiven,$defult_timezone = null ) {
+function CreateCalendar( $username, $calendarNameGiven,$defult_timezone = null ) {
   global $session, $c;
 
 	if ( !isset($c->default_collections) )
@@ -93,7 +93,7 @@ function CreateUserAccount($username,$fullname,$password,$email=null,$privileges
 		$query="update dav_principal set default_privileges=$1 where username=$2;";
 		$result=$BDD->executeQuery($query,$params2);
 		$BDD->close();
-		if(!$result)echo("GaliDAV: Erreur d'écriture dans la base davical");
+		if(!$result)$BDD->show_error();
 	}
 	return $P;
 }
@@ -116,10 +116,12 @@ function CreateClassAccount($classname,$password,$email,$privilege){//pour l'ins
 
 
 if(isset($_POST['action'])){
+
 	if($_POST['action']=='add_subject'){
-		CreateSubject($_POST['classname'],$_POST['subjectname']);
+		CreateCalendar($_POST['classname'],$_POST['subjectname']);
 		header('Location: ./admin_panel.php');
 	}
+	
 	if($_POST['action']=='add_user'){
 		if($_POST['status']=='secretary')new Secretaire($_POST['familyname'], $_POST['firstname'], $_POST['login'],$_POST['password']);
 		else if($_POST['status']=='teacher')new Enseignant($_POST['familyname'], $_POST['firstname'], $_POST['login'],$_POST['password']);
@@ -128,17 +130,20 @@ if(isset($_POST['action'])){
 		
 		//header('Location: ./admin_panel.php');
 	}
+	
 	if($_POST['action']=='add_person'){
 		$P=new Personne($_POST['familyname'], $_POST['firstname'], $_POST['email']);
 		if($_POST['status']=='student')$P->addStatus(new Statut_personne(Statut_personne::STUDENT));
 		else if($_POST['status']=='speaker')$P->addStatus(new Statut_personne(Statut_personne::SPEAKER));
 		header('Location: ./admin_panel.php');
 	}
+	
 	if($_POST['action']=='delete_person'){
 		$P=new Personne();
 		$P->loadFromDB($_POST['id']);
 		$P->removeFromDB();
 		header('Location: ./admin_panel.php');
 	}
+	
 }
 ?>
