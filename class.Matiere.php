@@ -16,7 +16,12 @@ class Matiere
 	private $sqlid = null;
 	private $name = null;
 	private $teachedBy = array();
+
 	private $timetable=null;
+	private $agdvCalendar = null; //may be we'll use severals calendars for one subject ? (1 calendar for CMs, 1 for TDs...) to settle
+	//Flora: No, calendars are managed in davical. Ther's one calendar for one subject + we do not care in this class about davical calendars
+
+
 	const TABLENAME = "gsubject";
 	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, id_speaker1 integer REFERENCES gperson(id), id_speaker2 integer REFERENCES gperson(id), id_speaker3 integer REFERENCES gperson(id), id_group integer REFERENCES ggroup(id), id_calendar integer REFERENCES gcalendar(id)";
 
@@ -30,12 +35,10 @@ class Matiere
 		}
 
 		$this->name = $newName;
-		$params = array();
-		$params[] = $newName;
-
+		$params = array($newName);
 		$query = "INSERT INTO ".self::TABLENAME." (name) VALUES ($1);";
-
 		$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+		$result = pg_fetch_assoc($result);
 
 		if (!$result)
 		{
@@ -43,7 +46,10 @@ class Matiere
 		}
 		else
 		{
+
 			//TODO créer un calendrier pour cette matière
+			$this->sqlid=$result['id'];
+
 		}
 	}
 
@@ -141,15 +147,14 @@ class Matiere
 		//TODO
 	}
 
-	//Flora: Tu vas galérer de cette manière, vu que le nb de teachers est limitéà 3 + pas sur la même colonne
-	//Tu peux zaper cette methode et le faire dans loadFromRessource (cf exemple)
-	public function loadTeacherFromRessource($ressource) //we must have the teacher id
+	/*This method doesn't exists anymore, due to a high difficulty. We load directly the teacher in "loadFromDB" and "loadFromRessource" methods
+	public function loadTeacherFromRessource($ressource)
 	{
-		/*if(!empty($ressource['speaker1']))
+		if(!empty($ressource['speaker1']))
 		$E = new Enseignant();
 		$E->loadFromDB(intval($ressource));
-		$this->addTeacher($E);*/
-	}
+		$this->addTeacher($E);
+	}*/
 
 	public function loadGroupFromRessource($ressource)
 	{
@@ -190,18 +195,19 @@ class Matiere
 
 		if($result['id_speaker1'])
 		{
-			/*Flora: exemple:
-				$E = new Enseignant();
-				$E->loadFromDB(intval($result['id_speaker1']));
-				$this->addTeacher($E);
-			*/
-			$this->loadTeacherFromRessource($result['id_speaker1']);
+			$E = new Enseignant();
+			$E->loadFromDB(intval($result['id_speaker1']));
+			$this->addTeacher($E);
 			if($result['id_speaker2'])
 			{
-				$this->loadTeacherFromRessource($result['id_speaker2']);
+				$E = new Enseignant();
+				$E->loadFromDB(intval($result['id_speaker2']));
+				$this->addTeacher($E);
 				if($result['id_speaker3'])
 				{
-					$this->loadTeacherFromRessource($result['id_speaker3']);
+					$E = new Enseignant();
+					$E->loadFromDB(intval($result['id_speaker3']));
+					$this->addTeacher($E);
 				}
 			}
 		}
@@ -217,13 +223,19 @@ class Matiere
 			$this->teachedBy=null;
 			if($ressource['id_speaker1'])
 			{
-				$this->loadTeacherFromRessource($ressource['id_speaker1']);
+				$E = new Enseignant();
+				$E->loadFromDB(intval($ressource['id_speaker1']));
+				$this->addTeacher($E);
 				if($ressource['id_speaker2'])
 				{
-					$this->loadTeacherFromRessource($ressource['id_speaker2']);
+					$E = new Enseignant();
+					$E->loadFromDB(intval($ressource['id_speaker2']));
+					$this->addTeacher($E);
 					if($ressource['id_speaker3'])
 					{
-						$this->loadTeacherFromRessource($ressource['id_speaker3']);
+						$E = new Enseignant();
+						$E->loadFromDB(intval($ressource['id_speaker3']));
+						$this->addTeacher($E);
 					}
 				}
 			}
