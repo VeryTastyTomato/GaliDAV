@@ -136,11 +136,14 @@ class Matiere
 		//TODO
 	}
 
+	//Flora: Tu vas galérer de cette manière, vu que le nb de teachers est limitéà 3 + pas sur la même colonne
+	//Tu peux zaper cette methode et le faire dans loadFromRessource (cf exemple)
 	public function loadTeacherFromRessource($ressource) //we must have the teacher id
 	{
+		/*if(!empty($ressource['speaker1']))
 		$E = new Enseignant();
 		$E->loadFromDB(intval($ressource));
-		$this->addTeacher($E);
+		$this->addTeacher($E);*/
 	}
 
 	public function loadGroupFromRessource($ressource)
@@ -182,6 +185,11 @@ class Matiere
 
 		if($result['id_speaker1'])
 		{
+			/*Flora: exemple:
+				$E = new Enseignant();
+				$E->loadFromDB(intval($result['id_speaker1']));
+				$this->addTeacher($E);
+			*/
 			$this->loadTeacherFromRessource($result['id_speaker1']);
 			if($result['id_speaker2'])
 			{

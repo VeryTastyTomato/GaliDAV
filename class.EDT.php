@@ -300,7 +300,7 @@ class EDT
 					BaseDeDonnees::currentDB()->show_error();
 				}
 		}else{
-			i$query = "UPDATE ".Matiere::TABLENAME." set id_calendar=null where id=".$newSubject->Sqlid().";";
+			$query = "UPDATE ".Matiere::TABLENAME." set id_calendar=null where id=".$newSubject->Sqlid().";";
 			if (BaseDeDonnees::currentDB()->executeQuery($query))
 				{
 					$this->subject=null;

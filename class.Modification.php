@@ -71,6 +71,8 @@ class Modification
 		}
 	}
 	
-	public function removeFromDB(){//TODO}
+	public function removeFromDB(){
+		//TODO
+	}
 }
 ?>

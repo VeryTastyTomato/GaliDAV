@@ -311,10 +311,10 @@ class Groupe
 			$this->name = $ressource['name'];
 			$this->isAClass = $ressource['is_class'];
 			
-			if(is_int($result['id_current_timetable'])
+			if(is_int($result['id_current_timetable']))
 			{
 				$this->timetable =new EDT();
-				($this->timetable)->loadFromDB(intval($ressource['id_current_timetable']));
+				$this->timetable->loadFromDB(intval($ressource['id_current_timetable']));
 			}
 			
 			//We load each element of the arraylist of students (students are people registered in people table)
