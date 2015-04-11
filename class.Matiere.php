@@ -142,7 +142,49 @@ class Matiere
 
 	public function removeTeacher(Enseignant $E)
 	{
-		//TODO
+		if(!$this->isTeachedBy($E)) //"isTeachedBy" waits for a Personne object, Enseignant here, guess it doesn't matter
+		{
+			echo ('L\'enseignant renseigné n\'enseigne pas cette matière'); 
+		}
+		else
+		{
+			if($this->teachedBy[2] == $E)
+			{
+				$query = "UPDATE ".self::TABLENAME." set id_speaker3=NULL where id=".$this->sqlid.";";
+				if (BaseDeDonnees::currentDB()->executeQuery($query))
+				{	
+					unset($this->teachedBy[2]);
+				}
+				else 
+				{
+					BaseDeDonnees::currentDB()->show_error();
+				}
+			}
+			if($this->teachedBy[1] == $E)
+			{
+				$query = "UPDATE ".self::TABLENAME." set id_speaker2=NULL where id=".$this->sqlid.";";
+				if (BaseDeDonnees::currentDB()->executeQuery($query))
+				{	
+					unset($this->teachedBy[1]);
+				}
+				else 
+				{
+					BaseDeDonnees::currentDB()->show_error();
+				}
+			}
+			if($this->teachedBy[0] == $E)
+			{
+				$query = "UPDATE ".self::TABLENAME." set id_speaker1=NULL where id=".$this->sqlid.";";
+				if (BaseDeDonnees::currentDB()->executeQuery($query))
+				{	
+					unset($this->teachedBy[0]);
+				}
+				else 
+				{
+					BaseDeDonnees::currentDB()->show_error();
+				}
+			}
+		}
 	}
 
 	/*This method doesn't exist anymore, due to a high difficulty. We load directly the teacher in "loadFromDB" and "loadFromRessource" methods
@@ -154,6 +196,7 @@ class Matiere
 		$this->addTeacher($E);
 	}*/
 
+	//no group attribute for "Matiere", so ?
 	public function loadGroupFromRessource($ressource)
 	{
 		$G = new Groupe();
