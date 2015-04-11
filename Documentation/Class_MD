@@ -117,14 +117,16 @@ class EDT
 		+getListModif(): Array (of )
 		+getGroup(): Groupe
 		+getTeacherOwner(): Personne
+		+getSubject(): Matiere
 		
 	Mutateurs
 		#setIdTimetable(Integer newIdTimetable)
 		+setModifiedBy(Personne newModifiedBy=null)
 		+setListCourses(Array (of Type_cours) newListCourses=null)
 		+setListModif(Array (of ) newListModif=null)
-		+setGroup(Groupe newGroup)
+		+setGroup(Groupe newGroup=null)
 		+setTeacherOwner(Enseignant teacherOwner=null)
+		+setSubject(Matiere M=null)
 	Autres fonctions
 		+hasModification(Modification M):Boolean
 		+containsCourse(Cours c): Boolean
@@ -161,6 +163,7 @@ class Modification
 		+setDate(Integer newDate)
 		+setMadeBy(Utilisateur newMadeBy)
 		+setCourseModified(Cours newCourseModified)
+		+removeFromDB()
 ___________________________________________________________________________
 class BaseDeDonnées
 	Attributs

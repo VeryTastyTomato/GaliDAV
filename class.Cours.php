@@ -98,11 +98,11 @@ class Cours
 				return "TD";
 			case(TP):
 				return "TP";
-			case(Examen):
+			case(EXAMEN):
 				return "Partiel";
-			case(Conférence):
+			case(CONFERENCE):
 				return "Conférence";
-			case(Rattrapage):
+			case(RATTRAPAGE):
 				return "Rattrapage";
 			default:
 				return "Type inconnu";

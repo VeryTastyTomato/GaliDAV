@@ -147,7 +147,7 @@ class Groupe
 			}
 			else
 			{
-				echo("GaliDAV Error: Update on table ".self::TABLENAME." failed.<br/>(Query: $query )");
+				BaseDeDonnees::currentDB()->show_error();
 			}
 		}
 	}
@@ -164,7 +164,7 @@ class Groupe
 			}
 			else
 			{
-				echo("GaliDAV Error: Update on table ".self::TABLENAME." failed.<br/>(Query: $query )");
+				BaseDeDonnees::currentDB()->show_error();
 			}
 		}
 	}
@@ -186,7 +186,7 @@ class Groupe
 				$this->listOfStudents[] = $newStudent;
 			}
 			else {
-				echo("GaliDAV Error: Insertion in table ".self::composedOfTABLENAME." failed.<br/>(Query: $query )");
+				BaseDeDonnees::currentDB()->show_error();
 			}			
 		}
 	}
@@ -204,7 +204,7 @@ class Groupe
 			}
 			else 
 			{
-				echo("GaliDAV Error: Deletion in table ".self::composedOfTABLENAME." failed.<br/>(Query: $query )");
+				BaseDeDonnees::currentDB()->show_error();
 			}
 		}
 	}
@@ -236,7 +236,7 @@ class Groupe
 					$G->addLinkedGroup($this);
 				}
 				else {
-					echo("GaliDAV Error: Insertion in table ".self::linkedToTABLENAME." failed.<br/>(Query: $query )");
+					BaseDeDonnees::currentDB()->show_error();
 				}			
 			}
 		}
@@ -310,14 +310,12 @@ class Groupe
 			$this->sqlid = $ressource['id'];
 			$this->name = $ressource['name'];
 			$this->isAClass = $ressource['is_class'];
-			//Flora: TODO -implement constructor and loadFromDB in class EDT
-			/*
+			
 			if(is_int($result['id_current_timetable'])
 			{
 				$this->timetable =new EDT();
 				($this->timetable)->loadFromDB(intval($ressource['id_current_timetable']));
 			}
-			*/
 			
 			//We load each element of the arraylist of students (students are people registered in people table)
 			$this->ListOfStudents=null;
@@ -394,7 +392,7 @@ class Groupe
 			*/
 		}else
 		{
-			echo("GaliDAV Error: Deletion in table ".self::TABLENAME." failed.<br/>(Query: $query )");
+			BaseDeDonnees::currentDB()->show_error();
 		}
 		
 	}

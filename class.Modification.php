@@ -70,5 +70,7 @@ class Modification
 			$this->courseModified = $newCourseModified;
 		}
 	}
+	
+	public function removeFromDB(){//TODO}
 }
 ?>

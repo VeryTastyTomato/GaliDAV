@@ -105,8 +105,16 @@ class Personne
 	{
 		if (!empty($newSqlid))
 		{
-			$this->sqlid = $newSqlid;
-			//TODO non prioritary: SQL query
+		//TODO low prority: what about an entry in user  table which has a reference on this object?
+			$query="update ". self::TABLENAME." set id=".$newSqlid." where id=".$this->sqlid.";";
+			if(BaseDeDonnees::currentDB()->executeQuery($query))
+			{
+				$this->sqlid = $newSqlid;
+			}
+			else
+			{
+				BaseDeDonnees::currentDB()->show_error();
+			}
 		}
 	}
 
@@ -374,12 +382,10 @@ class Personne
 		if ($this->getEmailAddress1() != NULL)
 		{
 			$result = $result . "<p>Adresse mail1 :&emsp; <i>" . $this->emailAddress1 . "</i>";
-
 			if ($this->getEmailAddress2())
 			{
 				$result = $result . "<br/>Adresse mail2 :&emsp; <i>" . $this->emailAddress2 . "</i>";
 			}
-
 			$result = $result . "</p>";
 		}
 
