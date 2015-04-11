@@ -16,7 +16,11 @@ class Matiere
 	private $sqlid = null;
 	private $name = null;
 	private $teachedBy = array();
+
+	private $timetable=null;
 	private $agdvCalendar = null; //may be we'll use severals calendars for one subject ? (1 calendar for CMs, 1 for TDs...) to settle
+	//Flora: No, calendars are managed in davical. Ther's one calendar for one subject + we do not care in this class about davical calendars
+
 
 	const TABLENAME = "gsubject";
 	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, id_speaker1 integer REFERENCES gperson(id), id_speaker2 integer REFERENCES gperson(id), id_speaker3 integer REFERENCES gperson(id), id_group integer REFERENCES ggroup(id), id_calendar integer REFERENCES gcalendar(id)";
@@ -38,12 +42,13 @@ class Matiere
 
 		if (!$result)
 		{
-			echo("GaliDAV: Impossible de créer cette matière dans la base");
+			BaseDeDonnees::currentDB()->show_error();
 		}
 		else
 		{
+			$E=new EDT($this);
+			$this->timetable=$E;
 			$this->sqlid=$result['id'];
-			echo("GaliDAV: matière créée avec succès !"); 
 		}
 	}
 
@@ -56,6 +61,11 @@ class Matiere
 	public function getTeachedBy()
 	{
 		return $this->teachedBy;
+	}
+	
+	public function getTimetable()
+	{
+		return $this->timetable;
 	}
 
 	// setters

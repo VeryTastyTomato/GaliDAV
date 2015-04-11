@@ -125,9 +125,9 @@ class Utilisateur extends Personne
 	{
 	}
 	
-	public function loadFromDB($login = null, $notuseful = null)
+	public function loadFromDB($loginOrId = null, $notuseful = null)
 	{
-		if ($login == null)
+		if ($loginOrId == null)
 		{
 			if ($this->login != null)
 			{
@@ -135,27 +135,32 @@ class Utilisateur extends Personne
 			}
 		}
 
-		if ($login == null)
+		if (!is_string($loginOrId) and !is_int($loginOrId)) //Si le login ou l'id passé en paramètre est null et que l'objet est indéfini
 		{
 			$query = "select * from ".self::TABLENAME.";";
 			$result = BaseDeDonnees::currentDB()->executeQuery($query);
 		}
 		else
-		{
-			$query = "select * from ".self::TABLENAME." where login=$1;";
-			$params[] = $login;
-			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params[]);
+		{	if (is_string($loginOrId)) //If its a login
+			{
+				$query = "select * from ".self::TABLENAME." where login=$1;";
+				$params[] = $loginOrId;
+				$result = BaseDeDonnees::currentDB()->executeQuery($query, $params[]);
+			}
+			else{	//else, it is an id
+				$query = "select * from ".self::TABLENAME." where id_person=".$loginOrId.";";
+				$result = BaseDeDonnees::currentDB()->executeQuery($query);
+			}
 		}
+		if($result)
+			$result =pg_fetch_assoc($result);
+		else
+			return false; //We did not find a matching $result in the database
 
 		$this->sqlid = $result['id_person'];
 		$this->login = $result['login'];
 		$this->passwd = $result['password']; // Corriger...
-		$query = "DELETE FROM ".self::TABLENAME." where id_person=$1;";
-		$params = array($this->sqlid);
-		$result = BaseDeDonnees::currentDB()->executeQuery($query, $params[]);
-
-		parent::loadFromDB();
-		//TODO valeurs des statuts
+		return parent::loadFromDB();
 	}
 
 	public function removeFromDB()
