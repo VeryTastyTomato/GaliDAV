@@ -308,8 +308,14 @@ class Personne
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 			
 		}
-		$result = pg_fetch_assoc($result);
-		$this->loadFromRessource($result);
+		
+		if($result){
+			$result = pg_fetch_assoc($result);
+			$this->loadFromRessource($result);
+			return true;
+		}
+		else
+			return false;
 	}
 
 	public function loadFromRessource($ressource)

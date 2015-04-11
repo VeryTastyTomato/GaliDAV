@@ -35,7 +35,7 @@ class EDT
 	Rq: There's no SQL reference to a group id or a subject id in this table since there's already one in group table and subject table
 	*/
 
-		
+		//TODO make links between this timetable and davical calendars
 	// --- OPERATIONS ---
 	// constructor
 	public function __construct($Object = null,$validated=false)
@@ -249,7 +249,8 @@ class EDT
 		}
 	}
 
-	public function setGroup(Groupe $newGroup=null)
+//This method shouldn't be outside this class and its children since the attribute shouldn't change after loading/creating the object
+	protected function setGroup(Groupe $newGroup=null)
 	{
 		if(!empty($newGroup))
 		{
@@ -267,6 +268,8 @@ class EDT
 				{
 					BaseDeDonnees::currentDB()->show_error();
 				}
+				$this->setSubject();
+				$this->setTeacherOwner();
 		}else{
 			if($this->validated)
 				$query = "UPDATE ".Groupe::TABLENAME." set id_validated_calendar=null where id=".$newGroup->Sqlid().";";
@@ -285,33 +288,36 @@ class EDT
 		
 		}
 	}
-
-	public function setSubject(Matiere $newSubject=null)
+	//This method shouldn't be outside this class since the attribute shouldn't change after loading/creating the object
+	private function setSubject(Matiere $newSubject=null)
 	{
 		if(!empty($newSubject))
 		{
 			$query = "UPDATE ".Matiere::TABLENAME." set id_calendar=".$this->sqlid." where id=".$newSubject->Sqlid().";";
 			if (BaseDeDonnees::currentDB()->executeQuery($query))
-				{
-					$this->subject=$newSubject;
-				}
-				else
-				{
-					BaseDeDonnees::currentDB()->show_error();
-				}
+			{
+				$this->subject=$newSubject;
+			}
+			else
+			{
+				BaseDeDonnees::currentDB()->show_error();
+			}
+			$this->setGroup();
+			$this->setTeacherOwner();
 		}else{
 			$query = "UPDATE ".Matiere::TABLENAME." set id_calendar=null where id=".$newSubject->Sqlid().";";
 			if (BaseDeDonnees::currentDB()->executeQuery($query))
-				{
-					$this->subject=null;
-				}
-				else
-				{
-					BaseDeDonnees::currentDB()->show_error();
-				}
+			{
+				$this->subject=null;
+			}
+			else
+			{
+				BaseDeDonnees::currentDB()->show_error();
+			}
 		}
 	}
-	public function setTeacherOwner(Enseignant $newTeacherOwner=null)
+	//This method shouldn't be outside this class since the attribute shouldn't change after loading/creating the object
+	private function setTeacherOwner(Enseignant $newTeacherOwner=null)
 	{
 		if (!empty($newTeacherOwner))
 		{
@@ -320,6 +326,8 @@ class EDT
 					$this->teacherOwner=$newTeacherOwner;
 			else
 				BaseDeDonnees::currentDB()->show_error();
+			$this->setSubject();
+			$this->setGroup();
 		}else{
 			$query = "UPDATE ".self::TABLENAME." set id_teacher=null where id=".$this->sqlid.";";
 			if (BaseDeDonnees::currentDB()->executeQuery($query))
@@ -352,7 +360,26 @@ class EDT
 			if(BaseDeDonnees::currentDB()->executeQuery($query))
 			{
 				$this->listCourses[] = $newCourse;
-				//TODO add this course to all calendars related to this one
+				
+				//The two next blocs add the new course to all calendars related to this one
+				if(!empty($S=($newCourse->getSubject()))){
+					$S->getTimetable()->addCourse($newCourse); //ADD course to calendar of the course's subject
+					foreach($S->getTeachedBy() as $oneSpeaker){//For all speakers of this course
+						$E=new Enseignant();
+						if($E->loadFromDB($oneSpeaker->getSqlId())){// We check that $onespeaker is a user
+							$E->getTimetable()->addCourse($newCourse);//ADD course to teacher's calendar
+						}
+					}
+				}
+				
+				if(!empty($this->group)){ //ADD course in all linked groups calendars
+					$G=$this->group;
+					foreach($G->getListOfLinkedGroups() as $onegroup){
+						$T=$onegroup->getTimeTable();
+						if(!empty($T))
+							$T->addCourse($newCourse);
+					}
+				}
 			}
 			else
 			{
@@ -369,7 +396,26 @@ class EDT
 			if(BaseDeDonnees::currentDB()->executeQuery($query))
 			{
 				unset($this->listCourses[array_search($courseToRemove, $this->listCourses)]);
-				//TODO remove this course from all calendars related to this one
+				
+				//The two next blocs remove the course from all calendars related to this one
+				if(!empty($S=($newCourse->getSubject()))){
+					$S->getTimetable()->removeCourse($newCourse); //REMOVE course from calendar of the course's subject
+					foreach($S->getTeachedBy() as $oneSpeaker){//For all speakers of this course
+						$E=new Enseignant();
+						if($E->loadFromDB($oneSpeaker->getSqlId())){// We check that $onespeaker is a user
+							$E->getTimetable()->addCourse($newCourse);//REMOVE course from teacher's calendar
+						}
+					}
+				}
+				
+				if(!empty($this->group)){ //REMOVE course from all linked groups calendars
+					$G=$this->group;
+					foreach($G->getListOfLinkedGroups() as $onegroup){
+						$T=$onegroup->getTimeTable();
+						if(!empty($T))
+							$T->removeCourse($newCourse);
+					}
+				}
 			}
 			else
 			{
@@ -467,9 +513,13 @@ class EDT
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 			
 		}
-		$ressource = pg_fetch_assoc($result); //$ressource is now an array containing values for each SQLcolumn of the EDT table
-		$this->loadFromRessource($ressource);
-		
+		if($result){
+			$ressource = pg_fetch_assoc($result); //$ressource is now an array containing values for each SQLcolumn of the EDT table
+			$this->loadFromRessource($ressource);
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	public function loadFromRessource($ressource)
@@ -479,9 +529,14 @@ class EDT
 		$U=new Utilisateur();
 		$U->loadFromDB(int_val($ressource['is_being_modified_by']));
 		$this->modifiedBy = $U;
-		$U=new Utilisateur();
-		$U->loadFromDB(int_val($ressource['id_teacher']));
-		$this->teacher = $U;
+		if($ressource['id_teacher']){
+			$U=new Utilisateur();
+			$U->loadFromDB(int_val($ressource['id_teacher']));
+			$this->teacher = $U;
+		}
+		else
+			$this->teacher =null;
+			
 		$params=array($this->sqlid);
 		
 		if($ressource['is_validated_calendar']){
@@ -498,6 +553,9 @@ class EDT
 			$G->loadFromDB(int_val($result2['id']));
 			$this->group = $G;
 		}
+		else
+			$this->group =null;
+			
 		$query = "select id from ".Matiere::TABLENAME." where id_calendar=$1;";
 		if($result2=BaseDeDonnees::currentDB()->executeQuery($query, $params)){
 			$result2 = pg_fetch_assoc($result2);
@@ -505,7 +563,8 @@ class EDT
 			$M->loadFromDB(int_val($result2['id']));
 			$this->subject = $M;
 		}
-		
+		else
+			$this->subject=null;
 	}
 	
 	public function removeFromDB()

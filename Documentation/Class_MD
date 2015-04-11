@@ -46,6 +46,7 @@ class Matière
 	Attributs
 		−name: String
 		−teachedBy: Array (of Personne)
+		−timetable : EDT
 	Constantes
 		const TABLENAME
 		const SQLcolumns
@@ -54,6 +55,7 @@ class Matière
 	Accesseurs
 		+getName(): String
 		+getTeachedBy(): Array (of Personne)
+		+getTimetable():EDT
 	Mutateurs
 		+setName(String newName)
 		+setTeachedBy(Array (of Personne) newTeachedBy)
@@ -124,9 +126,9 @@ class EDT
 		+setModifiedBy(Personne newModifiedBy=null)
 		+setListCourses(Array (of Type_cours) newListCourses=null)
 		+setListModif(Array (of ) newListModif=null)
-		+setGroup(Groupe newGroup=null)
-		+setTeacherOwner(Enseignant teacherOwner=null)
-		+setSubject(Matiere M=null)
+		#setGroup(Groupe newGroup=null)
+		-setTeacherOwner(Enseignant teacherOwner=null)
+		-setSubject(Matiere M=null)
 	Autres fonctions
 		+hasModification(Modification M):Boolean
 		+containsCourse(Cours c): Boolean

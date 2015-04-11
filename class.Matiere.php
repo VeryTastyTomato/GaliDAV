@@ -16,7 +16,7 @@ class Matiere
 	private $sqlid = null;
 	private $name = null;
 	private $teachedBy = array();
-
+	private $timetable=null;
 	const TABLENAME = "gsubject";
 	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, id_speaker1 integer REFERENCES gperson(id), id_speaker2 integer REFERENCES gperson(id), id_speaker3 integer REFERENCES gperson(id), id_group integer REFERENCES ggroup(id), id_calendar integer REFERENCES gcalendar(id)";
 
@@ -39,11 +39,11 @@ class Matiere
 
 		if (!$result)
 		{
-			echo("GaliDAV: Impossible de créer cette matière dans la base");
+			BaseDeDonnees::currentDB()->show_error();
 		}
 		else
 		{
-			echo("GaliDAV: matière créée avec succès !"); 
+			//TODO créer un calendrier pour cette matière
 		}
 	}
 
@@ -56,6 +56,11 @@ class Matiere
 	public function getTeachedBy()
 	{
 		return $this->teachedBy;
+	}
+	
+	public function getTimetable()
+	{
+		return $this->timetable;
 	}
 
 	// setters
