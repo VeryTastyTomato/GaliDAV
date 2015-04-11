@@ -16,6 +16,7 @@ class Matiere
 	private $sqlid = null;
 	private $name = null;
 	private $teachedBy = array();
+	private $agdvCalendar = null; //may be we'll use severals calendars for one subject ? (1 calendar for CMs, 1 for TDs...) to settle
 
 	const TABLENAME = "gsubject";
 	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, id_speaker1 integer REFERENCES gperson(id), id_speaker2 integer REFERENCES gperson(id), id_speaker3 integer REFERENCES gperson(id), id_group integer REFERENCES ggroup(id), id_calendar integer REFERENCES gcalendar(id)";
@@ -30,12 +31,10 @@ class Matiere
 		}
 
 		$this->name = $newName;
-		$params = array();
-		$params[] = $newName;
-
+		$params = array($newName);
 		$query = "INSERT INTO ".self::TABLENAME." (name) VALUES ($1);";
-
 		$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+		$result = pg_fetch_assoc($result);
 
 		if (!$result)
 		{
@@ -43,6 +42,7 @@ class Matiere
 		}
 		else
 		{
+			$this->sqlid=$result['id'];
 			echo("GaliDAV: matière créée avec succès !"); 
 		}
 	}
