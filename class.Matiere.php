@@ -46,10 +46,9 @@ class Matiere
 		}
 		else
 		{
-
-			//TODO créer un calendrier pour cette matière
+			$E=new EDT($this);
+			$this->timetable=$E;
 			$this->sqlid=$result['id'];
-
 		}
 	}
 
