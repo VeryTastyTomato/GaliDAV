@@ -198,6 +198,8 @@ class Matiere
 	}*/
 
 	//no group attribute for "Matiere", so ?
+	
+//Flora: yes, nut no need for this method
 	public function loadGroupFromRessource($ressource)
 	{
 		$G = new Groupe();
@@ -206,6 +208,7 @@ class Matiere
 	}
 
 	//don't know if it's useful since the calendar is loaded easily in "loadFromRessource"
+	//Flora: no need for this method
 	public function loadTimetableFromRessource($ressource)
 	{
 		$E = new EDT();
