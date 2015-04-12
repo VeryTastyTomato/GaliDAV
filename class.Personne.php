@@ -8,6 +8,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 
 require_once('Personne/unknown.Statut_personne.php');
 require_once('class.BaseDeDonnees.php');
+require_once("test_davical_operations.php");
 // Les opérations sur une Personne sont automatiquement reportées dans la BDD.
 
 class Personne
@@ -369,11 +370,44 @@ class Personne
 		$query     = "select * from " . Utilisateur::TABLENAME . " where id_person=$1;";
 		$ressource = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 
+		$params = array($this->sqlid);
+		$query  = "update " . Matiere::TABLENAME . " set id_speaker1=null where id_speaker1=$1";
+			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
+				
+			$query  = "update " . Matiere::TABLENAME . " set id_speaker2=null where id_speaker2=$1";
+			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
+			
+			$query  = "update " . Matiere::TABLENAME . " set id_speaker3=null where id_speaker3=$1";
+			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
+				
 		if ($ressource)
 		{
 			$result = pg_fetch_assoc($ressource);
+			/*
+			$query  = "update " . Matiere::TABLENAME . " set id_speaker1=null where id_speaker1=$1";
+			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
+				
+			$query  = "update " . Matiere::TABLENAME . " set id_speaker2=null where id_speaker2=$1";
+			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
+			
+			$query  = "update " . Matiere::TABLENAME . " set id_speaker3=null where id_speaker3=$1";
+			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
+				*/
+				
+			$query  = "delete from " . EDT::TABLENAME . " where id_teacher=$1;";
+			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
+				
 			$query  = "delete from " . Utilisateur::TABLENAME . " where id_person=$1;";
-			BaseDeDonnees::currentDB()->executeQuery($query, $params);
+			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
+				
 			$BDD = new BaseDeDonnees("davical_app", "davical");
 
 			if (!$BDD->connect())
@@ -382,16 +416,27 @@ class Personne
 			}
 			else
 			{
-				$params = array($result['login']);
-				$query  = "delete from dav_principal where username=$1;";
-				$BDD->executeQuery($query, $params);
+				$userno=getDAVPrincipalNoFromLogin($result['login']);
+				$query  = "delete from calendar_item where user_no=$userno;";
+				if(!$BDD->executeQuery($query))$BDD->show_error("ligne n°".__LINE__." class:".__CLASS__);
+				$query  = "delete from collection where user_no=$userno;";
+				if(!$BDD->executeQuery($query))$BDD->show_error("ligne n°".__LINE__." class:".__CLASS__);
+				$query  = "delete from dav_principal where user_no=$userno;";
+				if(!$BDD->executeQuery($query))$BDD->show_error("ligne n°".__LINE__." class:".__CLASS__);
 				$BDD->close();
 			}
 		}
 
+		
+		$query  = "delete from " . Statut_personne::TABLENAME . " where id_person=$1;";
+		if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
+			BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
+			
 		$query  = "delete from " . Personne::TABLENAME . " where id=$1;";
-		$params = array($this->sqlid);
-		BaseDeDonnees::currentDB()->executeQuery($query, $params);
+		if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
+			BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
+		
+		
 	}
 
 	// -- Affichage texte --
