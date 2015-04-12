@@ -175,7 +175,7 @@ class Matiere
 				}
 				else
 				{
-					BaseDeDonnees::currentDB()->show_error();
+					BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 				}
 			}
 
@@ -189,7 +189,7 @@ class Matiere
 				}
 				else
 				{
-					BaseDeDonnees::currentDB()->show_error();
+					BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 				}
 			}
 
@@ -203,7 +203,7 @@ class Matiere
 				}
 				else
 				{
-					BaseDeDonnees::currentDB()->show_error();
+					BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 				}
 			}
 		}
@@ -317,7 +317,7 @@ class Matiere
 		}
 		else
 		{
-			BaseDeDonnees::currentDB()->show_error();
+			BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 		}
 	}
 }
