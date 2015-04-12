@@ -7,8 +7,10 @@ if (0 > version_compare(PHP_VERSION, '5'))
 }
 
 require_once('class.Utilisateur.php');
+require_once('class.Responsable.php');
 
-class Administrateur extends Utilisateur
+
+class Administrateur extends Responsable
 {
 	// --- ASSOCIATIONS ---
 
@@ -20,8 +22,8 @@ class Administrateur extends Utilisateur
 	{
 		parent::__construct($familyName, $firstName, $login, $passwd, $email);
 		$this->addStatus(new Statut_personne(Statut_personne::ADMINISTRATOR));
-		$this->addStatus(new Statut_personne(Statut_personne::HEAD));
-		$this->addStatus(new Statut_personne(Statut_personne::TEACHER));
+		//$this->addStatus(new Statut_personne(Statut_personne::HEAD));
+		//$this->addStatus(new Statut_personne(Statut_personne::TEACHER));
 		/*$BDD=new BaseDeDonnees("davical_app","davical");
 		$params[]=privilege_to_bits(array('all'));
 		$params[]=$login;

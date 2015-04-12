@@ -37,7 +37,7 @@ class EDT
 	Note: There’s no SQL reference to a group id or a subject id in this table since there’s already one in group table and subject table.
 	*/
 
-	// TODO make links between this timetable and davical calendars
+
 	// --- OPERATIONS ---
 	// constructor
 	public function __construct($Object = NULL, $validated = FALSE)
@@ -45,12 +45,24 @@ class EDT
 		if (is_a($Object, "Groupe") or is_a($Object, "Matiere") or is_a($Object, "Enseignant"))
 		{
 			$this->validated = FALSE;
-			$query           = "insert into " . self::TABLENAME . ";";
-			BaseDeDonnees::currentDB()->executeQuery($query);
+			$query           = "insert into " . self::TABLENAME . " DEFAULT VALUES;";
+			if(!BaseDeDonnees::currentDB()->executeQuery($query))
+			{
+				BaseDeDonnees::currentDB()->show_error();
+			}
+			
 			$query       = "select id from " . self::TABLENAME . " order by date_creation desc;";
-			$result      = BaseDeDonnees::currentDB()->executeQuery($query);
-			$result      = pg_fetch_assoc($result);
-			$this->sqlid = $result['id'];
+			$result= BaseDeDonnees::currentDB()->executeQuery($query);
+			if($result) 
+			{
+				$result      = pg_fetch_assoc($result);
+				$this->sqlid = $result['id'];
+			}
+			else
+			{
+				BaseDeDonnees::currentDB()->show_error();
+			}
+			
 
 			if (is_a($Object, "Groupe"))
 			{
@@ -106,8 +118,7 @@ class EDT
 
 				if (BaseDeDonnees::currentDB()->executeQuery($query))
 				{
-					// CreateCalendar($M->getGroup()->getName(), $M->getName()." ".$M->getGroup()->getName());
-					// TODO gestion of a group attribute in Matière
+					CreateCalendar($M->getGroup()->getName(), $M->getName()." ".$M->getGroup()->getName());
 					$this->subject = $M;
 				}
 				else
@@ -122,7 +133,7 @@ class EDT
 
 				if (BaseDeDonnees::currentDB()->executeQuery($query))
 				{
-					CreateCalendar($E->getFullName(), $E->getFullName() . " EDT");
+					CreateCalendar($E->getLogin(), $E->getFullName() . " EDT");
 					$this->teacherOwner = $E;
 				}
 				else
@@ -409,7 +420,7 @@ class EDT
 	{
 		if (!$this->containsCourse($newCourse))
 		{
-			$query = "insert " . Cours::belongsToTABLENAME . " (id_course,id_calendar) VALUES(" . $newCourse->getSqlid() . "," . $this->sqlid . ";";
+			$query = "insert " . Cours::belongsToTABLENAME . " (id_course,id_calendar) VALUES(" . $newCourse->getSqlid() . "," . $this->sqlid . ") ;";
 
 			if (BaseDeDonnees::currentDB()->executeQuery($query))
 			{

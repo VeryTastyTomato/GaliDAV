@@ -12,7 +12,7 @@ require_once("class.Secretaire.php");
 require_once("class.Enseignant.php");
 require_once("class.Administrateur.php");
 require_once("class.Responsable.php");
-
+require_once("ListePersonnes.php");
 // Créer un calendrier de nom, $calendarNameGiven pour l'utilisateur d'identifiant $username
 
 function CreateCalendar($username, $calendarNameGiven, $defult_timezone = NULL)
@@ -125,27 +125,72 @@ if (isset($_POST['action']))
 {
 	if ($_POST['action'] == 'add_subject')
 	{
-		CreateCalendar($_POST['classname'], $_POST['subjectname']);
-		header('Location: ./admin_panel.php');
+		$G=new Groupe();
+		if($G->loadFromDB($_POST['groupname']))
+		{
+			echo "ok";
+			$M=new Matiere($_POST['subjectname'],$G);
+			echo "ok2";
+			if($_POST['speaker1']!="--"){
+				$res=BaseDeDonnees::currentDB()->executeQuery(query_person_by_fullname($_POST['speaker1']));
+				echo "ok3";
+				if($res){
+					$result=pg_fetch_assoc($res);
+					$P=new Personne();
+					$P->loadFromDB($result['id']);
+					echo "ok4";
+					$M->addTeacher($P);echo "ok5";
+				}
+				else
+					BaseDeDonnees::currentDB()->show_error();
+			
+			}
+			if($_POST['speaker2']!="--"){
+				$res=BaseDeDonnees::currentDB()->executeQuery(query_person_by_fullname($_POST['speaker2']));
+				if($res){
+					$result=pg_fetch_assoc($res);
+					$P=new Personne();
+					$P->loadFromDB($result['id']);
+					$M->addTeacher($P);
+				}
+				else
+					BaseDeDonnees::currentDB()->show_error();
+			
+			}
+			if($_POST['speaker3']!="--"){
+				$res=BaseDeDonnees::currentDB()->executeQuery(query_person_by_fullname($_POST['speaker3']));
+				if($res){
+					$result=pg_fetch_assoc($res);
+					$P=new Personne();
+					$P->loadFromDB($result['id']);
+					$M->addTeacher($P);
+				}
+				else
+					BaseDeDonnees::currentDB()->show_error();
+			
+			}
+			echo "OK";
+		}
+		//header('Location: ./admin_panel.php');
 	}
 
 	if ($_POST['action'] == 'add_user')
 	{
 		if ($_POST['status'] == 'secretary')
 		{
-			new Secretaire($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password']);
+			new Secretaire($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
 		else if ($_POST['status'] == 'teacher')
 		{
-			new Enseignant($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password']);
+			new Enseignant($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
 		else if ($_POST['status'] == 'head')
 		{
-			new Responsable($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password']);
+			new Responsable($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
 		else if ($_POST['status'] == 'administrator')
 		{
-			new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password']);
+			new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
 
 		header('Location: ./admin_panel.php');
@@ -154,7 +199,7 @@ if (isset($_POST['action']))
 	if ($_POST['action'] == 'add_group')
 	{
 		$G = new Groupe($_POST['name'], $_POST['isaclass']);
-		// header('Location: ./admin_panel.php');
+		header('Location: ./admin_panel.php');
 	}
 
 	if ($_POST['action'] == 'add_person')
@@ -177,6 +222,12 @@ if (isset($_POST['action']))
 		$P = new Personne();
 		$P->loadFromDB($_POST['id']);
 		$P->removeFromDB();
+		header('Location: ./admin_panel.php');
+	}
+	if ($_POST['action'] == 'clear_db')
+	{
+		BaseDeDonnees::currentDB()->clear();
+		
 		header('Location: ./admin_panel.php');
 	}
 }

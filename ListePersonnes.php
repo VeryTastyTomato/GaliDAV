@@ -47,10 +47,12 @@ function XListAllGroups(){
 	$out="<ul class=listOfGroup style='overflow:scroll;'>";
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_groups());
 		if($res){
-			while(($group=pg_fetch_assoc($res))!=null)
+			$group=pg_fetch_assoc($res);
+			while($group)
 			{
 				//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
 				$out.="<li>".XGroup($group)."</li>";
+				$group=pg_fetch_assoc($res);
 			}
 		}
 		else
@@ -61,7 +63,7 @@ function XListAllGroups(){
 
 function XoptionSpeakers(){
 	//$out="<datalist class=optionOfPeople id=listspeakers'>";
-	$out="";
+	$out="<option>--";
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_speakers());
 		while(($person=pg_fetch_assoc($res))!=null)
 		{
@@ -122,3 +124,18 @@ function query_all_speakers(){
 function query_all_groups(){
 	return "select * from ".Groupe::TABLENAME." order by name;";
 }
+
+function query_one_group($idOrName){
+	if(is_string($idOrName))
+		return "select * from ".Groupe::TABLENAME." where name='".pg_escape_string($idOrName)."';";
+	else if(is_int($idOrName))
+		return "select * from ".Groupe::TABLENAME." where id=$idOrName;";
+}
+
+function query_person_by_fullname($fullname){
+	return "select * from ".Personne::TABLENAME." where familyname||' '||firstname='".pg_escape_string($fullname)."';";	
+}
+
+
+?>
+

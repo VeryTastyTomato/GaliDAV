@@ -98,7 +98,7 @@ class BaseDeDonnees
 
 		if (!$result)
 		{
-			$this->error_sql_message = "<div style='z-index:2;border-style:solid;'><p><b>GaliDAV Error</b>: The following query has failed: <br/>&emsp;$query<br/>(" . var_dump($params) . ")</p><p><b>&emsp;&emsp;&emsp;Details on SQL</b> " . pg_last_error($conn) . "</p></div>";
+			$this->error_sql_message = "<div style='z-index:2;border-style:solid;background-color:#AAAAAA'><p><b>GaliDAV Error</b>: The following query has failed: <br/>&emsp;$query<br/>(" . var_dump($params) . ")</p><p style='font-size:smaller;'><b>&emsp;&emsp;&emsp;Details on SQL</b> " . pg_last_error($conn) . "</p>";
 		}
 
 		return $result;
@@ -106,7 +106,34 @@ class BaseDeDonnees
 
 	public function clear()
 	{
-		//TODO: clear aussi la DB de davical cad tous les comptes sauf admin, toutes les collectionx et item_collection
+		$BDD = new BaseDeDonnees("davical_app", "davical");
+		if (!$BDD->connect())
+		{
+			echo("pas de connexion vers davical");
+		}
+		else
+		{
+			if(!$BDD->executeQuery("DELETE from calendar_item;"))
+				$BDD->show_error();
+			if(!$BDD->executeQuery("DELETE from collection;"))
+				$BDD->show_error();
+			if(!$BDD->executeQuery("DELETE from dav_principal where username!='admin';"))
+				$BDD->show_error();
+			$BDD->close();
+		}
+		
+		$BDD = new BaseDeDonnees("agendav");
+		if (!$BDD->connect())
+		{
+			echo("pas de connexion vers agendav");
+		}
+		else
+		{
+			if(!$BDD->executeQuery("DELETE from shared;"))
+				$BDD->show_error();
+			$BDD->close();
+		}
+		
 		$this->executeQuery("DELETE from " . Modification::TABLENAME . ";");
 		$this->executeQuery("DELETE from " . Cours::belongsToTABLENAME . ";");
 		$this->executeQuery("DELETE from " . Cours::TABLENAME . ";");
@@ -162,13 +189,20 @@ class BaseDeDonnees
 		pg_close($this->connect());
 	}
 
-	public function show_error()
+	public function show_error($explication=null)
 	{
-		echo $this->error_sql_message;
+		$out="<div style='z-index:2;border-style:solid;background-color:#AAAAAA'>";
+		$out.=$this->error_sql_message;
+		if(is_string($explication))
+			$out.="<p><i><b>Explanation:</b>$explication</i></p>";
+		$out.="</div>";
+		echo $out;
 	}
 
 	public function initialize()
 	{
+		$this->clear();
+		$this->dropAll();
 		$result = $this->executeQuery("CREATE TABLE " . Personne::TABLENAME . " (" . Personne::SQLcolumns . ");");
 
 		if ($result)

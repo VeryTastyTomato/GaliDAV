@@ -265,13 +265,16 @@ class Personne
 
 	public function hasStatus(Statut_personne $s)
 	{
-		foreach ($this->status as $oneStatus)
-		{
-			if ($oneStatus == $s)
+		if(is_array($this->status)){
+			foreach($this->status as $oneStatus)
 			{
-				return TRUE;
+				if ($oneStatus == $s)
+				{
+					return TRUE;
+				}
 			}
 		}
+		else  $this->status=array();
 
 		return FALSE;
 	}
@@ -354,7 +357,7 @@ class Personne
 	{
 		if (is_array($ressource))
 		{
-			$this->addStatus(intval($ressource['status']));
+			$this->addStatus(new Statut_personne(intval($ressource['status'])));
 		}
 	}
 

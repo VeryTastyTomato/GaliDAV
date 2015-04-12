@@ -45,7 +45,10 @@ class Groupe
 			$result          = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 			$result          = pg_fetch_assoc($result);
 			$this->sqlid     = $result['id'];
-			$this->timetable = new EDT($this);
+			if($newIsAClass)
+				$this->timetable = new EDT($this);
+			else 
+				$this->timetable = new EDTClasse($this);
 		}
 	}
 
@@ -275,7 +278,7 @@ class Groupe
 		}
 	}
 
-	public function loadFromDB($id = NULL, $can_be_class = TRUE)
+	public function loadFromDB($id = NULL, $can_be_class = TRUE)//$id can be an integer(id) or a string (name)
 	{
 		if ($id == NULL) // if we do not want to load a particular group
 		{
@@ -300,21 +303,39 @@ class Groupe
 		}
 		else // from here, we load data about the group that has $id as sqlid
 		{
-			if ($can_be_class) // we load any group that matches the criteria
-			{
-				$query = "select * from " . self::TABLENAME . " where id=$1;";
-			}
-			else // we load only basic group (not class) that matches the criteria
-			{
-				$query = "select * from " . self::TABLENAME . " where id=$1 and is_class=false;";
-			}
+			if(is_int($id)){
+				if ($can_be_class) // we load any group that matches the criteria
+				{
+					$query = "select * from " . self::TABLENAME . " where id=$1;";
+				}
+				else // we load only basic group (not class) that matches the criteria
+				{
+					$query = "select * from " . self::TABLENAME . " where id=$1 and is_class=false;";
+				}
 
+				
+			}
+			else if(is_string($id))
+			{
+				if ($can_be_class) // we load any group that matches the criteria
+				{
+					$query = "select * from " . self::TABLENAME . " where name=$1;";
+				}
+				else // we load only basic group (not class) that matches the criteria
+				{
+					$query = "select * from " . self::TABLENAME . " where name=$1 and is_class=false;";
+				}
+			}
 			$params = array($id);
 			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 		}
 
+	if($result){
 		$result = pg_fetch_assoc($result); // $result is now an array containing values for each SQLcolumn of the group table
 		$this->loadFromRessource($result);
+		return true;
+	}else
+		return false;
 	}
 
 	public function loadFromRessource($ressource)
@@ -326,7 +347,7 @@ class Groupe
 			$this->name     = $ressource['name'];
 			$this->isAClass = $ressource['is_class'];
 
-			if (is_int($result['id_current_timetable']))
+			if (is_int($ressource['id_current_timetable']))
 			{
 				$this->timetable = new EDT();
 				$this->timetable->loadFromDB(intval($ressource['id_current_timetable']));

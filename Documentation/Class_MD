@@ -47,6 +47,7 @@ class Matière
 		−name: String
 		−teachedBy: Array (of Personne)
 		−timetable : EDT
+		−group: Groupe
 	Constantes
 		const TABLENAME
 		const SQLcolumns
@@ -56,6 +57,7 @@ class Matière
 		+getName(): String
 		+getTeachedBy(): Array (of Personne)
 		+getTimetable():EDT
+		+getGroup():Groupe
 	Mutateurs
 		+setName(String newName)
 		+setTeachedBy(Array (of Personne) newTeachedBy)

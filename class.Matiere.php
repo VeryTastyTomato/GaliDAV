@@ -18,13 +18,14 @@ class Matiere
 	private $teachedBy = array();
 	private $timetable = NULL; // may be we’ll use severals calendars for one subject? (1 calendar for CMs, 1 for TDs…) to settle
 	// Flora: No, calendars are managed in davical. There’s one calendar for one subject + we do not care in this class about davical calendars
+	private $group=NULL;
 
 	const TABLENAME = "gsubject";
-	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, id_speaker1 integer REFERENCES gperson(id), id_speaker2 integer REFERENCES gperson(id), id_speaker3 integer REFERENCES gperson(id), id_group integer REFERENCES ggroup(id), id_calendar integer REFERENCES gcalendar(id)";
+	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL UNIQUE, id_speaker1 integer REFERENCES gperson(id), id_speaker2 integer REFERENCES gperson(id), id_speaker3 integer REFERENCES gperson(id), id_group integer REFERENCES ggroup(id), id_calendar integer REFERENCES gcalendar(id)";
 
 	// --- OPERATIONS ---
 	// constructor
-	public function __construct($newName)
+	public function __construct($newName=NULL,$newGroup=NULL)
 	{
 		if (!is_string($newName))
 		{
@@ -33,19 +34,26 @@ class Matiere
 
 		$this->name = $newName;
 		$params     = array($newName);
-		$query      = "INSERT INTO " . self::TABLENAME . " (name) VALUES ($1);";
-		$result     = BaseDeDonnees::currentDB()->executeQuery($query, $params);
-		$result     = pg_fetch_assoc($result);
-
+		$params[]=$newGroup->getID();
+		$query      = "INSERT INTO " . self::TABLENAME . " (name,id_group) VALUES ($1,$2);";
+		$result     = BaseDeDonnees::currentDB()->executeQuery($query, $params);	
 		if (!$result)
 		{
 			BaseDeDonnees::currentDB()->show_error();
 		}
 		else
 		{
-			$E               = new EDT($this);
-			$this->timetable = $E;
-			$this->sqlid     = $result['id'];
+			$result     = pg_fetch_assoc($result);
+			$params     = array($newName);
+			$query      = "select id from " . self::TABLENAME . " where name=$1;";
+			if(BaseDeDonnees::currentDB()->executeQuery($query,$params))
+				BaseDeDonnees::currentDB()->show_error();
+			else{	
+				$this->group=$newGroup;
+				$this->sqlid     = $result['id'];
+				$E = new EDT($this);
+				$this->timetable = $E;
+			}
 		}
 	}
 
@@ -61,6 +69,10 @@ class Matiere
 	public function getTimetable()
 	{
 		return $this->timetable;
+	}
+	public function getGroup()
+	{
+		return $this->group;
 	}
 
 	// setters
@@ -96,37 +108,41 @@ class Matiere
 
 	public function addTeacher(Personne $P)
 	{
-		if (!($this->teachedBy[0] == NULL) && !($this->teachedBy[1] == NULL) && !($this->teachedBy[2] == NULL))
+	//TODO partager le calendrier matière avec l'ensignant si c un user
+	
+		//if (!($this->teachedBy[0] == NULL) && !($this->teachedBy[1] == NULL) && !($this->teachedBy[2] == NULL))
+		if(sizeof($this->teachedBy)>=3 and isset($this->teachedBy[0]) and isset($this->teachedBy[1]) and isset($this->teachedBy[0]))
 		{
 			echo ('GaliDAV: 3 personnes enseignent déjà cette matière ! Remplacez-en un.');
 		}
 		else
 		{
-			if (!isTeachedBy($P))
+			if (!$this->isTeachedBy($P))
 			{
-				$query   = "SELECT id from " . self::TABLENAME . " where name=" . $this->name . ";";
+				$query   = "SELECT id from " . self::TABLENAME . " where name='" . $this->name . "';";
 				$result1 = BaseDeDonnees::currentDB()->executeQuery($query);
 
 				if (!$result1)
 				{
-					echo ('GaliDAV: Aucune matière de ce nom'); // weird if Matiere is instantiated?
+					BaseDeDonnees::currentDB()->show_error('Aucune matière de ce nom'); // weird if Matiere is instantiated?
 				}
 				else
 				{
-					if ($this->teachedBy[0] == NULL)
+					$result1=pg_fetch_assoc($result1);
+					if (!isset($this->teachedBy[0]))
 					{
-						$query = "UPDATE " . self::TABLENAME . " set id_speaker1=$1 where id=" . $result1 . ";";
+						$query = "UPDATE " . self::TABLENAME . " set id_speaker1=$1 where id=" . $result1['id'] . ";";
 					}
-					elseif ($this->teachedBy[1] == NULL)
+					else if (!isset($this->teachedBy[1]))
 					{
-						$query = "UPDATE " . self::TABLENAME . " set id_speaker2=$1 where id=" . $result1 . ";";
+						$query = "UPDATE " . self::TABLENAME . " set id_speaker2=$1 where id=" . $result1['id'] . ";";
 					}
 					else
 					{
-						$query = "UPDATE " . self::TABLENAME . " set id_speaker3=$1 where id=" . $result1 . ";";
+						$query = "UPDATE " . self::TABLENAME . " set id_speaker3=$1 where id=" . $result1['id'] . ";";
 					}
 
-					$params            = array($P);
+					$params            = array($P->getSqlid());
 					$result2           = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 					$this->teachedBy[] = $P;
 				}
@@ -138,9 +154,9 @@ class Matiere
 		}
 	}
 
-	public function removeTeacher(Enseignant $E)
+	public function removeTeacher(Personne $E)
 	{
-		if (!$this->isTeachedBy($E)) // "isTeachedBy" waits for a Personne object, Enseignant here, guess it doesn’t matter
+		if (!$this->isTeachedBy($E)) 
 		{
 			echo ('L\'enseignant renseigné n\'enseigne pas cette matière');
 		}

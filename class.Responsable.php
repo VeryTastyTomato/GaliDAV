@@ -10,9 +10,10 @@ require_once('Responsable/unknown.Type_responsable.php');
 require_once('class.Groupe.php');
 require_once('class.Classe.php');
 require_once('class.Utilisateur.php');
+require_once('class.Enseignant.php');
 require_once('class.Element_de_maquette.php');
 
-class Responsable extends Utilisateur
+class Responsable extends Enseignant
 {
 	// --- ASSOCIATIONS ---
 
@@ -26,7 +27,7 @@ class Responsable extends Utilisateur
 	{
 		parent::__construct($familyName, $firstName, $id, $passwd);
 		$this->addStatus(new Statut_personne(Statut_personne::HEAD));
-		$this->addStatus(new Statut_personne(Statut_personne::TEACHER));
+		//$this->addStatus(new Statut_personne(Statut_personne::TEACHER));
 	}
 
 	public function modifyTimetable(EDT $e, Cours $c, $operation)
