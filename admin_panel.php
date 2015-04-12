@@ -16,7 +16,7 @@ error_reporting(E_ALL);
 require_once("test_davical_operations.php");
 require_once("ListePersonnes.php");
 
-	//Reconstruire toute les tables de la base
+	//Reconstruit toutes les tables de la base
 	//BaseDeDonnees::currentDB()->initialize();
 
 ?>

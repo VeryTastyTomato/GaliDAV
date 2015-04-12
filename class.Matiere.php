@@ -19,7 +19,6 @@ class Matiere
 	private $group = NULL;
 	private $timetable = NULL; // may be we’ll use severals calendars for one subject? (1 calendar for CMs, 1 for TDs…) to settle
 	// Flora: No, calendars are managed in davical. There’s one calendar for one subject + we do not care in this class about davical calendars
-	private $group=NULL;
 
 	const TABLENAME = "gsubject";
 	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL UNIQUE, id_speaker1 integer REFERENCES gperson(id), id_speaker2 integer REFERENCES gperson(id), id_speaker3 integer REFERENCES gperson(id), id_group integer REFERENCES ggroup(id), id_calendar integer REFERENCES gcalendar(id)";
@@ -40,15 +39,15 @@ class Matiere
 		$result     = BaseDeDonnees::currentDB()->executeQuery($query, $params);	
 		if (!$result)
 		{
-			BaseDeDonnees::currentDB()->show_error();
+			BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
 		}
 		else
 		{
 			$result     = pg_fetch_assoc($result);
 			$params     = array($newName);
 			$query      = "select id from " . self::TABLENAME . " where name=$1;";
-			if(BaseDeDonnees::currentDB()->executeQuery($query,$params))
-				BaseDeDonnees::currentDB()->show_error();
+			if(!BaseDeDonnees::currentDB()->executeQuery($query,$params))
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_f);
 			else{	
 				$this->group=$newGroup;
 				$this->sqlid     = $result['id'];

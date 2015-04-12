@@ -128,18 +128,15 @@ if (isset($_POST['action']))
 		$G=new Groupe();
 		if($G->loadFromDB($_POST['groupname']))
 		{
-			echo "ok";
+	
 			$M=new Matiere($_POST['subjectname'],$G);
-			echo "ok2";
 			if($_POST['speaker1']!="--"){
 				$res=BaseDeDonnees::currentDB()->executeQuery(query_person_by_fullname($_POST['speaker1']));
-				echo "ok3";
 				if($res){
 					$result=pg_fetch_assoc($res);
 					$P=new Personne();
 					$P->loadFromDB($result['id']);
-					echo "ok4";
-					$M->addTeacher($P);echo "ok5";
+					$M->addTeacher($P);
 				}
 				else
 					BaseDeDonnees::currentDB()->show_error();
@@ -169,9 +166,8 @@ if (isset($_POST['action']))
 					BaseDeDonnees::currentDB()->show_error();
 			
 			}
-			echo "OK";
 		}
-		//header('Location: ./admin_panel.php');
+		header('Location: ./admin_panel.php');
 	}
 
 	if ($_POST['action'] == 'add_user')

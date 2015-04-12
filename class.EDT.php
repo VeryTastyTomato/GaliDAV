@@ -48,7 +48,7 @@ class EDT
 			$query           = "insert into " . self::TABLENAME . " DEFAULT VALUES;";
 			if(!BaseDeDonnees::currentDB()->executeQuery($query))
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
 			}
 			
 			$query       = "select id from " . self::TABLENAME . " order by date_creation desc;";
@@ -60,7 +60,8 @@ class EDT
 			}
 			else
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
 			}
 			
 
@@ -74,7 +75,7 @@ class EDT
 
 					if (!BaseDeDonnees::currentDB()->executeQuery($query))
 					{
-						BaseDeDonnees::currentDB()->show_error();
+						BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
 					}
 
 					if ($validated)
@@ -83,7 +84,7 @@ class EDT
 						$query           = "update " . self::TABLENAME . " set is_validated_calendar=true where id=" . $this->sqlid . ";";
 						if (!BaseDeDonnees::currentDB()->executeQuery($query))
 						{
-							BaseDeDonnees::currentDB()->show_error();
+							BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
 						}
 					}
 				}
@@ -108,7 +109,7 @@ class EDT
 				}
 				else
 				{
-					BaseDeDonnees::currentDB()->show_error();
+					BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
 				}
 			}
 			else if (is_a($Object, "Matiere"))
@@ -122,8 +123,8 @@ class EDT
 					$this->subject = $M;
 				}
 				else
-				{
-					BaseDeDonnees::currentDB()->show_error();
+				{	
+						BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
 				}
 			}
 			else if (is_a($Object, "Enseignant"))
@@ -138,7 +139,7 @@ class EDT
 				}
 				else
 				{
-					BaseDeDonnees::currentDB()->show_error();
+					BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
 				}
 			}
 		}
