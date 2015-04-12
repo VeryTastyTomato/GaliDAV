@@ -79,11 +79,21 @@ class Matiere
 		return $this->sqlid;
 	}
 	// setters
-	public function setName($newName)
+	private function setName($newName)
 	{
-		if (!empty($newName))
+		if (is_string($newName))
 		{
-			$this->name = $newName;
+			$query    = "UPDATE " . self::TABLENAME . " set name=$1 where id=" . $this->sqlid . ";";
+			$params = array($newName);
+
+			if (BaseDeDonnees::currentDB()->executeQuery($query, $params))
+			{
+				$this->name = $newName;
+			}
+			else
+			{
+				BaseDeDonnees::currentDB()->show_error();
+			}
 		}
 	}
 
@@ -111,9 +121,6 @@ class Matiere
 
 	public function addTeacher(Personne $P)
 	{
-	//TODO partager le calendrier matière avec l'ensignant si c un user
-	
-		//if (!($this->teachedBy[0] == NULL) && !($this->teachedBy[1] == NULL) && !($this->teachedBy[2] == NULL))
 		if(sizeof($this->teachedBy)>=3 and isset($this->teachedBy[0]) and isset($this->teachedBy[1]) and isset($this->teachedBy[0]))
 		{
 			echo ('GaliDAV: 3 personnes enseignent déjà cette matière ! Remplacez-en un.');
@@ -147,7 +154,17 @@ class Matiere
 
 					$params            = array($P->getSqlid());
 					$result2           = BaseDeDonnees::currentDB()->executeQuery($query, $params);
-					$this->teachedBy[] = $P;
+
+					if($result2)
+					{					
+						$this->teachedBy[] = $P;
+						$query     = "select * from " . Utilisateur::TABLENAME . " where id_person=$1;";
+						$ressource = BaseDeDonnees::currentDB()->executeQuery($query, $params);
+						if($ressource)
+						{
+							//TODO share the subject calendar to $P
+						}
+					}
 				}
 			}
 			else
