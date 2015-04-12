@@ -175,6 +175,7 @@ class Utilisateur extends Personne
 		parent::removeFromDB();
 	}
 
+	//Etienne: Elle doit retourner quoi cette méthode ? Seulement si l'user peut lire l'edt ou elle doit aussi l'afficher si l'user peut le lire ?
 	public function readTimetable(EDT $e)
 	{
 		$returnValue = FALSE;
@@ -182,6 +183,27 @@ class Utilisateur extends Personne
 		// S'il y a un souci par rapport à l'accès à l'edt renvoyer une erreur
 		// TODO Complete
 
+		if($this->hasStatus(4) || $this->hasStatus(5) || $this->hasStatus(6)) //$e is a secretary, head or admin
+		{
+			$returnValue = TRUE;
+		}
+
+		elseif($this->hasStatus(3)) //$e is a teacher
+		{
+			if($this->getPersonalTimetable() = $e) //it's the right timetable
+			{
+				$returnValue = TRUE;
+			}
+			else
+			{
+				echo ('Cet EDT ne vous appartient pas');
+			}
+		}
+
+		else
+		{
+			echo ('Vous ne pouvez pas accéder à cet EDT');
+		}
 		return $returnValue;
 	}
 
