@@ -16,6 +16,7 @@ class Matiere
 	private $sqlid = NULL;
 	private $name = NULL;
 	private $teachedBy = array();
+	private $group = NULL;
 	private $timetable = NULL; // may be we’ll use severals calendars for one subject? (1 calendar for CMs, 1 for TDs…) to settle
 	// Flora: No, calendars are managed in davical. There’s one calendar for one subject + we do not care in this class about davical calendars
 
@@ -269,6 +270,12 @@ class Matiere
 						$this->addTeacher($E);
 					}
 				}
+			}
+
+			if ($result['id_group'])
+			{
+				$this->group = new Groupe();
+				$this->group->loadFromDB(intval($ressource['id_group']));
 			}
 
 			if ($result['id_calendar'])
