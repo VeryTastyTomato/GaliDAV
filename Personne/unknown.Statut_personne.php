@@ -32,12 +32,12 @@ class Statut_personne
 
 	protected $value;
 
-	function __construct($value)
+	public function __construct($value)
 	{
 		$this->value = $value;
 	}
 
-	function toString()
+	public function toString()
 	{
 		if ($this->value == NULL)
 		{
@@ -49,7 +49,7 @@ class Statut_personne
 		}
 	}
 
-	function toInt()
+	public function toInt()
 	{
 		/*
 		if ($this->value==self::STUDENT) return 1;
@@ -64,7 +64,7 @@ class Statut_personne
 		return self::getIntValue($this->value);
 	}
 
-	static function getIntValue($status)
+	public static function getIntValue($status)
 	{
 		switch ($status)
 		{
