@@ -62,6 +62,18 @@ function CreateCalendar($username, $calendarNameGiven, $defult_timezone = NULL)
 		{
 			$c->messages[] = i18n('Calendar added.');
 			dbg_error_log("User", ":Write: Created user's calendar at '%s'", $params[':collection_path']);
+			$BDD       = new BaseDeDonnees("davical_app", "davical");
+			$result=$BDD->executeQuery("select collection_id from collection order by created desc;");
+			if($result){
+				$result=pg_fetch_assoc($result);
+				return $result['collection_id'];
+			}
+			else
+			{
+				$BDD->show_error("ligne n° ".__LINE__." //fonction: ".__FUNCTION__);
+				return false;
+			}
+			
 		}
 		else
 		{
@@ -86,8 +98,10 @@ function getDAVPrincipalNoFromLogin($login){
 		$BDD->show_error("ligne n° ".__LINE__." //fonction: ".__FUNCTION__);
 		return false;
 	}
-	$result=pg_fetch_assoc($result);
-	return $result['user_no'];
+	else{
+		$result=pg_fetch_assoc($result);
+		return ((int)$result['user_no']);
+	}
 }
 
 function CreateUserAccount($username, $fullname, $password, $email = NULL, $privileges = NULL)
@@ -204,7 +218,7 @@ if (isset($_POST['action']))
 			new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
 
-		header('Location: ./admin_panel.php');
+		//header('Location: ./admin_panel.php');
 	}
 
 	if ($_POST['action'] == 'add_group')

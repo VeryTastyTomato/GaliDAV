@@ -365,12 +365,10 @@ class Personne
 	public function removeFromDB()
 	{
 		$params = array($this->sqlid);
-		$query  = "delete from " . Statut_personne::TABLENAME . " where id_person=$1;";
-		BaseDeDonnees::currentDB()->executeQuery($query, $params);
+		
 		$query     = "select * from " . Utilisateur::TABLENAME . " where id_person=$1;";
 		$ressource = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 
-		$params = array($this->sqlid);
 		$query  = "update " . Matiere::TABLENAME . " set id_speaker1=null where id_speaker1=$1";
 			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
 				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
@@ -386,20 +384,7 @@ class Personne
 		if ($ressource)
 		{
 			$result = pg_fetch_assoc($ressource);
-			/*
-			$query  = "update " . Matiere::TABLENAME . " set id_speaker1=null where id_speaker1=$1";
-			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
-				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
-				
-			$query  = "update " . Matiere::TABLENAME . " set id_speaker2=null where id_speaker2=$1";
-			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
-				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
-			
-			$query  = "update " . Matiere::TABLENAME . " set id_speaker3=null where id_speaker3=$1";
-			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
-				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
-				*/
-				
+		
 			$query  = "delete from " . EDT::TABLENAME . " where id_teacher=$1;";
 			if(!BaseDeDonnees::currentDB()->executeQuery($query, $params))
 				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);

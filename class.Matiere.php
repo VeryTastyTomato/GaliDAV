@@ -39,7 +39,7 @@ class Matiere
 		$result     = BaseDeDonnees::currentDB()->executeQuery($query, $params);	
 		if (!$result)
 		{
-			BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
+			BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 		}
 		else
 		{
@@ -74,7 +74,10 @@ class Matiere
 	{
 		return $this->group;
 	}
-
+	public function getSqlid()
+	{
+		return $this->sqlid;
+	}
 	// setters
 	public function setName($newName)
 	{

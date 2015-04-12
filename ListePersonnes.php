@@ -5,26 +5,36 @@ require_once("class.BaseDeDonnees.php");
 
 function XListAll(){
 	$out="<ul class=listOfPeople style='overflow:scroll;'>";
-		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_people());
-		while(($person=pg_fetch_assoc($res))!=null)
+	$res=BaseDeDonnees::currentDB()->executeQuery(query_all_people_names());
+	if($res){
+		$person=pg_fetch_assoc($res);
+		while($person)
 		{
 			//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
 			$out.="<li>".XPerson($person)."</li>";
+			$person=pg_fetch_assoc($res);
 		}
-		$out.="</ul>";
-		return $out;
+	}
+	else
+			BaseDeDonnees::currentDB()->show_error();
+	$out.="</ul>";
+	return $out;
 }
 
 function XListStudents(){
 	$out="<ul class=listOfPeople style='overflow:scroll;'>";
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_students());
 		if($res){
-			while(($person=pg_fetch_assoc($res))!=null)
+			$person=pg_fetch_assoc($res);
+			while($person)
 			{
 				//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
 				$out.="<li>".XPerson($person)."</li>";
+				$person=pg_fetch_assoc($res);
 			}
 		}
+		else
+			BaseDeDonnees::currentDB()->show_error();
 		$out.="</ul>";
 	return $out;
 }
@@ -33,12 +43,16 @@ function XListTeachers(){
 	$out="<ul class=listOfPeople style='overflow:scroll;'>";
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_teachers());
 		if($res){
-			while(($person=pg_fetch_assoc($res))!=null)
+			$person=pg_fetch_assoc($res);
+			while($person)
 			{
 				//$out.="<li>".$person['familyname']." ".$person['firstname']."</li>";
 				$out.="<li>".XPerson($person)."</li>";
+				$person=pg_fetch_assoc($res);
 			}
 		}
+		else
+			BaseDeDonnees::currentDB()->show_error();
 		$out.="</ul>";
 		return $out;
 }
@@ -107,7 +121,7 @@ function query_all_people(){
 	return "select * from ".Personne::TABLENAME." order by familyName;";
 }
 function query_all_people_names(){
-	return "select familyName, firstName from ".Person::TABLENAME.";";
+	return "select id, familyname, firstname from ".Personne::TABLENAME.";";
 }
 
 function query_all_students(){

@@ -23,6 +23,7 @@ class EDT
 	protected $teacherOwner = NULL; // if it’s a teacher’s timetable, else it’s value is NULL
 	protected $subject = NULL; // Flora: for subject calendars, useful?
 	protected $validated = FALSE;
+	protected $idcollection=null;
 
 	const TABLENAME = "gcalendar";
 	const SQLcolumns = "id serial PRIMARY KEY, id_collection bigint unique, id_teacher integer REFERENCES guser(id_person), is_class_calendar boolean default false, is_validated_calendar boolean default false, is_being_modified_by integer REFERENCES guser(id_person), date_creation timestamp default 'now'";
@@ -104,7 +105,8 @@ class EDT
 
 				if (BaseDeDonnees::currentDB()->executeQuery($query))
 				{
-					CreateCalendar($G->getName(), $G->getName() . " EDT");
+					$idcollec=(int)CreateCalendar($G->getName(), $G->getName() . " EDT");
+					$this->setIdCollection($idcollec);
 					$this->group = $G;
 				}
 				else
@@ -115,11 +117,12 @@ class EDT
 			else if (is_a($Object, "Matiere"))
 			{
 				$M     = $Object;
-				$query = "update " . Matiere::TABLENAME . " set id_calendar=" . $this->sqlid . ";";
+				$query = "update " . Matiere::TABLENAME . " set id_calendar=" . $this->sqlid . " where id=".$M->getSqlid().";";
 
 				if (BaseDeDonnees::currentDB()->executeQuery($query))
 				{
-					CreateCalendar($M->getGroup()->getName(), $M->getName()." ".$M->getGroup()->getName());
+					$idcollec=(int)CreateCalendar($M->getGroup()->getName(), $M->getName()." ".$M->getGroup()->getName());
+					$this->setIdCollection($idcollec);
 					$this->subject = $M;
 				}
 				else
@@ -130,11 +133,12 @@ class EDT
 			else if (is_a($Object, "Enseignant"))
 			{
 				$E     = $Object;
-				$query = "update " . self::TABLENAME . " set id_teacher=" . $E->getSqlid() . ";";
+				$query = "update " . self::TABLENAME . " set id_teacher=" . $E->getSqlid() . " where id=".$this->sqlid.";";
 
 				if (BaseDeDonnees::currentDB()->executeQuery($query))
 				{
-					CreateCalendar($E->getLogin(), $E->getFullName() . " EDT");
+					$idcollec=(int)CreateCalendar($E->getLogin(), $E->getFullName() . " EDT");
+					$this->setIdCollection($idcollec);
 					$this->teacherOwner = $E;
 				}
 				else
@@ -179,6 +183,10 @@ class EDT
 	public function getTeacherOwner()
 	{
 		return $this->teacherOwner;
+	}
+	public function getIdCollection()
+	{
+		return $this->idcollection;
 	}
 
 	public function containsCourse(Cours $C)
@@ -225,6 +233,23 @@ class EDT
 		}
 	}
 
+	protected function setIdCollection($newId)
+	{
+		if (is_int($newId))
+		{
+			$query = "update " . self::TABLENAME . " set id_collection=" . $newId . " where id=" . $this->sqlid . ";";
+
+			if (BaseDeDonnees::currentDB()->executeQuery($query))
+			{
+				$this->idcollection = $newId;
+			}
+			else
+			{
+				BaseDeDonnees::currentDB()->show_error();
+			}
+		}
+	}
+	
 	public function setModifiedBy(Personne $newModifiedBy = NULL)
 	{
 		if (!empty($newModifiedBy))
@@ -688,6 +713,11 @@ class EDT
 		{
 			BaseDeDonnees::currentDB()->show_error();
 		}
+	}
+	
+	public function shareWith(Utilisateur $U, $write=false)
+	{
+		//TODO
 	}
 }
 ?>

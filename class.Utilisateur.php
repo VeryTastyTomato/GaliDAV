@@ -111,8 +111,9 @@ class Utilisateur extends Personne
 	{
 		$params[] = ($givenPassword);
 		$params[] = $this->login;
-		$query    = "update " . self::TABLENAME . " set password=crypt('$1',gen_salt('bf')) where login=$2;";
-		BaseDeDonnees::currentDB()->executeQuery($query, $params);
+		//TODO doesnt know gen_salt ><
+		//$query    = "update " . self::TABLENAME . " set password=crypt('$1',gen_salt('bf')) where login=$2;";
+		//BaseDeDonnees::currentDB()->executeQuery($query, $params);
 	}
 
 	public function logIn()

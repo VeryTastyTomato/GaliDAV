@@ -48,6 +48,7 @@ class Matière
 		−teachedBy: Array (of Personne)
 		−timetable : EDT
 		−group: Groupe
+		-sqlid:integer
 	Constantes
 		const TABLENAME
 		const SQLcolumns
@@ -58,6 +59,7 @@ class Matière
 		+getTeachedBy(): Array (of Personne)
 		+getTimetable():EDT
 		+getGroup():Groupe
+		+getSqlid(): Integer
 	Mutateurs
 		+setName(String newName)
 		+setTeachedBy(Array (of Personne) newTeachedBy)
@@ -112,6 +114,7 @@ class EDT
 		#group: Groupe
 		#teacherOwner: Personne
 		#subject: Matiere
+		#idcollection : Integer
 	Constructeur
 		+__construct(Integer newIdTimetable, Personne newModifiedBy, Groupe newGroup, Enseignant newTeacherOwner = null)
 	Accesseurs
@@ -122,6 +125,7 @@ class EDT
 		+getGroup(): Groupe
 		+getTeacherOwner(): Personne
 		+getSubject(): Matiere
+		+getIdCollection(): Integer
 		
 	Mutateurs
 		#setIdTimetable(Integer newIdTimetable)
@@ -131,6 +135,7 @@ class EDT
 		#setGroup(Groupe newGroup=null)
 		-setTeacherOwner(Enseignant teacherOwner=null)
 		-setSubject(Matiere M=null)
+		#setIdCollection(Integer newId)
 	Autres fonctions
 		+hasModification(Modification M):Boolean
 		+containsCourse(Cours c): Boolean
@@ -145,6 +150,7 @@ class EDT
 		+loadFromDB()
 		+loadFromRessource(ressource)
 		+removeFromDB()
+		+shareWith(Utilisateur U,write=false)
 ___________________________________________________________________________
 class EdT_Classe extends EDT
 	Constructeur

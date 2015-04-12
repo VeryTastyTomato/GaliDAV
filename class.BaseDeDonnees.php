@@ -82,7 +82,7 @@ class BaseDeDonnees
 		}
 	}
 
-	public function executeQuery($query, $params = array())
+	public function executeQuery($query, $params = null)
 	{
 		$this->error_sql_message = "";
 		$conn                    = $this->connect();
@@ -94,13 +94,24 @@ class BaseDeDonnees
 			exit;
 		}
 
-		$result = pg_query_params($conn, $query, $params);
+		if(is_array($params))
+			$result = pg_query_params($conn, $query, $params);
+		else
+			$result = pg_query_params($conn, $query, array());
 
 		if (!$result)
 		{
-			$this->error_sql_message = "<div><b>GaliDAV Error</b>: The following query has failed: <p>&emsp;$query</p><p>(" . print_r($params) . ")</p></div><p style='font-size:smaller;'><b>&emsp;&emsp;&emsp;Details on SQL</b> " . pg_last_error($conn) . "</p>";
+			$this->error_sql_message = "<div><b>GaliDAV Error</b>: The following query has failed: <p>&emsp;$query</p>";
+			if(is_array($params)){
+				$this->error_sql_message .= "<p>(params=";
+				foreach($params as $oneParam)
+				{
+					$this->error_sql_message .=" ".$oneParam." /";
+				}
+				$this->error_sql_message .=")</p>";
+			}
+			$this->error_sql_message .="</div><p style='font-size:smaller;'><b>&emsp;&emsp;&emsp;Details on SQL</b> " . pg_last_error($conn) . "</p>";
 		}
-
 		return $result;
 	}
 
