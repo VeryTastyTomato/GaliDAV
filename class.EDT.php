@@ -757,5 +757,59 @@ class EDT
 			}
 		}
 	}
+	public function autoshare(){
+		if($this->group or $this->subject)
+		{
+		
+		//Shares a group or subject calendar with all secretaries & heads of department (writing privilege)
+			$S=new Statut_personne(Statut_personne::HEAD);
+			$head=$S->toInt();
+			$S=new Statut_personne(Statut_personne::SECRETARY);
+			$sec=$S->toInt();
+			$query="select id_person from guser as G where G.id_person in (select id_person from ".Statut_personne::TABLENAME." where status=". $head." or status=". $sec.");";
+			$result=BaseDeDonnees::currentDB()->executeQuery($query);
+			if($result){
+				$userid=pg_fetch_assoc($result);
+				while($userid!=null){
+					$u=new Utilisateur();
+					$u->loadFromDB($userid['id_person']);
+					$this->shareWith($u,true);
+				}
+			}
+		}
+		if($this->subject)
+		{
+			//Shares a subject calendar with teachers in charge (no writing privilege)
+			for($i=1;$i<=3;$i++){
+				$query="select id_person from guser as G where G.id_person in (select id_speaker".$i." from ".Matiere::TABLENAME." where id=".$this->subject->getSqlid().");";
+				$result=BaseDeDonnees::currentDB()->executeQuery($query);
+				if($result){
+					$userid=pg_fetch_assoc($result);
+					while($userid!=null){
+						$u=new Utilisateur();
+						$u->loadFromDB($userid['id_person']);
+						$this->shareWith($u,false);
+					}
+				}
+			}
+		}
+		else if($this->teacherOwner)
+		{
+			//Shares a teacher calendar with all secretaries (reading privilege?)
+			$S=new Statut_personne(Statut_personne::SECRETARY);
+			$sec=$S->toInt();
+			$query="select id_person from guser as G where G.id_person in (select id_person from ".Statut_personne::TABLENAME." where status=". $sec.");";
+			$result=BaseDeDonnees::currentDB()->executeQuery($query);
+			if($result){
+				$userid=pg_fetch_assoc($result);
+				while($userid!=null){
+					$u=new Utilisateur();
+					$u->loadFromDB($userid['id_person']);
+					$this->shareWith($u,true);
+				}
+			}		
+		}
+
+	}
 }
 ?>

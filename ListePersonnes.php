@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 require_once("class.BaseDeDonnees.php");
 
 function XListAll(){
-	$out="<ul class=listOfPeople style='overflow:scroll;'>";
+	$out="<ul class=listOfPeople style='overflow-y:auto;height:80%;'>";
 	$res=BaseDeDonnees::currentDB()->executeQuery(query_all_people_names());
 	if($res){
 		$person=pg_fetch_assoc($res);
@@ -22,7 +22,7 @@ function XListAll(){
 }
 
 function XListStudents(){
-	$out="<ul class=listOfPeople style='overflow:scroll;'>";
+	$out="<ul class=listOfPeople style='overflow-y:auto;height:80%;'>";
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_students());
 		if($res){
 			$person=pg_fetch_assoc($res);
@@ -40,7 +40,7 @@ function XListStudents(){
 }
 
 function XListTeachers(){
-	$out="<ul class=listOfPeople style='overflow:scroll;'>";
+	$out="<ul class=listOfPeople style='overflow-y:auto;height:80%;'>";
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_teachers());
 		if($res){
 			$person=pg_fetch_assoc($res);
@@ -58,7 +58,7 @@ function XListTeachers(){
 }
 
 function XListAllGroups(){
-	$out="<ul class=listOfGroup style='overflow:scroll;'>";
+	$out="<ul class=listOfGroup style='overflow-y:auto;height:80%;'>";
 		$res=BaseDeDonnees::currentDB()->executeQuery(query_all_groups());
 		if($res){
 			$group=pg_fetch_assoc($res);

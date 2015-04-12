@@ -21,7 +21,8 @@ require_once("ListePersonnes.php");
 
 ?>
 <form action="test_davical_operations.php" method="POST" style="position:fixed;right:0px;top:0px;"><input type='hidden' name='action' value="clear_db"/><input type=submit value="Effacer toutes les données"/></form>
-<div id=admin_panel style='width:80%;height:50%;padding:auto;margin-left:auto;margin-right:auto;'>
+
+<div id=admin_panel style='width:80%;height:450px;padding:auto;margin-left:auto;margin-right:auto;overflow:auto'>
 	<table>
 		<tr>
 			<th style="width:33%">Ajouter un utilisateur</th>
@@ -94,25 +95,27 @@ require_once("ListePersonnes.php");
 	</table>
 </div>
 
-
-	<table style='margin-top:2%;height:auto;border:solid;border-width:10px;width:100%;margin-left:auto;margin-right:auto;'>
-		<tr>
-			<th style="width:33%">Toutes les personnes</th>
-			<th style="width:33%">Tous les enseignants</th>
-			<th style="width:33%">Tous les élèves</th>
+<div style='height:150px;border:solid;background-color:#AAAAAA;border-width:10px;border-color:#888888;overflow:auto;width:100%;margin-left:auto;margin-right:auto;'>
+	<table style='height:100%;width:100%';>
+		<tr style='width:100%'>
+			<th style='width:20%'>Toutes les personnes</th>
+			<th style='width:20%'>Tous les enseignants</th>
+			<th style='width:20%'>Tous les élèves</th>
+			<th style="width:20%">Tous les groupes et classes</th>
 		</tr>
-		<tr>
+		<tr style='height:50%;'>
 			<td><?php echo XListAll();?></td>
 			<td><?php echo XListTeachers();?></td>
 			<td><?php echo XListStudents();?></td>
-		</tr>
-		<tr>
-			<th style="width:33%">Tous les groupes et classes</th>
-		</tr>
-		<tr>
 			<td><?php echo XListAllGroups();?></td>
 		</tr>
+		<tr>
+			<th>?</th>
+		</tr>
+		<tr style='height:50%;'>
+			
+		</tr>
 	</table>
-
+</div>
 </body>
 </html>

@@ -218,7 +218,7 @@ if (isset($_POST['action']))
 			new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
 
-		//header('Location: ./admin_panel.php');
+		header('Location: ./admin_panel.php');
 	}
 
 	if ($_POST['action'] == 'add_group')
