@@ -331,6 +331,7 @@ class Matiere
 		$query = "delete * from " . self::TABLENAME . " where id=" . $this->sqlid . ";";
 		if (BaseDeDonnees::currentDB()->executeQuery($query))
 		{
+			//TODO delete calendar from davical DB 
 		}
 		else
 		{

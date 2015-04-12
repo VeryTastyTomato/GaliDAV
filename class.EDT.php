@@ -515,7 +515,7 @@ class EDT
 
 						if ($E->loadFromDB($oneSpeaker->getSqlId())) // We check that $onespeaker is a user
 						{
-							$E->getTimetable()->addCourse($courseToRemove); // REMOVE course from teacher’s calendar
+							$E->getTimetable()->removeCourse($courseToRemove); // REMOVE course from teacher’s calendar
 						}
 					}
 				}
