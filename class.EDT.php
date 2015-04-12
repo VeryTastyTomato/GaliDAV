@@ -38,6 +38,7 @@ class EDT
 	Note: There’s no SQL reference to a group id or a subject id in this table since there’s already one in group table and subject table.
 	*/
 
+//TODO share with users with appropriate rights
 
 	// --- OPERATIONS ---
 	// constructor
@@ -717,7 +718,44 @@ class EDT
 	
 	public function shareWith(Utilisateur $U, $write=false)
 	{
-		//TODO
+		$BDD=new BaseDeDonnees("agendav");
+		if (!$BDD->connect())
+		{
+			echo ("pas de connexion vrs agendav");
+		}
+		else
+		{
+			if($this->group)
+			{
+				$params[]=$this->group->getName();
+				$params[]=$this->group->getName()." EDT";
+				$params[]=$U->getLogin();
+
+				$query="insert into shared (user_from,user_which,calendar,options,write_access) values ('$1','$3','$2','N;',$write);";
+				if(!$BDD->executeQuery($query,$params))
+					$BDD->show_error();			
+			}
+			else if($this->subject)
+			{
+				$params[]=$this->subject->getGroup()->getName();
+				$params[]=$this->subject->getName()." ".$this->subject->getGroup()->getName();
+				$params[]=$U->getLogin();
+
+				$query="insert into shared (user_from,user_which,calendar,options,write_access) values ('$1','$3','$2','N;',$write);";
+				if(!$BDD->executeQuery($query,$params))
+					$BDD->show_error();			
+			}
+			else if($this->teacherOwner)
+			{
+				$params[]=$this->teacherOwner->getLogin();
+				$params[]=$this->teacherOwner->getFullName()." EDT";
+				$params[]=$U->getLogin();
+
+				$query="insert into shared (user_from,user_which,calendar,options,write_access) values ('$1','$3','$2','N;',$write);";
+				if(!$BDD->executeQuery($query,$params))
+					$BDD->show_error();			
+			}
+		}
 	}
 }
 ?>
