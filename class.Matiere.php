@@ -19,7 +19,6 @@ class Matiere
 	private $group = NULL;
 	private $timetable = NULL; // may be we’ll use severals calendars for one subject? (1 calendar for CMs, 1 for TDs…) to settle
 	// Flora: No, calendars are managed in davical. There’s one calendar for one subject + we do not care in this class about davical calendars
-	private $group=NULL;
 
 	const TABLENAME = "gsubject";
 	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL UNIQUE, id_speaker1 integer REFERENCES gperson(id), id_speaker2 integer REFERENCES gperson(id), id_speaker3 integer REFERENCES gperson(id), id_group integer REFERENCES ggroup(id), id_calendar integer REFERENCES gcalendar(id)";
