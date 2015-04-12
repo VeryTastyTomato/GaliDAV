@@ -303,7 +303,19 @@ class Matiere
 
 	public function removeFromDB()
 	{
-		// TODO
+		$this->timetable->removeFromDB();//first we delete the associated calendar
+
+		//Etienne : Pas de gestion de groupe vu qu'on a pas de champs destiné à la Matiere dans Groupe ?
+		//Etienne : idem pour les enseignants
+
+		$query = "delete * from " . self::TABLENAME . " where id=" . $this->sqlid . ";";
+		if (BaseDeDonnees::currentDB()->executeQuery($query))
+		{
+		}
+		else
+		{
+			BaseDeDonnees::currentDB()->show_error();
+		}
 	}
 }
 ?>
