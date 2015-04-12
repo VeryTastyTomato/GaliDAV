@@ -14,14 +14,16 @@ class Enseignant extends Utilisateur
 	// --- ASSOCIATIONS ---
 
 	// --- ATTRIBUTES ---
-	private $personalTimetable = null;
+	private $personalTimetable = NULL;
 
 	// --- OPERATIONS ---
 	// constructor
-	public function __construct($familyName=null, $firstName=null, $login=null, $passwd=null,$email1 = null)
+	public function __construct($familyName = NULL, $firstName = NULL, $login = NULL, $passwd = NULL, $email1 = NULL)
 	{
 		parent::__construct($familyName, $firstName, $login, $passwd);
-		if ($login != null and $passwd != null){
+
+		if ($login != NULL and $passwd != NULL)
+		{
 			$this->addStatus(new Statut_personne(Statut_personne::TEACHER));
 			$this->personalTimetable = new EDT($this);
 		}
@@ -31,7 +33,6 @@ class Enseignant extends Utilisateur
 	public function getPersonalTimetable()
 	{
 		return $this->personalTimetable;
-		
 	}
 
 	// others

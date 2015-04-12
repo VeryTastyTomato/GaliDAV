@@ -15,18 +15,18 @@ class Modification
 
 	// --- ATTRIBUTES ---
 	private $date;
-	private $madeBy = null;
-	private $courseModified = null;
+	private $madeBy = NULL;
+	private $courseModified = NULL;
 
 	const TABLENAME = "gmodification";
 	const SQLcolumns = "id_course integer REFERENCES gcourse(id), id_user integer REFERENCES guser(id_person), date timestamp default 'now'";
-	
+
 	// --- OPERATIONS ---
 	// constructor
 	public function __constructor($newDate, $newMadeBy, $newCourseModified)
 	{
-		$this->date = $newDate;
-		$this->madeBy = $newMadeBy;
+		$this->date           = $newDate;
+		$this->madeBy         = $newMadeBy;
 		$this->courseModified = $newCourseModified;
 	}
 
@@ -70,9 +70,10 @@ class Modification
 			$this->courseModified = $newCourseModified;
 		}
 	}
-	
-	public function removeFromDB(){
-		//TODO
+
+	public function removeFromDB()
+	{
+		// TODO
 	}
 }
 ?>

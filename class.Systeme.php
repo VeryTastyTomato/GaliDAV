@@ -13,7 +13,7 @@ class Systeme
 	// --- ASSOCIATIONS ---
 
 	// --- ATTRIBUTES ---
-	private $database = null;
+	private $database = NULL;
 
 	// --- OPERATIONS ---
 	// constructor
@@ -37,37 +37,38 @@ class Systeme
 		}
 	}
 
-	//others
+	// others
 	public function blockTimetable(EDT $edt)
 	{
-	//TODO
+		// TODO
 	}
 
 	public function sendEmail(Personne $p)
 	{
-	//TODO
+		// TODO
 	}
 
 	public function generateTimetable_PDF(EDTClasse $edt)
 	{
-	//TODO
+		// TODO
 	}
 
 	public function autoSave(BaseDeDonnees $database)
 	{
-	//TODO
+		// TODO
 	}
 
 	public function recoverData($location)
 	{
-		$database = null;
-	//TODO (p-e mettre directement le résultat dans l'attribut "database" au lieu de simplement le retourner ?)
+		$database = NULL;
+		//TODO (p-e mettre directement le résultat dans l'attribut "database" au lieu de simplement le retourner ?)
+
 		return $database;
 	}
 
 	public function generateExamList(EDT $edt)
 	{
-	//TODO
+		// TODO
 	}
 }
 ?>

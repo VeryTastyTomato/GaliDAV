@@ -15,23 +15,23 @@ class Cours
 	// --- ASSOCIATIONS ---
 
 	// --- ATTRIBUTES ---
-	private $sqlid=null;
-	private $number = null;
+	private $sqlid = NULL;
+	private $number = NULL;
 	private $begin;
 	private $end;
-	private $room = null;
-	private $typeOfCourse = null;
-	private $subject = null;
-	
+	private $room = NULL;
+	private $typeOfCourse = NULL;
+	private $subject = NULL;
+
 	const TABLENAME = "gcourse";
 	const SQLcolumns = "id serial PRIMARY KEY, name varchar(30) NOT NULL, room varchar(30), begins_at timestamp without time zone NOT NULL, ends_at timestamp without time zone NOT NULL, id_subject integer REFERENCES gsubject(id), type integer";
 	const belongsToTABLENAME = "gcourse_belongs_to";
 	const belongsToSQLcolumns = "id_course integer REFERENCES gcourse(id), id_calendar integer REFERENCES gcalendar(id), constraint gcourse_belongs_to_pk PRIMARY KEY(id_course,id_calendar)";
-	
-	/* Flora: A Course in GaliDAV DataBase doesnt correspond to a collection_item (event) in Davical DB.
-		In fact, a collection item has repetition rules that could be translated in several courses in GaliDAV database.
-		On the other hand, a GaliDAV course can be shared by
-		TODO : Make the links with davical and name davical events differently depending on the collection (timetable) they belong to
+
+	/* Flora: A Course in GaliDAV DataBase doesn’t correspond to a collection_item (event) in Davical DB.
+	In fact, a collection item has repetition rules that could be translated in several courses in GaliDAV database.
+	On the other hand, a GaliDAV course can be shared by
+	TODO : Make the links with davical and name davical events differently depending on the collection (timetable) they belong to
 	*/
 
 	// --- OPERATIONS ---
@@ -49,8 +49,8 @@ class Cours
 		}
 
 		$this->subject = $m;
-		$this->begin = $begin;
-		$this->end = $end;
+		$this->begin   = $begin;
+		$this->end     = $end;
 	}
 
 	// getters
@@ -76,7 +76,7 @@ class Cours
 
 	public function getEnd_string()
 	{
-		return date('d/m/Y H:i',$this->end);
+		return date('d/m/Y H:i', $this->end);
 	}
 
 	public function getRoom()
@@ -91,19 +91,19 @@ class Cours
 
 	public function getTypeOfCourse_string()
 	{
-		switch($this->typeOfCourse)
+		switch ($this->typeOfCourse)
 		{
-			case(CM):
+			case (CM):
 				return "CM";
-			case(TD):
+			case (TD):
 				return "TD";
-			case(TP):
+			case (TP):
 				return "TP";
-			case(EXAMEN):
+			case (EXAMEN):
 				return "Partiel";
-			case(CONFERENCE):
+			case (CONFERENCE):
 				return "Conférence";
-			case(RATTRAPAGE):
+			case (RATTRAPAGE):
 				return "Rattrapage";
 			default:
 				return "Type inconnu";
@@ -114,11 +114,11 @@ class Cours
 	{
 		return $this->subject;
 	}
-	
+
 	public function getSqlid()
 	{
 		return $this->sqlid;
-	}	
+	}
 
 	// setters
 	public function setNumber($newNumber)
@@ -183,7 +183,7 @@ class Cours
 	// -- Affichage texte --
 	public function toHTML()
 	{
-		$result = "<p>Matière:&emsp; &emsp; " . $this->subject->getName() . "<br/>Type de cours:&emsp; &emsp;". $this->typeOfCourse."&emsp; &emsp;&emsp; &emsp;Numero:&emsp; &emsp; " . $this->number . "<br/>Horaires:&emsp; du ".$this->getBegin_string()." au ".$this->getEnd_string()."<br/>Salle: &emsp; &emsp; ".$this->room."</p>";
+		$result = "<p>Matière:&emsp; &emsp; " . $this->subject->getName() . "<br/>Type de cours:&emsp; &emsp;" . $this->typeOfCourse . "&emsp; &emsp;&emsp; &emsp;Numero:&emsp; &emsp; " . $this->number . "<br/>Horaires:&emsp; du " . $this->getBegin_string() . " au " . $this->getEnd_string() . "<br/>Salle: &emsp; &emsp; " . $this->room . "</p>";
 
 		return $result;
 	}

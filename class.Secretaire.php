@@ -46,7 +46,7 @@ class Secretaire extends Utilisateur
 
 	public function addGroup(String $name)
 	{
-		new Groupe($name, false);
+		new Groupe($name, FALSE);
 	}
 
 	public function modifyGroup_Members(Groupe $group, Personne $etu, $operation)
@@ -84,7 +84,7 @@ class Secretaire extends Utilisateur
 	// Flora NOTE: On va devoir faire appel aux commandes 'bas niveau' du serveur caldav
 	public function compareTimetables($listOfTimetable, $begin, $end)
 	{
-		$returnValue = null;
+		$returnValue = NULL;
 
 		return $returnValue;
 	}
@@ -95,7 +95,7 @@ class Secretaire extends Utilisateur
 	}
 
 	// Flora TODO: implémenter des accesseurs pour la maquette dans la classe Classe
-	public function modifyClass_CoursesModel(Classe $c, Element_de_maquette $elem,$operation)
+	public function modifyClass_CoursesModel(Classe $c, Element_de_maquette $elem, $operation)
 	{
 		if ($operation == 'add')
 		{

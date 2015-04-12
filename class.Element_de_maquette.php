@@ -13,19 +13,19 @@ require_once('class.Matiere.php');
 class Element_de_maquette
 {
 	// --- ASSOCIATIONS ---
-	private $subject = null;
+	private $subject = NULL;
 
 	// --- ATTRIBUTES ---
-	private $typeOfCourse = null;
-	private $numHours = null;
+	private $typeOfCourse = NULL;
+	private $numHours = NULL;
 
 	// --- OPERATIONS ---
 	// constructor
 	public function __construct($newSubject, $newTypeOfCourse, $newNumHours)
 	{
-		$this->subject = $newSubject;
+		$this->subject      = $newSubject;
 		$this->typeOfCourse = $newTypeOfCourse;
-		$this->numHours = $newNumHours;
+		$this->numHours     = $newNumHours;
 	}
 
 	// getters

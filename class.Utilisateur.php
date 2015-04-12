@@ -16,60 +16,59 @@ class Utilisateur extends Personne
 	// --- ASSOCIATIONS ---
 
 	// --- ATTRIBUTES ---
-	protected $login = null;
-	protected $passwd = null;
+	protected $login = NULL;
+	protected $passwd = NULL;
 
 	const TABLENAME = "guser";
-	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) UNIQUE NOT NULL, id_principal integer UNIQUE, password varchar, last_connection timestamp"; //Ce n'est pas ici qu'on touche au paramètre id_principal
+	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) UNIQUE NOT NULL, id_principal integer UNIQUE, password varchar, last_connection timestamp"; // Ce n'est pas ici qu'on touche au paramètre id_principal
 
 	// --- OPERATIONS ---
-	// constructeur
+	// constructor
 	// Flora NOTE: Ailleurs devra être défini l'accès au CAS
 	// Flora PERSO: Rappel l'appel au constructeur de la classe mère n'est jamais implicite
-	public function __construct($familyName = null, $firstName = null, $login = null, $passwd = null, $email1 = null)
+	public function __construct($familyName = NULL, $firstName = NULL, $login = NULL, $passwd = NULL, $email1 = NULL)
 	{
 		parent::__construct($familyName, $firstName, $email1);
-		if ($login != null and $passwd != null)
-		{
-			$this->login = $login;
-			$this->passwd = $passwd; //Il faut chiffrer le mot de passe pour le sauvegarder
 
-			$fullname = $familyName." ".$firstName;
+		if ($login != NULL and $passwd != NULL)
+		{
+			$this->login  = $login;
+			$this->passwd = $passwd; // Il faut chiffrer le mot de passe pour le sauvegarder
+			$fullname     = $familyName . " " . $firstName;
 			CreateUserAccount($login, $fullname, $passwd, $email1);
 			$params2[] = $this->sqlid;
 			$params2[] = $login;
-			$query = "INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2);";
-			$result = BaseDeDonnees::currentDB()->executeQuery($query, $params2);
+			$query     = "INSERT INTO " . self::TABLENAME . " (id_person, login) VALUES ($1, $2);";
+			$result    = BaseDeDonnees::currentDB()->executeQuery($query, $params2);
 
 			if (!$result)
 			{
-				echo("GaliDAV: Impossible de créer cet utilisateur dans la base");
+				echo ("GaliDAV: Impossible de créer cet utilisateur dans la base");
 			}
 
 			$this->setPassword($passwd);
-			
-			//Flora: NOTICE, ai  déplacé la communication avec la BD de Davical ici. Pour l'instant, la partie ci-dessous rame
+			//Flora: NOTICE, ai déplacé la communication avec la BD de Davical ici. Pour l'instant, la partie ci-dessous rame
 			/*$BDD=new BaseDeDonnees("davical_app","davical");
 			if(!$BDD->connect())echo("pas de connexion vrs davical");
 			else{
-				$params[]=$login;
-				$query="select user_no from dav_principal where username=$1;";
-				$result=$BDD->executeQuery($query,$params);
-				$BDD->close();
-				if($result)
-				{
-					$userno=pg_fetch_assoc($result)['user_no'];
-					$U=new Utilisateur($familyName, $firstName, $login, $passwd,$email);
-					$query="update ".Utilisateur::TABLENAME." set id_principal=$userno where login=$1;";
-					if(BaseDeDonnees::currentDB()->executeQuery($query,$params))
-					{
-						$params2[]=$this->sqlid;
-						$params2[]=$login;
-						$query="INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2)";
-						$result=BaseDeDonnees::currentDB()->executeQuery($query,$params2);
-						if(!$result)echo("GaliDAV: Impossible de créer cet utilisateur dans la base");
-					}
-				}
+			$params[]=$login;
+			$query="select user_no from dav_principal where username=$1;";
+			$result=$BDD->executeQuery($query,$params);
+			$BDD->close();
+			if($result)
+			{
+			$userno=pg_fetch_assoc($result)['user_no'];
+			$U=new Utilisateur($familyName, $firstName, $login, $passwd,$email);
+			$query="update ".Utilisateur::TABLENAME." set id_principal=$userno where login=$1;";
+			if(BaseDeDonnees::currentDB()->executeQuery($query,$params))
+			{
+			$params2[]=$this->sqlid;
+			$params2[]=$login;
+			$query="INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2)";
+			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params2);
+			if(!$result)echo("GaliDAV: Impossible de créer cet utilisateur dans la base");
+			}
+			}
 			}*/
 		}
 	}
@@ -89,11 +88,10 @@ class Utilisateur extends Personne
 	// Flora NOTE: La fonction ci-dessous peut ne pas être utile finalement
 	static public function convertPersonToUser(Personne $p, $login, $passwd)
 	{
-		$query = "delete from ".Statut_personne::TABLENAME." where id_person=".$p->sqlid.";";
+		$query = "delete from " . Statut_personne::TABLENAME . " where id_person=" . $p->sqlid . ";";
 		BaseDeDonnees::currentDB()->executeQuery($query);
-		$query = "delete from ".parent::TABLENAME." where id=".$p->sqlid.";";
+		$query = "delete from " . parent::TABLENAME . " where id=" . $p->sqlid . ";";
 		BaseDeDonnees::currentDB()->executeQuery($query);
-
 		$u = new Utilisateur($p->familyName, $p->firstName, $login, $passwd);
 		$u->setEmailAddress1($p->getEmailAddress1());
 		$u->setEmailAddress2($p->getEmailAddress2());
@@ -113,7 +111,7 @@ class Utilisateur extends Personne
 	{
 		$params[] = ($givenPassword);
 		$params[] = $this->login;
-		$query = "update ".self::TABLENAME." set password=crypt('$1',gen_salt('bf')) where login=$2;";
+		$query    = "update " . self::TABLENAME . " set password=crypt('$1',gen_salt('bf')) where login=$2;";
 		BaseDeDonnees::currentDB()->executeQuery($query, $params);
 	}
 
@@ -124,42 +122,50 @@ class Utilisateur extends Personne
 	public function logOut()
 	{
 	}
-	
-	public function loadFromDB($loginOrId = null, $notuseful = null)
+
+	public function loadFromDB($loginOrId = NULL, $notuseful = NULL)
 	{
-		if ($loginOrId == null)
+		if ($loginOrId == NULL)
 		{
-			if ($this->login != null)
+			if ($this->login != NULL)
 			{
 				$login = $this->login;
 			}
 		}
 
-		if (!is_string($loginOrId) and !is_int($loginOrId)) //Si le login ou l'id passé en paramètre est null et que l'objet est indéfini
+		if (!is_string($loginOrId) and !is_int($loginOrId)) // si le login ou l'id passé en paramètre est NULL et que l'objet est indéfini
 		{
-			$query = "select * from ".self::TABLENAME.";";
+			$query  = "select * from " . self::TABLENAME . ";";
 			$result = BaseDeDonnees::currentDB()->executeQuery($query);
 		}
 		else
-		{	if (is_string($loginOrId)) //If its a login
+		{
+			if (is_string($loginOrId)) //If its a login
 			{
-				$query = "select * from ".self::TABLENAME." where login=$1;";
+				$query    = "select * from " . self::TABLENAME . " where login=$1;";
 				$params[] = $loginOrId;
-				$result = BaseDeDonnees::currentDB()->executeQuery($query, $params[]);
+				$result   = BaseDeDonnees::currentDB()->executeQuery($query, $params[]);
 			}
-			else{	//else, it is an id
-				$query = "select * from ".self::TABLENAME." where id_person=".$loginOrId.";";
+			else // else, it is an id
+			{
+				$query  = "select * from " . self::TABLENAME . " where id_person=" . $loginOrId . ";";
 				$result = BaseDeDonnees::currentDB()->executeQuery($query);
 			}
 		}
-		if($result)
-			$result =pg_fetch_assoc($result);
-		else
-			return false; //We did not find a matching $result in the database
 
-		$this->sqlid = $result['id_person'];
-		$this->login = $result['login'];
+		if ($result)
+		{
+			$result = pg_fetch_assoc($result);
+		}
+		else
+		{
+			return FALSE; // we did not find a matching $result in the database
+		}
+
+		$this->sqlid  = $result['id_person'];
+		$this->login  = $result['login'];
 		$this->passwd = $result['password']; // Corriger...
+
 		return parent::loadFromDB();
 	}
 
@@ -170,11 +176,10 @@ class Utilisateur extends Personne
 
 	public function readTimetable(EDT $e)
 	{
-		$returnValue = false;
-
-		// Flora NOTE: Si c" un RESP,ADMIN,SECRETAIRE OK. Si c'est un enseignant, vérifier que c'est le bon edt
+		$returnValue = FALSE;
+		// Flora NOTE: Si c’est un RESP, ADMIN, SECRETAIRE OK. Si c'est un enseignant, vérifier que c'est le bon edt.
 		// S'il y a un souci par rapport à l'accès à l'edt renvoyer une erreur
-		//TODO Complete
+		// TODO Complete
 
 		return $returnValue;
 	}
@@ -183,7 +188,7 @@ class Utilisateur extends Personne
 	public function toHTML()
 	{
 		$result = "<b>ID: &emsp;&emsp;" . $this->login . "</b><br/>";
-		$result = $result.parent::toHTML();
+		$result = $result . parent::toHTML();
 
 		return $result;
 	}

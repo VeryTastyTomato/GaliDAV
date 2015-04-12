@@ -18,13 +18,13 @@ class Statut_personne
 	const OTHER = "Autre";
 
 	/* Entier associé aux statuts
-		0> OTHER
-		1 > STUDENT
-		2 > SPEAKER
-		3 > TEACHER
-		4 > SECRETARY
-		5 > HEAD
-		6 > ADMINISTRATOR
+	0> OTHER
+	1 > STUDENT
+	2 > SPEAKER
+	3 > TEACHER
+	4 > SECRETARY
+	5 > HEAD
+	6 > ADMINISTRATOR
 	*/
 
 	const TABLENAME = "gstatus";
@@ -51,7 +51,7 @@ class Statut_personne
 
 	function toInt()
 	{
-	/*
+		/*
 		if ($this->value==self::STUDENT) return 1;
 		else if ($this->value==self::SPEAKER) return 2;
 		else if ($this->value==self::TEACHER) return 3;
@@ -60,6 +60,7 @@ class Statut_personne
 		else if ($this->value==self::ADMINISTRATOR) return 6;
 		else return 0;
 		*/
+
 		return self::getIntValue($this->value);
 	}
 

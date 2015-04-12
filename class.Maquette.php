@@ -53,7 +53,7 @@ class Maquette
 		if ($elemToRemove instanceof Element_de_maquette)
 		{
 			$indice = array_search($elemToRemove, $this->listOfElemOfClassesModel);
-			if ($indice !== false)
+			if ($indice !== FALSE)
 			{
 				unset($this->listOfElemOfClassesModel[$indice]);
 			}

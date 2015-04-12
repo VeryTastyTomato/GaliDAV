@@ -16,9 +16,9 @@ class EDTClasse extends EDT
 
 	// --- OPERATIONS ---
 	// constructor
-	public function __construct(Classe $c=null,$validated=false)
+	public function __construct(Classe $c = NULL, $validated = FALSE)
 	{
-		parent::__construct($c,$validated);
+		parent::__construct($c, $validated);
 	}
 
 	// getters
@@ -26,10 +26,12 @@ class EDTClasse extends EDT
 	{
 		return parent::getGroup();
 	}
-	
-	protected function setClasse(Classe $newClass=null){
+
+	protected function setClasse(Classe $newClass = NULL)
+	{
 		parent::setGroup($newClass);
 	}
+
 	// others
 	public function generatePDF()
 	{

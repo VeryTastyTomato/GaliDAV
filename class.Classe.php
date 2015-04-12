@@ -47,8 +47,8 @@ class Classe extends Groupe
 	}
 	public function loadFromDB($id = null,$canbeaclass=true){
 		parent::loadFromDB($id);
-		//TODO -load CourseModel
-				//-implement loadFromDB in Maquette
+		// TODO -load CourseModel
+		// -implement loadFromDB in Maquette
 	}
 }
 ?>
