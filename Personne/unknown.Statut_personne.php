@@ -28,13 +28,39 @@ class Statut_personne
 	*/
 
 	const TABLENAME = "gstatus";
-	const SQLcolumns = "id_person serial references gperson(id), status smallint not null, constraint gstatus_pk primary key (id_person,status)";
+	const SQLcolumns = "id_person serial references gperson(id), status smallint not null";
 
 	protected $value;
 
 	public function __construct($value)
 	{
-		$this->value = $value;
+		if (is_string($value))$this->value = $value;
+		if(is_int($value)){
+			switch ($value)
+			{
+				case 1:
+					$this->value = self::STUDENT;
+					break;
+				case 2:
+					$this->value = self::SPEAKER;
+					break;
+				case 3:
+					$this->value = self::TEACHER;
+					break;
+				case 4:
+					$this->value = self::SECRETARY;
+					break;
+				case 5:
+					$this->value = self::HEAD;
+					break;
+				case 6:
+					$this->value = self::ADMINISTRATOR;
+					break;
+				default:
+				
+			}
+		
+		}
 	}
 
 	public function toString()

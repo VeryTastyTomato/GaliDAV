@@ -35,7 +35,7 @@ class Groupe
 	{
 		if ($newName != NULL)
 		{
-			CreateGroupAccount($newName, $newIsAClass);
+			CreateGroupAccount($newName, session_salted_sha1($newName));//The password is the same as the group name
 			$this->name      = $newName;
 			$this->isAClass  = $newIsAClass;
 			$query           = "insert into " . self::TABLENAME . " (name,is_class) VALUES ($1,$newIsAClass);";
@@ -407,26 +407,24 @@ class Groupe
 	{
 		$this->setListOfStudents(); // remove all students from the group (DB)
 		$this->setListOfLinkedGroups(); // remove all links with other groups/classes (DB)
-		$params = array($this->sqlid);
+		$params = array(intval($this->sqlid));
 		$query  = "delete from " . self::TABLENAME . " where id=$1;";
-
+		//TODO remove the group calendar and the subject calendar
 		if (BaseDeDonnees::currentDB()->executeQuery($query, $params))
-		{
-			// TODO remove that group from davical DB
-			/*
+		{			
 			$BDD = new BaseDeDonnees("davical_app", "davical");
 			if (!$BDD->connect())
 			{
-			echo("pas de connexion vrs davical");
+				echo("pas de connexion vrs davical");
 			}
 			else
 			{
-			//$params = array($result['login']);
-			//$query2 = "delete from dav_principal where username=$1;";
-			$BDD->executeQuery($query2, $params);
-			$BDD->close();
+				$params = array($this->name);
+				$query2 = "delete from dav_principal where username=$1;";
+				$BDD->executeQuery($query2, $params);
+				$BDD->close();
 			}
-			*/
+		
 		}
 		else
 		{

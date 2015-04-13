@@ -11,10 +11,6 @@ if (0 > version_compare(PHP_VERSION, '5'))
 require_once("/usr/share/davical/htdocs/always.php");
 require_once("auth-functions.php"); //Utile ou pas?
 
-/* TODO quand on aura réglé les attributs dépendants
-require_once('');
-*/
-
 require_once("class.Personne.php");
 require_once("class.Utilisateur.php");
 

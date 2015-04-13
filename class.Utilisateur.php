@@ -20,7 +20,7 @@ class Utilisateur extends Personne
 	protected $passwd = NULL;
 
 	const TABLENAME = "guser";
-	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) UNIQUE NOT NULL, id_principal integer UNIQUE, password varchar(30), last_connection timestamp"; // Ce n'est pas ici qu'on touche au paramètre id_principal
+	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) UNIQUE NOT NULL, id_principal integer UNIQUE, password varchar, last_connection timestamp"; // Ce n'est pas ici qu'on touche au paramètre id_principal
 
 	// --- OPERATIONS ---
 	// constructor
@@ -128,7 +128,7 @@ class Utilisateur extends Personne
 			{
 				$query    = "select * from " . self::TABLENAME . " where login=$1;";
 				$params[] = $loginOrId;
-				$result   = BaseDeDonnees::currentDB()->executeQuery($query, $params[]);
+				$result   = BaseDeDonnees::currentDB()->executeQuery($query, $params);
 			}
 			else // else, it is an id
 			{

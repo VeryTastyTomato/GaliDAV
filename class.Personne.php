@@ -55,7 +55,7 @@ class Personne
 
 			if (!$result)
 			{
-				echo ("GaliDAV: Impossible de créer cette personne dans la base");
+				BaseDeDonnees::currentDB()->show_error("ligne n° ".__LINE__." //fonction: ".__CLASS__);
 			}
 			else
 			{
@@ -109,8 +109,6 @@ class Personne
 	{
 		if (!empty($newSqlid))
 		{
-			// TODO low priority: what about an entry in user table which has a reference on this object?
-			//Etienne : don't understand ur idea... on which object ? on "Personne" ?
 			$query = "update " . self::TABLENAME . " set id=" . $newSqlid . " where id=" . $this->sqlid . ";";
 
 			if (BaseDeDonnees::currentDB()->executeQuery($query))
@@ -138,7 +136,7 @@ class Personne
 			}
 			else
 			{
-				echo ('GaliDAV: Impossible de modifier le nom de famille de cette personne');
+				BaseDeDonnees::currentDB()->show_error("ligne n° ".__LINE__." //fonction: ".__CLASS__);
 			}
 		}
 	}
@@ -233,7 +231,7 @@ class Personne
 			}
 			else
 			{
-				echo ("GaliDAV Error: Insertion in table " . Statut_personne::TABLENAME . " failed.<br/>(Query: $query )");
+				BaseDeDonnees::currentDB()->show_error("ligne n° ".__LINE__." //fonction: ".__CLASS__);
 			}
 		}
 	}
@@ -260,7 +258,7 @@ class Personne
 			}
 			else
 			{
-				echo ("GaliDAV Error: Deletion in table " . Statut_personne::TABLENAME . " failed.<br/>(Query: $query )");
+				BaseDeDonnees::currentDB()->show_error("ligne n° ".__LINE__." //fonction: ".__CLASS__);
 			}
 		}
 	}

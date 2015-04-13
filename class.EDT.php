@@ -38,7 +38,6 @@ class EDT
 	Note: There’s no SQL reference to a group id or a subject id in this table since there’s already one in group table and subject table.
 	*/
 
-//TODO share with users with appropriate rights
 
 	// --- OPERATIONS ---
 	// constructor
@@ -147,6 +146,8 @@ class EDT
 					BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 				}
 			}
+			
+			$this->autoShare();
 		}
 	}
 
@@ -229,7 +230,7 @@ class EDT
 			}
 			else
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 		}
 	}
@@ -246,7 +247,7 @@ class EDT
 			}
 			else
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 		}
 	}
@@ -263,7 +264,7 @@ class EDT
 			}
 			else
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 		}
 		else
@@ -276,7 +277,7 @@ class EDT
 			}
 			else
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 		}
 	}
@@ -332,7 +333,7 @@ class EDT
 				}
 				else
 				{
-					BaseDeDonnees::currentDB()->show_error();
+					BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 				}
 
 				$this->setSubject();
@@ -354,7 +355,7 @@ class EDT
 				}
 				else
 				{
-					BaseDeDonnees::currentDB()->show_error();
+					BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 				}
 			}
 		}
@@ -373,7 +374,7 @@ class EDT
 			}
 			else
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 
 			$this->setGroup();
@@ -389,7 +390,7 @@ class EDT
 			}
 			else
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 		}
 	}
@@ -407,7 +408,7 @@ class EDT
 			}
 			else
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 
 			$this->setSubject();
@@ -422,7 +423,7 @@ class EDT
 			}
 			else
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 		}
 	}
@@ -487,7 +488,7 @@ class EDT
 			}
 			else
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 		}
 	}
@@ -537,7 +538,7 @@ class EDT
 			}
 			else
 			{
-				BaseDeDonnees::currentDB()->show_error();
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 		}
 	}
@@ -712,7 +713,7 @@ class EDT
 		}
 		else
 		{
-			BaseDeDonnees::currentDB()->show_error();
+			BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 		}
 	}
 	
@@ -733,37 +734,41 @@ class EDT
 
 				$query="select user_from from shared where user_from='$1' and (calendar='$2' and user_which='$3');";
 				if(!$BDD->executeQuery($query,$params))//if there's no matching entry, we insert in table
-					$query="insert into shared (user_from,user_which,calendar,options,write_access) values ('$1','$3','$2','N;',$write);";
+					$query="insert into shared (user_from,user_which,calendar,options,write_access) values ($1,$3,$2,'N;',$4);";
+				$params[]=(bool)$write;
 				if(!$BDD->executeQuery($query,$params))
-					$BDD->show_error();			
+					$BDD->show_error("ligne n°".__LINE__." class:".__CLASS__);			
 			}
 			else if($this->subject)
 			{
 				$params[]=$this->subject->getGroup()->getName();
 				$params[]=$this->subject->getName()." ".$this->subject->getGroup()->getName();
 				$params[]=$U->getLogin();
-				
+	
 				$query="select user_from from shared where user_from='$1' and (calendar='$2' and user_which='$3');";
 				if(!$BDD->executeQuery($query,$params))//if there's no matching entry, we insert in table
-					$query="insert into shared (user_from,user_which,calendar,options,write_access) values ('$1','$3','$2','N;',$write);";
+					$query="insert into shared (user_from,user_which,calendar,options,write_access) values ($1,$3,$2,'N;',$4);";
+				$params[]=(bool)$write;
 				if(!$BDD->executeQuery($query,$params))
-					$BDD->show_error();			
+					$BDD->show_error("ligne n°".__LINE__." class:".__CLASS__);			
 			}
 			else if($this->teacherOwner)
 			{
 				$params[]=$this->teacherOwner->getLogin();
 				$params[]=$this->teacherOwner->getFullName()." EDT";
 				$params[]=$U->getLogin();
+				
 
 				$query="select user_from from shared where user_from='$1' and (calendar='$2' and user_which='$3');";
 					if(!$BDD->executeQuery($query,$params))//if there's no matching entry, we insert in table
-				$query="insert into shared (user_from,user_which,calendar,options,write_access) values ('$1','$3','$2','N;',$write);";
+				$query="insert into shared (user_from,user_which,calendar,options,write_access) values ($1,$3,$2,'N;',$4);";
+				$params[]=(bool)$write;
 				if(!$BDD->executeQuery($query,$params))
-					$BDD->show_error();			
+					$BDD->show_error("ligne n°".__LINE__." class:".__CLASS__);			
 			}
 		}
 	}
-	public function autoshare(){
+	public function autoShare(){
 		if($this->group or $this->subject)
 		{
 		
@@ -778,8 +783,12 @@ class EDT
 				$userid=pg_fetch_assoc($result);
 				while($userid!=null){
 					$u=new Utilisateur();
-					$u->loadFromDB($userid['id_person']);
-					$this->shareWith($u,true);
+					$u->loadFromDB(intval($userid['id_person']));
+					if($u){
+						$this->shareWith($u,true);
+						echo($u->toHTML());
+					}
+					$userid=pg_fetch_assoc($result);
 				}
 			}
 		}
@@ -793,8 +802,9 @@ class EDT
 					$userid=pg_fetch_assoc($result);
 					while($userid!=null){
 						$u=new Utilisateur();
-						$u->loadFromDB($userid['id_person']);
-						$this->shareWith($u,false);
+						$u->loadFromDB(intval($userid['id_person']));
+						if($u)$this->shareWith($u,false);
+						$userid=pg_fetch_assoc($result);
 					}
 				}
 			}
@@ -810,8 +820,9 @@ class EDT
 				$userid=pg_fetch_assoc($result);
 				while($userid!=null){
 					$u=new Utilisateur();
-					$u->loadFromDB($userid['id_person']);
-					$this->shareWith($u,true);
+					$u->loadFromDB(intval($userid['id_person']));
+					if($u)$this->shareWith($u,true);
+					$userid=pg_fetch_assoc($result);
 				}
 			}		
 		}

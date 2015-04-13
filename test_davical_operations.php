@@ -106,7 +106,7 @@ function CreateUserAccount($username, $fullname, $password, $email = NULL, $priv
 	$param['username']    = $username;
 	$param['fullname']    = $fullname;
 	$param['displayname'] = $fullname;
-	$param['password']    = $password; // ne marche pas
+	$param['password']    = $password; //
 	$param['email']       = $email;
 	$param['type_id']     = 1; // type Person
 	//$param['default_privileges']= privilege_to_bits(array('all')) ; // ne compile pas
@@ -202,21 +202,21 @@ if (isset($_POST['action']))
 			header('Location: ./admin_panel.php?GMESSAGE_ERROR=DIFFERENT_PASS');
 		if ($_POST['status'] == 'secretary')
 		{
-			new Secretaire($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+			$U=new Secretaire($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
 		else if ($_POST['status'] == 'teacher')
 		{
-			new Enseignant($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+			$U=new Enseignant($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
 		else if ($_POST['status'] == 'head')
 		{
-			new Responsable($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+			$U=new Responsable($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
 		else if ($_POST['status'] == 'administrator')
 		{
-			new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+			$U=new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
-
+		echo($U->toHTML());
 		header('Location: ./admin_panel.php');
 	}
 
@@ -237,14 +237,14 @@ if (isset($_POST['action']))
 		{
 			$P->addStatus(new Statut_personne(Statut_personne::SPEAKER));
 		}
-
+		echo($P->toHTML());
 		header('Location: ./admin_panel.php');
 	}
 
 	if ($_POST['action'] == 'delete_person')
 	{
 		$P = new Personne();
-		$P->loadFromDB($_POST['id']);
+		$P->loadFromDB(intval($_POST['id']));
 		$P->removeFromDB();
 		header('Location: ./admin_panel.php');
 	}
@@ -252,6 +252,15 @@ if (isset($_POST['action']))
 	{
 		BaseDeDonnees::currentDB()->clear();
 		
+		header('Location: ./admin_panel.php');
+	}
+	
+	if ($_POST['action'] == 'delete_group')
+	{
+		$G = new Groupe();
+		if(!$G->loadFromDB(intval($_POST['id'])))die('Ooops: Group not found');
+		else echo("G id/name= ".$G->getId()." / ".$G->getName());
+		$G->removeFromDB();
 		header('Location: ./admin_panel.php');
 	}
 }
