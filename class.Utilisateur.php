@@ -10,7 +10,7 @@ require_once('class.Personne.php');
 require_once('class.EDT.php');
 require_once('test_davical_operations.php');
 require_once('class.BaseDeDonnees.php');
-
+require_once('AWLUtilities.php');
 class Utilisateur extends Personne
 {
 	// --- ASSOCIATIONS ---
@@ -20,7 +20,7 @@ class Utilisateur extends Personne
 	protected $passwd = NULL;
 
 	const TABLENAME = "guser";
-	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) UNIQUE NOT NULL, id_principal integer UNIQUE, password varchar, last_connection timestamp"; // Ce n'est pas ici qu'on touche au paramètre id_principal
+	const SQLcolumns = "id_person serial PRIMARY KEY REFERENCES gperson(id), login varchar(30) UNIQUE NOT NULL, id_principal integer UNIQUE, password varchar(30), last_connection timestamp"; // Ce n'est pas ici qu'on touche au paramètre id_principal
 
 	// --- OPERATIONS ---
 	// constructor
@@ -33,9 +33,10 @@ class Utilisateur extends Personne
 		if ($login != NULL and $passwd != NULL)
 		{
 			$this->login  = $login;
-			$this->passwd = $passwd; // Il faut chiffrer le mot de passe pour le sauvegarder
+			$this->passwd = $passwd;
+			$hash_passwd=session_salted_sha1($passwd); // Il faut chiffrer le mot de passe pour le sauvegarder
 			$fullname     = $familyName . " " . $firstName;
-			CreateUserAccount($login, $fullname, $passwd, $email1);
+			CreateUserAccount($login, $fullname, $hash_passwd, $email1);
 			$params2[] = $this->sqlid;
 			$params2[] = $login;
 			$query     = "INSERT INTO " . self::TABLENAME . " (id_person, login) VALUES ($1, $2);";
@@ -109,11 +110,16 @@ class Utilisateur extends Personne
 
 	protected function setPassword($givenPassword)
 	{
-		$params[] = ($givenPassword);
+		$params[] = session_salted_sha1($givenPassword);
 		$params[] = $this->login;
-		//TODO doesnt know gen_salt ><
-		//$query    = "update " . self::TABLENAME . " set password=crypt('$1',gen_salt('bf')) where login=$2;";
-		//BaseDeDonnees::currentDB()->executeQuery($query, $params);
+		
+		$query    = "update " . self::TABLENAME . " set password=$1 where login=$2;";
+		if(!BaseDeDonnees::currentDB()->executeQuery($query, $params)){
+			BaseDeDonnees::currentDB()->show_error();
+		}
+		else{
+			$this->password=$givenPassword;
+		}
 	}
 
 	public function logIn()
@@ -176,6 +182,7 @@ class Utilisateur extends Personne
 	}
 
 	//Etienne: Elle doit retourner quoi cette méthode ? Seulement si l'user peut lire l'edt ou elle doit aussi l'afficher si l'user peut le lire ?
+	//Flora: Vu comment, on est parti, on va dire un booléen.
 	public function readTimetable(EDT $e)
 	{
 		$returnValue = FALSE;
@@ -183,14 +190,14 @@ class Utilisateur extends Personne
 		// S'il y a un souci par rapport à l'accès à l'edt renvoyer une erreur
 		// TODO Complete
 
-		if($this->hasStatus(4) || $this->hasStatus(5) || $this->hasStatus(6)) //$e is a secretary, head or admin
+		if(($this->hasStatus(4)) or (($this->hasStatus(5))or ($this->hasStatus(6)))) //$e is a secretary, head or admin
 		{
 			$returnValue = TRUE;
 		}
 
 		elseif($this->hasStatus(3)) //$e is a teacher
 		{
-			if($this->getPersonalTimetable() = $e) //it's the right timetable
+			if($this->getPersonalTimetable() == $e) //it's the right timetable
 			{
 				$returnValue = TRUE;
 			}

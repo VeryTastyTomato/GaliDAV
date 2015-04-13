@@ -86,10 +86,7 @@ function CreateCalendar($username, $calendarNameGiven, $defult_timezone = NULL)
 
 	return TRUE;
 }
-/*
-function getDAVPrincipalFromLogin($login){
-	return new Principal('username',$login);
-}*/
+
 function getDAVPrincipalNoFromLogin($login){
 	$BDD       = new BaseDeDonnees("davical_app", "davical");
 	$query="select user_no from dav_principal where username='".pg_escape_string($login)."';";
@@ -218,7 +215,7 @@ if (isset($_POST['action']))
 			new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
 
-		header('Location: ./admin_panel.php');
+		//header('Location: ./admin_panel.php');
 	}
 
 	if ($_POST['action'] == 'add_group')
