@@ -151,6 +151,8 @@ class EDT
 		+loadFromRessource(ressource)
 		+removeFromDB()
 		+shareWith(Utilisateur U,write=false)
+		+autoShare()
+static	+autoShareAllCalendars()
 ___________________________________________________________________________
 class EdT_Classe extends EDT
 	Constructeur

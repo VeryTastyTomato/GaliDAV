@@ -731,7 +731,9 @@ class EDT
 				$params[]=$this->group->getName()." EDT";
 				$params[]=$U->getLogin();
 
-				$query="insert into shared (user_from,user_which,calendar,options,write_access) values ('$1','$3','$2','N;',$write);";
+				$query="select user_from from shared where user_from='$1' and (calendar='$2' and user_which='$3');";
+				if(!$BDD->executeQuery($query,$params))//if there's no matching entry, we insert in table
+					$query="insert into shared (user_from,user_which,calendar,options,write_access) values ('$1','$3','$2','N;',$write);";
 				if(!$BDD->executeQuery($query,$params))
 					$BDD->show_error();			
 			}
@@ -740,8 +742,10 @@ class EDT
 				$params[]=$this->subject->getGroup()->getName();
 				$params[]=$this->subject->getName()." ".$this->subject->getGroup()->getName();
 				$params[]=$U->getLogin();
-
-				$query="insert into shared (user_from,user_which,calendar,options,write_access) values ('$1','$3','$2','N;',$write);";
+				
+				$query="select user_from from shared where user_from='$1' and (calendar='$2' and user_which='$3');";
+				if(!$BDD->executeQuery($query,$params))//if there's no matching entry, we insert in table
+					$query="insert into shared (user_from,user_which,calendar,options,write_access) values ('$1','$3','$2','N;',$write);";
 				if(!$BDD->executeQuery($query,$params))
 					$BDD->show_error();			
 			}
@@ -751,6 +755,8 @@ class EDT
 				$params[]=$this->teacherOwner->getFullName()." EDT";
 				$params[]=$U->getLogin();
 
+				$query="select user_from from shared where user_from='$1' and (calendar='$2' and user_which='$3');";
+					if(!$BDD->executeQuery($query,$params))//if there's no matching entry, we insert in table
 				$query="insert into shared (user_from,user_which,calendar,options,write_access) values ('$1','$3','$2','N;',$write);";
 				if(!$BDD->executeQuery($query,$params))
 					$BDD->show_error();			
@@ -810,6 +816,20 @@ class EDT
 			}		
 		}
 
+	}
+	
+	public static function autoShareAllCalendars(){
+		$query="select id from ".self::TABLENAME.";";
+			$result=BaseDeDonnees::currentDB()->executeQuery($query);
+			if($result){
+				$id=pg_fetch_assoc($result);
+				while($id!=null){
+					$C=new EDT();
+					$C->loadFromDB($id['id']);
+					$C->autoShare();
+					$id=pg_fetch_assoc($result);
+				}
+			}	
 	}
 }
 ?>
