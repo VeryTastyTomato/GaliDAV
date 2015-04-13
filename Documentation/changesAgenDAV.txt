@@ -1,0 +1,7 @@
+###  On répertorie ici tous les changements effectués sur les fichiers du client AgenDAV ###
+
+## sur /web/public/js/libs/fullcalendar.min.js ##
+	# à la fin #
+	allDaySlot:false
+	minTime:8
+	maxTime:19
