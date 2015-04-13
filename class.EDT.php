@@ -50,7 +50,7 @@ class EDT
 			$query           = "insert into " . self::TABLENAME . " DEFAULT VALUES;";
 			if(!BaseDeDonnees::currentDB()->executeQuery($query))
 			{
-				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 			
 			$query       = "select id from " . self::TABLENAME . " order by date_creation desc;";
@@ -63,7 +63,7 @@ class EDT
 			else
 			{
 				
-				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
+				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 			
 
@@ -77,7 +77,7 @@ class EDT
 
 					if (!BaseDeDonnees::currentDB()->executeQuery($query))
 					{
-						BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
+						BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 					}
 
 					if ($validated)
@@ -86,7 +86,7 @@ class EDT
 						$query           = "update " . self::TABLENAME . " set is_validated_calendar=true where id=" . $this->sqlid . ";";
 						if (!BaseDeDonnees::currentDB()->executeQuery($query))
 						{
-							BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
+							BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 						}
 					}
 				}
@@ -144,7 +144,7 @@ class EDT
 				}
 				else
 				{
-					BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS_);
+					BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 				}
 			}
 		}

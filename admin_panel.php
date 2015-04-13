@@ -19,6 +19,12 @@ require_once("ListePersonnes.php");
 	//Reconstruit toutes les tables de la base
 	//BaseDeDonnees::currentDB()->initialize();
 
+	if(isset($_GET['GMESSAGE_ERROR'])){
+		if($_GET['GMESSAGE_ERROR']=='DIFFERENT_PASS')
+			echo"<p class='gmessage error' style='width:80%;height:30px;padding:auto;margin-left:auto;margin-right:auto;overflow:auto; border-style:dashed'>Les deux mots de passes entrés sont différents</p>";
+	
+		unset($_GET['GMESSAGE_ERROR']);
+	}
 ?>
 <form action="test_davical_operations.php" method="POST" style="position:fixed;right:0px;top:0px;"><input type='hidden' name='action' value="clear_db"/><input type=submit value="Effacer toutes les données"/></form>
 
@@ -38,6 +44,7 @@ require_once("ListePersonnes.php");
 				<tr><th>Prénom</th><td><input type="text" name="firstname" required/></td></tr>
 				<tr><th>login</th><td><input type="text" name="login" required/></td></tr>
 				<tr><th>Mot de passe</th><td><input type="password" name="password" required/></td></tr>
+				<tr><th>Confirmation</th><td><input type="password" name="password2" required/></td></tr>
 				<tr><th>email</th><td><input type="text" name="email" required/></td></tr>
 				</table>
 				<br/><input type="radio" name="status" value="teacher" checked/>Enseignant<br/>

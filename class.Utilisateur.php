@@ -48,29 +48,6 @@ class Utilisateur extends Personne
 			}
 
 			$this->setPassword($passwd);
-			//Flora: NOTICE, ai déplacé la communication avec la BD de Davical ici. Pour l'instant, la partie ci-dessous rame
-			/*$BDD=new BaseDeDonnees("davical_app","davical");
-			if(!$BDD->connect())echo("pas de connexion vrs davical");
-			else{
-			$params[]=$login;
-			$query="select user_no from dav_principal where username=$1;";
-			$result=$BDD->executeQuery($query,$params);
-			$BDD->close();
-			if($result)
-			{
-			$userno=pg_fetch_assoc($result)['user_no'];
-			$U=new Utilisateur($familyName, $firstName, $login, $passwd,$email);
-			$query="update ".Utilisateur::TABLENAME." set id_principal=$userno where login=$1;";
-			if(BaseDeDonnees::currentDB()->executeQuery($query,$params))
-			{
-			$params2[]=$this->sqlid;
-			$params2[]=$login;
-			$query="INSERT INTO ".self::TABLENAME." (id_person, login) VALUES ($1, $2)";
-			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params2);
-			if(!$result)echo("GaliDAV: Impossible de créer cet utilisateur dans la base");
-			}
-			}
-			}*/
 		}
 	}
 

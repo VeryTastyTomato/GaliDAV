@@ -198,6 +198,8 @@ if (isset($_POST['action']))
 
 	if ($_POST['action'] == 'add_user')
 	{
+		if($_POST['password']!=$_POST['password2'])
+			header('Location: ./admin_panel.php?GMESSAGE_ERROR=DIFFERENT_PASS');
 		if ($_POST['status'] == 'secretary')
 		{
 			new Secretaire($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
@@ -215,7 +217,7 @@ if (isset($_POST['action']))
 			new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 		}
 
-		//header('Location: ./admin_panel.php');
+		header('Location: ./admin_panel.php');
 	}
 
 	if ($_POST['action'] == 'add_group')
