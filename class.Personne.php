@@ -110,6 +110,7 @@ class Personne
 		if (!empty($newSqlid))
 		{
 			// TODO low priority: what about an entry in user table which has a reference on this object?
+			//Etienne : don't understand ur idea... on which object ? on "Personne" ?
 			$query = "update " . self::TABLENAME . " set id=" . $newSqlid . " where id=" . $this->sqlid . ";";
 
 			if (BaseDeDonnees::currentDB()->executeQuery($query))
