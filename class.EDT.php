@@ -745,7 +745,7 @@ class EDT
 				$params[]=$this->subject->getName()." ".$this->subject->getGroup()->getName();
 				$params[]=$U->getLogin();
 	
-				$query="select user_from from shared where user_from='$1' and (calendar='$2' and user_which='$3');";
+				$query="select user_from from shared where user_from=$1 and (calendar=$2 and user_which=$3);";
 				if(!$BDD->executeQuery($query,$params))//if there's no matching entry, we insert in table
 					$query="insert into shared (user_from,user_which,calendar,options,write_access) values ($1,$3,$2,'N;',$4);";
 				$params[]=(bool)$write;

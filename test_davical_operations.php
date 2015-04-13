@@ -200,24 +200,26 @@ if (isset($_POST['action']))
 	{
 		if($_POST['password']!=$_POST['password2'])
 			header('Location: ./admin_panel.php?GMESSAGE_ERROR=DIFFERENT_PASS');
-		if ($_POST['status'] == 'secretary')
-		{
-			$U=new Secretaire($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+		else{
+			if ($_POST['status'] == 'secretary')
+			{
+				$U=new Secretaire($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+			}
+			else if ($_POST['status'] == 'teacher')
+			{
+				$U=new Enseignant($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+			}
+			else if ($_POST['status'] == 'head')
+			{
+				$U=new Responsable($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+			}
+			else if ($_POST['status'] == 'administrator')
+			{
+				$U=new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+			}
+			echo($U->toHTML());
+			header('Location: ./admin_panel.php');
 		}
-		else if ($_POST['status'] == 'teacher')
-		{
-			$U=new Enseignant($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
-		}
-		else if ($_POST['status'] == 'head')
-		{
-			$U=new Responsable($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
-		}
-		else if ($_POST['status'] == 'administrator')
-		{
-			$U=new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
-		}
-		echo($U->toHTML());
-		header('Location: ./admin_panel.php');
 	}
 
 	if ($_POST['action'] == 'add_group')
