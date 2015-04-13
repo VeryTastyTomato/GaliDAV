@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<title>GaliDAV Documentation:  Fichier source de class.Responsable.php</title>
+
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { searchBox.OnSelectItem(0); });
+</script>
+
+</head>
+<body>
+<div id="top"><!-- do not remove this div! -->
+
+
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  
+  
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">GaliDAV Documentation
+   
+   </div>
+   
+  </td>
+  
+  
+  
+ </tr>
+ </tbody>
+</table>
+</div>
+
+<!-- Généré par Doxygen 1.7.6.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Recherche');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Page&#160;principale</span></a></li>
+      <li><a href="annotated.html"><span>Structures&#160;de&#160;données</span></a></li>
+      <li class="current"><a href="files.html"><span>Fichiers</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Recherche" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Liste&#160;des&#160;fichiers</span></a></li>
+      <li><a href="globals.html"><span>Variables&#160;globale</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<div class="title">class.Responsable.php</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="class_8_responsable_8php.html">Aller à la documentation de ce fichier.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 &lt;?php
+<a name="l00002"></a>00002 error_reporting(E_ALL);
+<a name="l00003"></a>00003 
+<a name="l00004"></a><a class="code" href="class_8_responsable_8php.html#a88cb244e17cabaf4dee5fb3acb8168e0">00004</a> <span class="keywordflow">if</span> (0 &gt; version_compare(PHP_VERSION, <span class="charliteral">&#39;5&#39;</span>))
+<a name="l00005"></a>00005 {
+<a name="l00006"></a>00006     die(<span class="stringliteral">&#39;This file was generated for PHP 5&#39;</span>);
+<a name="l00007"></a>00007 }
+<a name="l00008"></a>00008 
+<a name="l00009"></a>00009 require_once(<span class="stringliteral">&#39;Responsable/unknown.Type_responsable.php&#39;</span>);
+<a name="l00010"></a>00010 require_once(<span class="stringliteral">&#39;class.Groupe.php&#39;</span>);
+<a name="l00011"></a>00011 require_once(<span class="stringliteral">&#39;class.Classe.php&#39;</span>);
+<a name="l00012"></a>00012 require_once(<span class="stringliteral">&#39;class.Utilisateur.php&#39;</span>);
+<a name="l00013"></a>00013 require_once(<span class="stringliteral">&#39;class.Enseignant.php&#39;</span>);
+<a name="l00014"></a>00014 require_once(<span class="stringliteral">&#39;class.Element_de_maquette.php&#39;</span>);
+<a name="l00015"></a>00015 
+<a name="l00016"></a><a class="code" href="class_responsable.html">00016</a> <span class="keyword">class </span><a class="code" href="class_responsable.html">Responsable</a> <span class="keyword">extends</span> <a class="code" href="class_enseignant.html">Enseignant</a>
+<a name="l00017"></a>00017 {
+<a name="l00018"></a>00018     <span class="comment">// --- ASSOCIATIONS ---</span>
+<a name="l00019"></a>00019 
+<a name="l00020"></a>00020     <span class="comment">// --- ATTRIBUTES ---</span>
+<a name="l00021"></a>00021     <span class="comment">// Flora NOTE: Etant donné que tous les responsables ont les mêmes droits de modifications, le type</span>
+<a name="l00022"></a>00022     <span class="comment">// est pour l&#39;instant non réellement utile mais gardons le pour des évolutions futures.</span>
+<a name="l00023"></a>00023     <span class="keyword">private</span> $type = NULL;
+<a name="l00024"></a>00024 
+<a name="l00025"></a>00025     <span class="comment">// --- OPERATIONS ---</span>
+<a name="l00026"></a><a class="code" href="class_responsable.html#a574d0009a1d08555c168588e2110fb7c">00026</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_responsable.html#a574d0009a1d08555c168588e2110fb7c">__construct</a>(<a class="code" href="class_personne.html#ac8cdbad7f31009ef139dd47c8543278e">$familyName</a>, <a class="code" href="class_personne.html#a0f4201e9880fa0976d53d99e3a3ee56b">$firstName</a>, $id, <a class="code" href="class_utilisateur.html#a87911b6664e118fbbfa8da7bb7a04b0f">$passwd</a>)
+<a name="l00027"></a>00027     {
+<a name="l00028"></a>00028         <a class="code" href="class_responsable.html#a574d0009a1d08555c168588e2110fb7c">parent::__construct</a>(<a class="code" href="class_personne.html#ac8cdbad7f31009ef139dd47c8543278e">$familyName</a>, <a class="code" href="class_personne.html#a0f4201e9880fa0976d53d99e3a3ee56b">$firstName</a>, $id, <a class="code" href="class_utilisateur.html#a87911b6664e118fbbfa8da7bb7a04b0f">$passwd</a>);
+<a name="l00029"></a>00029         $this-&gt;<a class="code" href="class_personne.html#af8e547eee610f02bd176e29ff4739ef4">addStatus</a>(<span class="keyword">new</span> <a class="code" href="class_statut__personne.html">Statut_personne</a>(<a class="code" href="class_statut__personne.html#a43d3cf541a304c995ca17a9fd44d69e9">Statut_personne::HEAD</a>));
+<a name="l00030"></a>00030         <span class="comment">//$this-&gt;addStatus(new Statut_personne(Statut_personne::TEACHER));</span>
+<a name="l00031"></a>00031     }
+<a name="l00032"></a>00032 
+<a name="l00033"></a><a class="code" href="class_responsable.html#a1f7bc35b8b6f2d3147d8aa98caf688f3">00033</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_responsable.html#a1f7bc35b8b6f2d3147d8aa98caf688f3">modifyTimetable</a>(<a class="code" href="class_e_d_t.html">EDT</a> $e, <a class="code" href="class_cours.html">Cours</a> $c, $operation)
+<a name="l00034"></a>00034     {
+<a name="l00035"></a>00035         <span class="keywordflow">if</span> ($operation == <span class="stringliteral">&#39;add&#39;</span>)
+<a name="l00036"></a>00036         {
+<a name="l00037"></a>00037             $e-&gt;<a class="code" href="class_e_d_t.html#a36aca5b391ab20faf5da65913ed629a6">addCourse</a>($c);
+<a name="l00038"></a>00038         }
+<a name="l00039"></a>00039         <span class="keywordflow">else</span> <span class="keywordflow">if</span> ($operation == <span class="stringliteral">&#39;remove&#39;</span>)
+<a name="l00040"></a>00040         {
+<a name="l00041"></a>00041             $e-&gt;<a class="code" href="class_e_d_t.html#a03fa3e0e2e146762ef59e991d379cb8b">removeCourse</a>($c);
+<a name="l00042"></a>00042         }
+<a name="l00043"></a>00043         <span class="keywordflow">else</span>
+<a name="l00044"></a>00044         {
+<a name="l00045"></a>00045             echo <span class="stringliteral">&#39;Opération invalide&#39;</span>;
+<a name="l00046"></a>00046         }
+<a name="l00047"></a>00047     }
+<a name="l00048"></a>00048 
+<a name="l00049"></a><a class="code" href="class_responsable.html#afa3b862a97bdc693996e6764c8434e19">00049</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_responsable.html#afa3b862a97bdc693996e6764c8434e19">addGroup</a>(String $name)
+<a name="l00050"></a>00050     {
+<a name="l00051"></a>00051         <span class="keyword">new</span> <a class="code" href="class_groupe.html">Groupe</a>($name, FALSE);
+<a name="l00052"></a>00052     }
+<a name="l00053"></a>00053 
+<a name="l00054"></a><a class="code" href="class_responsable.html#a0e52cdc77faa1ad666fff7b04c137347">00054</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_responsable.html#a0e52cdc77faa1ad666fff7b04c137347">modifyGroup_Members</a>(<a class="code" href="class_groupe.html">Groupe</a> $group, <a class="code" href="class_personne.html">Personne</a> $etu, $operation)
+<a name="l00055"></a>00055     {
+<a name="l00056"></a>00056         <span class="keywordflow">if</span> ($operation == <span class="stringliteral">&#39;add&#39;</span>)
+<a name="l00057"></a>00057         {
+<a name="l00058"></a>00058             $group-&gt;<a class="code" href="class_groupe.html#a1a04d027a7c50a9add2e67719f7c89ba">addStudent</a>($etu);
+<a name="l00059"></a>00059         }
+<a name="l00060"></a>00060         <span class="keywordflow">else</span> <span class="keywordflow">if</span> ($operation == <span class="stringliteral">&#39;remove&#39;</span>)
+<a name="l00061"></a>00061         {
+<a name="l00062"></a>00062             $group-&gt;<a class="code" href="class_groupe.html#a0fdb0151ddad365d406b435081af51de">removeStudent</a>($etu);
+<a name="l00063"></a>00063         }
+<a name="l00064"></a>00064         <span class="keywordflow">else</span>
+<a name="l00065"></a>00065         {
+<a name="l00066"></a>00066             echo <span class="stringliteral">&#39;Opération invalide&#39;</span>;
+<a name="l00067"></a>00067         }
+<a name="l00068"></a>00068     }
+<a name="l00069"></a>00069 
+<a name="l00070"></a><a class="code" href="class_responsable.html#a161bf91ccd53d4b2a83391cc52ec8ac8">00070</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_responsable.html#a161bf91ccd53d4b2a83391cc52ec8ac8">modifyGroup_LinkedClasses</a>(<a class="code" href="class_classe.html">Classe</a> $c, <a class="code" href="class_personne.html">Personne</a> $etu, $operation)
+<a name="l00071"></a>00071     {
+<a name="l00072"></a>00072         <span class="keywordflow">if</span> ($operation == <span class="stringliteral">&#39;add&#39;</span>)
+<a name="l00073"></a>00073         {
+<a name="l00074"></a>00074             $c-&gt;<a class="code" href="class_groupe.html#a1a04d027a7c50a9add2e67719f7c89ba">addStudent</a>($etu);
+<a name="l00075"></a>00075         }
+<a name="l00076"></a>00076         <span class="keywordflow">else</span> <span class="keywordflow">if</span> ($operation == <span class="stringliteral">&#39;remove&#39;</span>)
+<a name="l00077"></a>00077         {
+<a name="l00078"></a>00078             $c-&gt;<a class="code" href="class_groupe.html#a0fdb0151ddad365d406b435081af51de">removeStudent</a>($etu);
+<a name="l00079"></a>00079         }
+<a name="l00080"></a>00080         <span class="keywordflow">else</span>
+<a name="l00081"></a>00081         {
+<a name="l00082"></a>00082             echo <span class="stringliteral">&#39;Opération invalide&#39;</span>;
+<a name="l00083"></a>00083         }
+<a name="l00084"></a>00084     }
+<a name="l00085"></a>00085 
+<a name="l00086"></a>00086     <span class="comment">// Flora NOTE: On va devoir faire appel aux commandes &#39;bas niveau&#39; du serveur caldav</span>
+<a name="l00087"></a><a class="code" href="class_responsable.html#aa03d57223d06454ebc77d48f744cb1cb">00087</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_responsable.html#aa03d57223d06454ebc77d48f744cb1cb">compareTimetable</a>($listOfTimetable, $begin, $end)
+<a name="l00088"></a>00088     {
+<a name="l00089"></a>00089         $returnValue = NULL;
+<a name="l00090"></a>00090 
+<a name="l00091"></a>00091         <span class="keywordflow">return</span> $returnValue;
+<a name="l00092"></a>00092     }
+<a name="l00093"></a>00093 
+<a name="l00094"></a><a class="code" href="class_responsable.html#a933b732cc1717b932434e5f3708415b6">00094</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_responsable.html#a933b732cc1717b932434e5f3708415b6">validateTimetable</a>(<a class="code" href="class_e_d_t.html">EDT</a> $e)
+<a name="l00095"></a>00095     {
+<a name="l00096"></a>00096         $e-&gt;emptyModifications();
+<a name="l00097"></a>00097     }
+<a name="l00098"></a>00098 
+<a name="l00099"></a>00099     <span class="comment">// Flora TODO: implémenter des accesseurs pour la maquette dans la classe Classe</span>
+<a name="l00100"></a><a class="code" href="class_responsable.html#a8ef389fe377dfc51741fde7d1ac8f507">00100</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_responsable.html#a8ef389fe377dfc51741fde7d1ac8f507">modifyClass_CoursesModel</a>(<a class="code" href="class_classe.html">Classe</a> $c, <a class="code" href="class_element__de__maquette.html">Element_de_maquette</a> $elem, $operation)
+<a name="l00101"></a>00101     {
+<a name="l00102"></a>00102         <span class="keywordflow">if</span> ($operation == <span class="stringliteral">&#39;add&#39;</span>)
+<a name="l00103"></a>00103         {
+<a name="l00104"></a>00104             $c-&gt;<a class="code" href="class_classe.html#a6a67b638c87264872621e97cbd60fd8a">getCoursesModel</a>-&gt;addElemOfClassesModel($elem);
+<a name="l00105"></a>00105         }
+<a name="l00106"></a>00106         <span class="keywordflow">else</span> <span class="keywordflow">if</span> ($operation == <span class="stringliteral">&#39;remove&#39;</span>)
+<a name="l00107"></a>00107         {
+<a name="l00108"></a>00108             $c-&gt;<a class="code" href="class_classe.html#a6a67b638c87264872621e97cbd60fd8a">getCoursesModel</a>-&gt;removeElemOfClassesModel($elem);
+<a name="l00109"></a>00109         }
+<a name="l00110"></a>00110         <span class="keywordflow">else</span>
+<a name="l00111"></a>00111         {
+<a name="l00112"></a>00112             echo <span class="stringliteral">&#39;Opération invalide&#39;</span>;
+<a name="l00113"></a>00113         }
+<a name="l00114"></a>00114     }
+<a name="l00115"></a>00115 }
+<a name="l00116"></a>00116 ?&gt;
+</pre></div></div><!-- contents -->
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Tout</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Structures de données</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Fichiers</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Fonctions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Énumérations</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+
+
+<hr class="footer"/><address class="footer"><small>
+Généré le Lundi Avril 13 2015 21:12:36 pour GaliDAV Documentation par &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.7.6.1
+</small></address>
+
+</body>
+</html>

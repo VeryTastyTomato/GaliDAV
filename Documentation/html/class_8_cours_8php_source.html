@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<title>GaliDAV Documentation:  Fichier source de class.Cours.php</title>
+
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { searchBox.OnSelectItem(0); });
+</script>
+
+</head>
+<body>
+<div id="top"><!-- do not remove this div! -->
+
+
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  
+  
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">GaliDAV Documentation
+   
+   </div>
+   
+  </td>
+  
+  
+  
+ </tr>
+ </tbody>
+</table>
+</div>
+
+<!-- Généré par Doxygen 1.7.6.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Recherche');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Page&#160;principale</span></a></li>
+      <li><a href="annotated.html"><span>Structures&#160;de&#160;données</span></a></li>
+      <li class="current"><a href="files.html"><span>Fichiers</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Recherche" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Liste&#160;des&#160;fichiers</span></a></li>
+      <li><a href="globals.html"><span>Variables&#160;globale</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<div class="title">class.Cours.php</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="class_8_cours_8php.html">Aller à la documentation de ce fichier.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 &lt;?php
+<a name="l00002"></a>00002 error_reporting(E_ALL);
+<a name="l00003"></a>00003 
+<a name="l00004"></a><a class="code" href="class_8_cours_8php.html#a88cb244e17cabaf4dee5fb3acb8168e0">00004</a> <span class="keywordflow">if</span> (0 &gt; version_compare(PHP_VERSION, <span class="charliteral">&#39;5&#39;</span>))
+<a name="l00005"></a>00005 {
+<a name="l00006"></a>00006     die(<span class="stringliteral">&#39;This file was generated for PHP 5&#39;</span>);
+<a name="l00007"></a>00007 }
+<a name="l00008"></a>00008 
+<a name="l00009"></a>00009 require_once(<span class="stringliteral">&#39;Cours/unknown.Type_cours.php&#39;</span>);
+<a name="l00010"></a>00010 require_once(<span class="stringliteral">&#39;class.EDT.php&#39;</span>);
+<a name="l00011"></a>00011 require_once(<span class="stringliteral">&#39;class.Matiere.php&#39;</span>);
+<a name="l00012"></a>00012 
+<a name="l00013"></a><a class="code" href="class_cours.html">00013</a> <span class="keyword">class </span><a class="code" href="class_cours.html">Cours</a>
+<a name="l00014"></a>00014 {
+<a name="l00015"></a>00015     <span class="comment">// --- ASSOCIATIONS ---</span>
+<a name="l00016"></a>00016 
+<a name="l00017"></a>00017     <span class="comment">// --- ATTRIBUTES ---</span>
+<a name="l00018"></a>00018     <span class="keyword">private</span> $sqlid = NULL;
+<a name="l00019"></a>00019     <span class="keyword">private</span> $number = NULL;
+<a name="l00020"></a>00020     <span class="keyword">private</span> $begin;
+<a name="l00021"></a>00021     <span class="keyword">private</span> $end;
+<a name="l00022"></a>00022     <span class="keyword">private</span> $room = NULL;
+<a name="l00023"></a>00023     <span class="keyword">private</span> $typeOfCourse = NULL;
+<a name="l00024"></a>00024     <span class="keyword">private</span> $subject = NULL;
+<a name="l00025"></a>00025 
+<a name="l00026"></a><a class="code" href="class_cours.html#a929a03de916b4bf52b6d52fbb4d7a872">00026</a>     <span class="keyword">const</span> <a class="code" href="class_cours.html#a929a03de916b4bf52b6d52fbb4d7a872">TABLENAME</a> = <span class="stringliteral">&quot;gcourse&quot;</span>;
+<a name="l00027"></a><a class="code" href="class_cours.html#a1890a9aada59b85496ae83fc4629168d">00027</a>     <span class="keyword">const</span> <a class="code" href="class_cours.html#a1890a9aada59b85496ae83fc4629168d">SQLcolumns</a> = <span class="stringliteral">&quot;id serial PRIMARY KEY, name varchar(30) NOT NULL, room varchar(30), begins_at timestamp without time zone NOT NULL, ends_at timestamp without time zone NOT NULL, id_subject integer REFERENCES gsubject(id), type integer&quot;</span>;
+<a name="l00028"></a><a class="code" href="class_cours.html#a422f65442f186f72ecb4a9de34308679">00028</a>     <span class="keyword">const</span> <a class="code" href="class_cours.html#a422f65442f186f72ecb4a9de34308679">belongsToTABLENAME</a> = <span class="stringliteral">&quot;gcourse_belongs_to&quot;</span>;
+<a name="l00029"></a><a class="code" href="class_cours.html#a39243a31094977b1a73a2eeeb00fcd80">00029</a>     <span class="keyword">const</span> <a class="code" href="class_cours.html#a39243a31094977b1a73a2eeeb00fcd80">belongsToSQLcolumns</a> = <span class="stringliteral">&quot;id_course integer REFERENCES gcourse(id), id_calendar integer REFERENCES gcalendar(id), constraint gcourse_belongs_to_pk PRIMARY KEY(id_course,id_calendar)&quot;</span>;
+<a name="l00030"></a>00030 
+<a name="l00031"></a>00031     <span class="comment">/* Flora: A Course in GaliDAV DataBase doesn’t correspond to a collection_item (event) in Davical DB.</span>
+<a name="l00032"></a>00032 <span class="comment">    In fact, a collection item has repetition rules that could be translated in several courses in GaliDAV database.</span>
+<a name="l00033"></a>00033 <span class="comment">    On the other hand, a GaliDAV course can be shared by</span>
+<a name="l00034"></a>00034 <span class="comment">    TODO : Make the links with davical and name davical events differently depending on the collection (timetable) they belong to</span>
+<a name="l00035"></a>00035 <span class="comment">    */</span>
+<a name="l00036"></a>00036 
+<a name="l00037"></a>00037     <span class="comment">// --- OPERATIONS ---</span>
+<a name="l00038"></a>00038     <span class="comment">// constructor</span>
+<a name="l00039"></a><a class="code" href="class_cours.html#a608e0600462faf4779b9c3fada887524">00039</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a608e0600462faf4779b9c3fada887524">__construct</a>(<a class="code" href="class_matiere.html">Matiere</a> $m, $begin, $end)
+<a name="l00040"></a>00040     {
+<a name="l00041"></a>00041         <span class="keywordflow">if</span> (!is_int($begin))
+<a name="l00042"></a>00042         {
+<a name="l00043"></a>00043             $begin = time();
+<a name="l00044"></a>00044         }
+<a name="l00045"></a>00045 
+<a name="l00046"></a>00046         <span class="keywordflow">if</span> (!is_int($end))
+<a name="l00047"></a>00047         {
+<a name="l00048"></a>00048             $end = time();
+<a name="l00049"></a>00049         }
+<a name="l00050"></a>00050 
+<a name="l00051"></a>00051         $this-&gt;subject = $m;
+<a name="l00052"></a>00052         $this-&gt;begin   = $begin;
+<a name="l00053"></a>00053         $this-&gt;end     = $end;
+<a name="l00054"></a>00054     }
+<a name="l00055"></a>00055 
+<a name="l00056"></a>00056     <span class="comment">// getters</span>
+<a name="l00057"></a><a class="code" href="class_cours.html#a489ab44b15f7f39df2904e0bcdfc8955">00057</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a489ab44b15f7f39df2904e0bcdfc8955">getNumber</a>()
+<a name="l00058"></a>00058     {
+<a name="l00059"></a>00059         <span class="keywordflow">return</span> $this-&gt;number;
+<a name="l00060"></a>00060     }
+<a name="l00061"></a>00061 
+<a name="l00062"></a><a class="code" href="class_cours.html#ac4912a20d792db2547dd4227c54f0fa6">00062</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#ac4912a20d792db2547dd4227c54f0fa6">getBegin</a>()
+<a name="l00063"></a>00063     {
+<a name="l00064"></a>00064         <span class="keywordflow">return</span> $this-&gt;begin;
+<a name="l00065"></a>00065     }
+<a name="l00066"></a>00066 
+<a name="l00067"></a><a class="code" href="class_cours.html#abfaeaa9a854f368e73ab936f1054c2d5">00067</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#abfaeaa9a854f368e73ab936f1054c2d5">getBegin_string</a>()
+<a name="l00068"></a>00068     {
+<a name="l00069"></a>00069         <span class="keywordflow">return</span> date(<span class="stringliteral">&#39;d/m/Y H:i&#39;</span>, $this-&gt;begin);
+<a name="l00070"></a>00070     }
+<a name="l00071"></a>00071 
+<a name="l00072"></a><a class="code" href="class_cours.html#a000b799500c1a9b8f1bd60c204191563">00072</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a000b799500c1a9b8f1bd60c204191563">getEnd</a>()
+<a name="l00073"></a>00073     {
+<a name="l00074"></a>00074         <span class="keywordflow">return</span> $this-&gt;end;
+<a name="l00075"></a>00075     }
+<a name="l00076"></a>00076 
+<a name="l00077"></a><a class="code" href="class_cours.html#af71fd089be3df1ca7cb16abc8f9b526c">00077</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#af71fd089be3df1ca7cb16abc8f9b526c">getEnd_string</a>()
+<a name="l00078"></a>00078     {
+<a name="l00079"></a>00079         <span class="keywordflow">return</span> date(<span class="stringliteral">&#39;d/m/Y H:i&#39;</span>, $this-&gt;end);
+<a name="l00080"></a>00080     }
+<a name="l00081"></a>00081 
+<a name="l00082"></a><a class="code" href="class_cours.html#a0d1c97bb96ea6ce6923a01d52080b6c7">00082</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a0d1c97bb96ea6ce6923a01d52080b6c7">getRoom</a>()
+<a name="l00083"></a>00083     {
+<a name="l00084"></a>00084         <span class="keywordflow">return</span> $this-&gt;room;
+<a name="l00085"></a>00085     }
+<a name="l00086"></a>00086 
+<a name="l00087"></a><a class="code" href="class_cours.html#a1f1626e037120ef4d88c89552f00bb30">00087</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a1f1626e037120ef4d88c89552f00bb30">getTypeOfCourse</a>()
+<a name="l00088"></a>00088     {
+<a name="l00089"></a>00089         <span class="keywordflow">return</span> $this-&gt;<a class="code" href="class_cours.html#a1f1626e037120ef4d88c89552f00bb30">getTypeOfCourse</a>;
+<a name="l00090"></a>00090     }
+<a name="l00091"></a>00091 
+<a name="l00092"></a><a class="code" href="class_cours.html#a59acf9ce6a96e11875584343d058f47c">00092</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a59acf9ce6a96e11875584343d058f47c">getTypeOfCourse_string</a>()
+<a name="l00093"></a>00093     {
+<a name="l00094"></a>00094         <span class="keywordflow">switch</span> ($this-&gt;typeOfCourse)
+<a name="l00095"></a>00095         {
+<a name="l00096"></a>00096             <span class="keywordflow">case</span> (<a class="code" href="unknown_8_type__cours_8php.html#a4241ab37c717e4fface6c79820099727">CM</a>):
+<a name="l00097"></a>00097                 <span class="keywordflow">return</span> <span class="stringliteral">&quot;CM&quot;</span>;
+<a name="l00098"></a>00098             <span class="keywordflow">case</span> (<a class="code" href="unknown_8_type__cours_8php.html#a36a4e6eaf9b260263e0e3bab2d7f20ca">TD</a>):
+<a name="l00099"></a>00099                 <span class="keywordflow">return</span> <span class="stringliteral">&quot;TD&quot;</span>;
+<a name="l00100"></a>00100             <span class="keywordflow">case</span> (<a class="code" href="unknown_8_type__cours_8php.html#ab58ec285dd4df0c0bca115c9ad78eb94">TP</a>):
+<a name="l00101"></a>00101                 <span class="keywordflow">return</span> <span class="stringliteral">&quot;TP&quot;</span>;
+<a name="l00102"></a>00102             <span class="keywordflow">case</span> (<a class="code" href="unknown_8_type__cours_8php.html#ae7fabd9a1752bb7d2034279f5829d55b">EXAMEN</a>):
+<a name="l00103"></a>00103                 <span class="keywordflow">return</span> <span class="stringliteral">&quot;Partiel&quot;</span>;
+<a name="l00104"></a>00104             <span class="keywordflow">case</span> (<a class="code" href="unknown_8_type__cours_8php.html#ae670ae6280bd2daa7d03e9ae6ff5dc66">CONFERENCE</a>):
+<a name="l00105"></a>00105                 <span class="keywordflow">return</span> <span class="stringliteral">&quot;Conférence&quot;</span>;
+<a name="l00106"></a>00106             <span class="keywordflow">case</span> (<a class="code" href="unknown_8_type__cours_8php.html#ab57e530f4b45fbeebb066960338e4706">RATTRAPAGE</a>):
+<a name="l00107"></a>00107                 <span class="keywordflow">return</span> <span class="stringliteral">&quot;Rattrapage&quot;</span>;
+<a name="l00108"></a>00108             <span class="keywordflow">default</span>:
+<a name="l00109"></a>00109                 <span class="keywordflow">return</span> <span class="stringliteral">&quot;Type inconnu&quot;</span>;
+<a name="l00110"></a>00110         }
+<a name="l00111"></a>00111     }
+<a name="l00112"></a>00112 
+<a name="l00113"></a><a class="code" href="class_cours.html#a7ec8f5b794ded8f3c0df9afd96c8233c">00113</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a7ec8f5b794ded8f3c0df9afd96c8233c">getSubject</a>()
+<a name="l00114"></a>00114     {
+<a name="l00115"></a>00115         <span class="keywordflow">return</span> $this-&gt;subject;
+<a name="l00116"></a>00116     }
+<a name="l00117"></a>00117 
+<a name="l00118"></a><a class="code" href="class_cours.html#ac9084f2f4f5f491d8a4781c999429475">00118</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#ac9084f2f4f5f491d8a4781c999429475">getSqlid</a>()
+<a name="l00119"></a>00119     {
+<a name="l00120"></a>00120         <span class="keywordflow">return</span> $this-&gt;sqlid;
+<a name="l00121"></a>00121     }
+<a name="l00122"></a>00122 
+<a name="l00123"></a>00123     <span class="comment">// setters</span>
+<a name="l00124"></a><a class="code" href="class_cours.html#a6daecb0a5aa66bd83fdae0aca9ca1a83">00124</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a6daecb0a5aa66bd83fdae0aca9ca1a83">setNumber</a>($newNumber)
+<a name="l00125"></a>00125     {
+<a name="l00126"></a>00126         <span class="keywordflow">if</span> (!empty($newNumber))
+<a name="l00127"></a>00127         {
+<a name="l00128"></a>00128             $this-&gt;number = $newNumber;
+<a name="l00129"></a>00129         }
+<a name="l00130"></a>00130     }
+<a name="l00131"></a>00131 
+<a name="l00132"></a><a class="code" href="class_cours.html#aa217550cde5f9a8dbcd9abad385fad9a">00132</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#aa217550cde5f9a8dbcd9abad385fad9a">setBegin</a>($newBegin)
+<a name="l00133"></a>00133     {
+<a name="l00134"></a>00134         <span class="keywordflow">if</span> (!empty($newBegin))
+<a name="l00135"></a>00135         {
+<a name="l00136"></a>00136             $this-&gt;begin = $newBegin;
+<a name="l00137"></a>00137         }
+<a name="l00138"></a>00138     }
+<a name="l00139"></a>00139 
+<a name="l00140"></a><a class="code" href="class_cours.html#a847fbe93cac84f5e753f36d4f9456031">00140</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a847fbe93cac84f5e753f36d4f9456031">setEnd</a>($newEnd)
+<a name="l00141"></a>00141     {
+<a name="l00142"></a>00142         <span class="keywordflow">if</span> (!empty($newEnd))
+<a name="l00143"></a>00143         {
+<a name="l00144"></a>00144             $this-&gt;end = $newEnd;
+<a name="l00145"></a>00145         }
+<a name="l00146"></a>00146     }
+<a name="l00147"></a>00147 
+<a name="l00148"></a><a class="code" href="class_cours.html#a486f56df904a9b444aa3e1076141f1a9">00148</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a486f56df904a9b444aa3e1076141f1a9">setRoom</a>($newRoom)
+<a name="l00149"></a>00149     {
+<a name="l00150"></a>00150         <span class="keywordflow">if</span> (!empty($newRoom))
+<a name="l00151"></a>00151         {
+<a name="l00152"></a>00152             $this-&gt;room = $newRoom;
+<a name="l00153"></a>00153         }
+<a name="l00154"></a>00154     }
+<a name="l00155"></a>00155 
+<a name="l00156"></a><a class="code" href="class_cours.html#a412b4edb4b432f60656ea266666928a9">00156</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a412b4edb4b432f60656ea266666928a9">setTypeOfCourse</a>($newType)
+<a name="l00157"></a>00157     {
+<a name="l00158"></a>00158         <span class="keywordflow">if</span> (!empty($newType))
+<a name="l00159"></a>00159         {
+<a name="l00160"></a>00160             $this-&gt;typeOfCourse = $newType;
+<a name="l00161"></a>00161         }
+<a name="l00162"></a>00162     }
+<a name="l00163"></a>00163 
+<a name="l00164"></a><a class="code" href="class_cours.html#a06cbb5292ce6014c20e2a38abc324aeb">00164</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a06cbb5292ce6014c20e2a38abc324aeb">setSubject</a>($newSubject)
+<a name="l00165"></a>00165     {
+<a name="l00166"></a>00166         <span class="keywordflow">if</span> (!empty($newSubject))
+<a name="l00167"></a>00167         {
+<a name="l00168"></a>00168             $this-&gt;subject = $newSubject;
+<a name="l00169"></a>00169         }
+<a name="l00170"></a>00170     }
+<a name="l00171"></a>00171 
+<a name="l00172"></a>00172     <span class="comment">// others</span>
+<a name="l00173"></a><a class="code" href="class_cours.html#aa090ed15c98668e404e3d44c81e73d45">00173</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#aa090ed15c98668e404e3d44c81e73d45">integrateInTimetable</a>(<a class="code" href="class_e_d_t.html">EDT</a> $timetable)
+<a name="l00174"></a>00174     {
+<a name="l00175"></a>00175         $timetable-&gt;<a class="code" href="class_e_d_t.html#a36aca5b391ab20faf5da65913ed629a6">addCourse</a>($this);
+<a name="l00176"></a>00176     }
+<a name="l00177"></a>00177 
+<a name="l00178"></a><a class="code" href="class_cours.html#a260b34e3ce5a0be2e2539c1291b989a5">00178</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#a260b34e3ce5a0be2e2539c1291b989a5">removeFromDB</a>()
+<a name="l00179"></a>00179     {
+<a name="l00180"></a>00180         <span class="comment">// Etienne : accès à la BDD pour la delete ?</span>
+<a name="l00181"></a>00181     }
+<a name="l00182"></a>00182 
+<a name="l00183"></a>00183     <span class="comment">// -- Affichage texte --</span>
+<a name="l00184"></a><a class="code" href="class_cours.html#abe9ad8cdef2c26dc57fe2b0cfaa8785b">00184</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_cours.html#abe9ad8cdef2c26dc57fe2b0cfaa8785b">toHTML</a>()
+<a name="l00185"></a>00185     {
+<a name="l00186"></a>00186         $result = <span class="stringliteral">&quot;&lt;p&gt;Matière:&amp;emsp; &amp;emsp; &quot;</span> . $this-&gt;subject-&gt;getName() . <span class="stringliteral">&quot;&lt;br/&gt;Type de cours:&amp;emsp; &amp;emsp;&quot;</span> . $this-&gt;typeOfCourse . <span class="stringliteral">&quot;&amp;emsp; &amp;emsp;&amp;emsp; &amp;emsp;Numero:&amp;emsp; &amp;emsp; &quot;</span> . $this-&gt;number . <span class="stringliteral">&quot;&lt;br/&gt;Horaires:&amp;emsp; du &quot;</span> . $this-&gt;<a class="code" href="class_cours.html#abfaeaa9a854f368e73ab936f1054c2d5">getBegin_string</a>() . <span class="stringliteral">&quot; au &quot;</span> . $this-&gt;<a class="code" href="class_cours.html#af71fd089be3df1ca7cb16abc8f9b526c">getEnd_string</a>() . <span class="stringliteral">&quot;&lt;br/&gt;Salle: &amp;emsp; &amp;emsp; &quot;</span> . $this-&gt;room . <span class="stringliteral">&quot;&lt;/p&gt;&quot;</span>;
+<a name="l00187"></a>00187 
+<a name="l00188"></a>00188         <span class="keywordflow">return</span> $result;
+<a name="l00189"></a>00189     }
+<a name="l00190"></a>00190 }
+<a name="l00191"></a>00191 ?&gt;
+</pre></div></div><!-- contents -->
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Tout</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Structures de données</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Fichiers</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Fonctions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Énumérations</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+
+
+<hr class="footer"/><address class="footer"><small>
+Généré le Lundi Avril 13 2015 21:12:36 pour GaliDAV Documentation par &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.7.6.1
+</small></address>
+
+</body>
+</html>

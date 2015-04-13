@@ -1,0 +1,415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<title>GaliDAV Documentation:  Fichier source de class.BaseDeDonnees.php</title>
+
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { searchBox.OnSelectItem(0); });
+</script>
+
+</head>
+<body>
+<div id="top"><!-- do not remove this div! -->
+
+
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  
+  
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">GaliDAV Documentation
+   
+   </div>
+   
+  </td>
+  
+  
+  
+ </tr>
+ </tbody>
+</table>
+</div>
+
+<!-- Généré par Doxygen 1.7.6.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Recherche');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Page&#160;principale</span></a></li>
+      <li><a href="annotated.html"><span>Structures&#160;de&#160;données</span></a></li>
+      <li class="current"><a href="files.html"><span>Fichiers</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Recherche" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Liste&#160;des&#160;fichiers</span></a></li>
+      <li><a href="globals.html"><span>Variables&#160;globale</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<div class="title">class.BaseDeDonnees.php</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="class_8_base_de_donnees_8php.html">Aller à la documentation de ce fichier.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 &lt;?php
+<a name="l00002"></a>00002 error_reporting(E_ALL);
+<a name="l00003"></a>00003 
+<a name="l00004"></a><a class="code" href="class_8_base_de_donnees_8php.html#a88cb244e17cabaf4dee5fb3acb8168e0">00004</a> <span class="keywordflow">if</span> (0 &gt; version_compare(PHP_VERSION, <span class="charliteral">&#39;5&#39;</span>))
+<a name="l00005"></a>00005 {
+<a name="l00006"></a>00006     die(<span class="stringliteral">&#39;$this file was generated for PHP 5&#39;</span>);
+<a name="l00007"></a>00007 }
+<a name="l00008"></a>00008 
+<a name="l00009"></a>00009 <span class="comment">/* Par défaut la BDD considérée se nomme galidav accessible par l&#39;utilisateur galidav en local */</span>
+<a name="l00010"></a>00010 
+<a name="l00011"></a>00011 require_once(<span class="stringliteral">&quot;/usr/share/davical/htdocs/always.php&quot;</span>);
+<a name="l00012"></a>00012 require_once(<span class="stringliteral">&quot;auth-functions.php&quot;</span>); <span class="comment">//Utile ou pas?</span>
+<a name="l00013"></a>00013 
+<a name="l00014"></a>00014 require_once(<span class="stringliteral">&quot;class.Personne.php&quot;</span>);
+<a name="l00015"></a>00015 require_once(<span class="stringliteral">&quot;class.Utilisateur.php&quot;</span>);
+<a name="l00016"></a>00016 
+<a name="l00017"></a><a class="code" href="class_base_de_donnees.html">00017</a> <span class="keyword">class </span><a class="code" href="class_base_de_donnees.html">BaseDeDonnees</a>
+<a name="l00018"></a>00018 {
+<a name="l00019"></a>00019     <span class="comment">// --- ASSOCIATIONS ---</span>
+<a name="l00020"></a>00020 
+<a name="l00021"></a>00021     <span class="comment">// --- ATTRIBUTES ---</span>
+<a name="l00022"></a>00022     <span class="keyword">static</span> <span class="keyword">private</span> $current_db = NULL;
+<a name="l00023"></a>00023     <span class="keyword">private</span> $save = FALSE;
+<a name="l00024"></a>00024     <span class="keyword">private</span> $location = NULL;
+<a name="l00025"></a>00025     <span class="keyword">private</span> $dbname = NULL;
+<a name="l00026"></a>00026     <span class="keyword">private</span> $user = <span class="stringliteral">&#39;galidav&#39;</span>;
+<a name="l00027"></a>00027     <span class="keyword">private</span> $password = NULL;
+<a name="l00028"></a>00028     <span class="keyword">private</span> $host = NULL;
+<a name="l00029"></a><a class="code" href="class_base_de_donnees.html#ad479a7a9b934ea31cc5f06de31e0a9c4">00029</a>     <span class="keyword">public</span> <a class="code" href="class_base_de_donnees.html#ad479a7a9b934ea31cc5f06de31e0a9c4">$error_sql_message</a> = <span class="stringliteral">&quot;&quot;</span>;
+<a name="l00030"></a>00030 
+<a name="l00031"></a>00031     <span class="comment">// TODO : attributs des éléments enregistrés (1attribut != pour chaque élément ?)</span>
+<a name="l00032"></a>00032 
+<a name="l00033"></a>00033     <span class="comment">// --- OPERATIONS ---</span>
+<a name="l00034"></a>00034     <span class="comment">// constructor</span>
+<a name="l00035"></a><a class="code" href="class_base_de_donnees.html#a961389382653de3131f9aea64a2a42ef">00035</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#a961389382653de3131f9aea64a2a42ef">__construct</a>($user = <span class="stringliteral">&#39;galidav&#39;</span>, $dbname = NULL, $password = NULL, $host = NULL)
+<a name="l00036"></a>00036     {
+<a name="l00037"></a>00037         $this-&gt;user     = $user;
+<a name="l00038"></a>00038         $this-&gt;dbname   = $dbname;
+<a name="l00039"></a>00039         $this-&gt;password = $password;
+<a name="l00040"></a>00040         $this-&gt;host     = $host;
+<a name="l00041"></a>00041     }
+<a name="l00042"></a>00042 
+<a name="l00043"></a>00043     <span class="comment">// getters</span>
+<a name="l00044"></a><a class="code" href="class_base_de_donnees.html#aa9fb125fbccbe80153410cab09cb8f2d">00044</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#aa9fb125fbccbe80153410cab09cb8f2d">getSave</a>()
+<a name="l00045"></a>00045     {
+<a name="l00046"></a>00046         <span class="keywordflow">return</span> $this-&gt;save;
+<a name="l00047"></a>00047     }
+<a name="l00048"></a>00048 
+<a name="l00049"></a><a class="code" href="class_base_de_donnees.html#a270a747ff748def87f313beeef64f3b3">00049</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#a270a747ff748def87f313beeef64f3b3">getLocation</a>()
+<a name="l00050"></a>00050     {
+<a name="l00051"></a>00051         <span class="keywordflow">return</span> $this-&gt;location;
+<a name="l00052"></a>00052     }
+<a name="l00053"></a>00053 
+<a name="l00054"></a><a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">00054</a>     <span class="keyword">static</span> <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">currentDB</a>()
+<a name="l00055"></a>00055     {
+<a name="l00056"></a>00056         <span class="keywordflow">if</span> (self::$current_db == NULL)
+<a name="l00057"></a>00057         {
+<a name="l00058"></a>00058             self::$current_db = <span class="keyword">new</span> <a class="code" href="class_base_de_donnees.html">BaseDeDonnees</a>();
+<a name="l00059"></a>00059         }
+<a name="l00060"></a>00060 
+<a name="l00061"></a>00061         <span class="keywordflow">return</span> self::$current_db;
+<a name="l00062"></a>00062     }
+<a name="l00063"></a>00063 
+<a name="l00064"></a>00064     <span class="comment">// setters</span>
+<a name="l00065"></a><a class="code" href="class_base_de_donnees.html#a3c6da2ce5c35bf32cf041d3abc0bf82e">00065</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#a3c6da2ce5c35bf32cf041d3abc0bf82e">setSave</a>($newSave)
+<a name="l00066"></a>00066     {
+<a name="l00067"></a>00067         <span class="keywordflow">if</span> (!empty($newSave))
+<a name="l00068"></a>00068         {
+<a name="l00069"></a>00069             $this-&gt;save = $newSave;
+<a name="l00070"></a>00070         }
+<a name="l00071"></a>00071     } <span class="comment">// p-e une méthode qui ne fait que changer la valeur du booléen ? à voir</span>
+<a name="l00072"></a>00072 
+<a name="l00073"></a><a class="code" href="class_base_de_donnees.html#a1251de23e19ca99d4e21a3cd63ceb320">00073</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#a1251de23e19ca99d4e21a3cd63ceb320">setLocation</a>($newLocation)
+<a name="l00074"></a>00074     {
+<a name="l00075"></a>00075         <span class="keywordflow">if</span> (!empty($newLocation))
+<a name="l00076"></a>00076         {
+<a name="l00077"></a>00077             $this-&gt;location = $newLocation;
+<a name="l00078"></a>00078         }
+<a name="l00079"></a>00079     }
+<a name="l00080"></a>00080 
+<a name="l00081"></a><a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">00081</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>($query, $params = null)
+<a name="l00082"></a>00082     {
+<a name="l00083"></a>00083         $this-&gt;error_sql_message = <span class="stringliteral">&quot;&quot;</span>;
+<a name="l00084"></a>00084         $conn                    = $this-&gt;<a class="code" href="class_base_de_donnees.html#a78572828d11dcdf2a498497d9001d557">connect</a>();
+<a name="l00085"></a>00085 
+<a name="l00086"></a>00086         <span class="keywordflow">if</span> (!$conn)
+<a name="l00087"></a>00087         {
+<a name="l00088"></a>00088             echo <span class="stringliteral">&quot;Impossible de se connecter à la DB &quot;</span> . $this-&gt;dbname . <span class="stringliteral">&quot; avec le rôle &quot;</span> . $this-&gt;user . <span class="stringliteral">&quot; \n&quot;</span>;
+<a name="l00089"></a>00089 
+<a name="l00090"></a>00090             exit;
+<a name="l00091"></a>00091         }
+<a name="l00092"></a>00092 
+<a name="l00093"></a>00093         <span class="keywordflow">if</span>(is_array($params))
+<a name="l00094"></a>00094             $result = pg_query_params($conn, $query, $params);
+<a name="l00095"></a>00095         <span class="keywordflow">else</span>
+<a name="l00096"></a>00096             $result = pg_query_params($conn, $query, array());
+<a name="l00097"></a>00097 
+<a name="l00098"></a>00098         <span class="keywordflow">if</span> (!$result)
+<a name="l00099"></a>00099         {
+<a name="l00100"></a>00100             $this-&gt;error_sql_message = <span class="stringliteral">&quot;&lt;div&gt;&lt;b&gt;GaliDAV Error&lt;/b&gt;: The following query has failed: &lt;p&gt;&amp;emsp;$query&lt;/p&gt;&quot;</span>;
+<a name="l00101"></a>00101             <span class="keywordflow">if</span>(is_array($params)){
+<a name="l00102"></a>00102                 $this-&gt;error_sql_message .= <span class="stringliteral">&quot;&lt;p&gt;(params=&quot;</span>;
+<a name="l00103"></a>00103                 <span class="keywordflow">foreach</span>($params as $oneParam)
+<a name="l00104"></a>00104                 {
+<a name="l00105"></a>00105                     $this-&gt;error_sql_message .=<span class="stringliteral">&quot; &quot;</span>.$oneParam.<span class="stringliteral">&quot; /&quot;</span>;
+<a name="l00106"></a>00106                 }
+<a name="l00107"></a>00107                 $this-&gt;error_sql_message .=<span class="stringliteral">&quot;)&lt;/p&gt;&quot;</span>;
+<a name="l00108"></a>00108             }
+<a name="l00109"></a>00109             $this-&gt;error_sql_message .=<span class="stringliteral">&quot;&lt;/div&gt;&lt;p style=&#39;font-size:smaller;&#39;&gt;&lt;b&gt;&amp;emsp;&amp;emsp;&amp;emsp;Details on SQL&lt;/b&gt; &quot;</span> . pg_last_error($conn) . <span class="stringliteral">&quot;&lt;/p&gt;&quot;</span>;
+<a name="l00110"></a>00110         }
+<a name="l00111"></a>00111         <span class="keywordflow">return</span> $result;
+<a name="l00112"></a>00112     }
+<a name="l00113"></a>00113 
+<a name="l00114"></a><a class="code" href="class_base_de_donnees.html#aa821bec12eaa7e0f649397c9675ff505">00114</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#aa821bec12eaa7e0f649397c9675ff505">clear</a>()
+<a name="l00115"></a>00115     {
+<a name="l00116"></a>00116         $BDD = <span class="keyword">new</span> <a class="code" href="class_base_de_donnees.html">BaseDeDonnees</a>(<span class="stringliteral">&quot;davical_app&quot;</span>, <span class="stringliteral">&quot;davical&quot;</span>);
+<a name="l00117"></a>00117         <span class="keywordflow">if</span> (!$BDD-&gt;connect())
+<a name="l00118"></a>00118         {
+<a name="l00119"></a>00119             echo(<span class="stringliteral">&quot;pas de connexion vers davical&quot;</span>);
+<a name="l00120"></a>00120         }
+<a name="l00121"></a>00121         <span class="keywordflow">else</span>
+<a name="l00122"></a>00122         {
+<a name="l00123"></a>00123             <span class="keywordflow">if</span>(!$BDD-&gt;executeQuery(<span class="stringliteral">&quot;DELETE from calendar_item;&quot;</span>))
+<a name="l00124"></a>00124                 $BDD-&gt;show_error();
+<a name="l00125"></a>00125             <span class="keywordflow">if</span>(!$BDD-&gt;executeQuery(<span class="stringliteral">&quot;DELETE from collection;&quot;</span>))
+<a name="l00126"></a>00126                 $BDD-&gt;show_error();
+<a name="l00127"></a>00127             <span class="keywordflow">if</span>(!$BDD-&gt;executeQuery(<span class="stringliteral">&quot;DELETE from dav_principal where username!=&#39;admin&#39;;&quot;</span>))
+<a name="l00128"></a>00128                 $BDD-&gt;show_error();
+<a name="l00129"></a>00129             $BDD-&gt;close();
+<a name="l00130"></a>00130         }
+<a name="l00131"></a>00131         
+<a name="l00132"></a>00132         $BDD = <span class="keyword">new</span> <a class="code" href="class_base_de_donnees.html">BaseDeDonnees</a>(<span class="stringliteral">&quot;agendav&quot;</span>);
+<a name="l00133"></a>00133         <span class="keywordflow">if</span> (!$BDD-&gt;connect())
+<a name="l00134"></a>00134         {
+<a name="l00135"></a>00135             echo(<span class="stringliteral">&quot;pas de connexion vers agendav&quot;</span>);
+<a name="l00136"></a>00136         }
+<a name="l00137"></a>00137         <span class="keywordflow">else</span>
+<a name="l00138"></a>00138         {
+<a name="l00139"></a>00139             <span class="keywordflow">if</span>(!$BDD-&gt;executeQuery(<span class="stringliteral">&quot;DELETE from shared;&quot;</span>))
+<a name="l00140"></a>00140                 $BDD-&gt;show_error();
+<a name="l00141"></a>00141             $BDD-&gt;close();
+<a name="l00142"></a>00142         }
+<a name="l00143"></a>00143         
+<a name="l00144"></a>00144         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DELETE from &quot;</span> . <a class="code" href="class_modification.html#a929a03de916b4bf52b6d52fbb4d7a872">Modification::TABLENAME</a> . <span class="stringliteral">&quot;;&quot;</span>);
+<a name="l00145"></a>00145         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DELETE from &quot;</span> . <a class="code" href="class_cours.html#a422f65442f186f72ecb4a9de34308679">Cours::belongsToTABLENAME</a> . <span class="stringliteral">&quot;;&quot;</span>);
+<a name="l00146"></a>00146         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DELETE from &quot;</span> . <a class="code" href="class_cours.html#a929a03de916b4bf52b6d52fbb4d7a872">Cours::TABLENAME</a> . <span class="stringliteral">&quot;;&quot;</span>);
+<a name="l00147"></a>00147         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DELETE from &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot;;&quot;</span>);
+<a name="l00148"></a>00148         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DELETE from &quot;</span> . <a class="code" href="class_groupe.html#a2628fda83b614cf50b1559f80b3ea3fd">Groupe::linkedToTABLENAME</a> . <span class="stringliteral">&quot;;&quot;</span>);
+<a name="l00149"></a>00149         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DELETE from &quot;</span> . <a class="code" href="class_groupe.html#ac0062e0e4d6d9fdbed95749002df7246">Groupe::composedOfTABLENAME</a> . <span class="stringliteral">&quot;;&quot;</span>);
+<a name="l00150"></a>00150         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DELETE from &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot;;&quot;</span>);
+<a name="l00151"></a>00151         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DELETE from &quot;</span> . <a class="code" href="class_e_d_t.html#a929a03de916b4bf52b6d52fbb4d7a872">EDT::TABLENAME</a> . <span class="stringliteral">&quot;;&quot;</span>);
+<a name="l00152"></a>00152         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DELETE from &quot;</span> . <a class="code" href="class_utilisateur.html#a929a03de916b4bf52b6d52fbb4d7a872">Utilisateur::TABLENAME</a> . <span class="stringliteral">&quot;;&quot;</span>);
+<a name="l00153"></a>00153         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DELETE from &quot;</span> . <a class="code" href="class_statut__personne.html#a929a03de916b4bf52b6d52fbb4d7a872">Statut_personne::TABLENAME</a> . <span class="stringliteral">&quot;;&quot;</span>);
+<a name="l00154"></a>00154         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DELETE from &quot;</span> . <a class="code" href="class_personne.html#a929a03de916b4bf52b6d52fbb4d7a872">Personne::TABLENAME</a> . <span class="stringliteral">&quot;;&quot;</span>);
+<a name="l00155"></a>00155     }
+<a name="l00156"></a>00156 
+<a name="l00157"></a><a class="code" href="class_base_de_donnees.html#a9d539cd8405c9f160abd02a34cf1ff46">00157</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#a9d539cd8405c9f160abd02a34cf1ff46">dropAll</a>() <span class="comment">//KFK: NOTICE: L&#39;ordre est important, on évite des warnings</span>
+<a name="l00158"></a>00158     {
+<a name="l00159"></a>00159         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> . <a class="code" href="class_modification.html#a929a03de916b4bf52b6d52fbb4d7a872">Modification::TABLENAME</a> . <span class="stringliteral">&quot; CASCADE;&quot;</span>);
+<a name="l00160"></a>00160         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> . <a class="code" href="class_cours.html#a422f65442f186f72ecb4a9de34308679">Cours::belongsToTABLENAME</a> . <span class="stringliteral">&quot; CASCADE;&quot;</span>);
+<a name="l00161"></a>00161         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> . <a class="code" href="class_cours.html#a929a03de916b4bf52b6d52fbb4d7a872">Cours::TABLENAME</a> . <span class="stringliteral">&quot; CASCADE;&quot;</span>);
+<a name="l00162"></a>00162         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot; CASCADE;&quot;</span>);
+<a name="l00163"></a>00163         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> . <a class="code" href="class_groupe.html#ac0062e0e4d6d9fdbed95749002df7246">Groupe::composedOfTABLENAME</a> . <span class="stringliteral">&quot; CASCADE;&quot;</span>);
+<a name="l00164"></a>00164         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> . <a class="code" href="class_groupe.html#a2628fda83b614cf50b1559f80b3ea3fd">Groupe::linkedToTABLENAME</a> . <span class="stringliteral">&quot; CASCADE;&quot;</span>);
+<a name="l00165"></a>00165         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; CASCADE;&quot;</span>);
+<a name="l00166"></a>00166         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> . <a class="code" href="class_e_d_t.html#a929a03de916b4bf52b6d52fbb4d7a872">EDT::TABLENAME</a> . <span class="stringliteral">&quot; CASCADE;&quot;</span>);
+<a name="l00167"></a>00167         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> . <a class="code" href="class_utilisateur.html#a929a03de916b4bf52b6d52fbb4d7a872">Utilisateur::TABLENAME</a> . <span class="stringliteral">&quot; CASCADE;&quot;</span>);
+<a name="l00168"></a>00168         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> . <a class="code" href="class_statut__personne.html#a929a03de916b4bf52b6d52fbb4d7a872">Statut_personne::TABLENAME</a> . <span class="stringliteral">&quot; CASCADE;&quot;</span>);
+<a name="l00169"></a>00169         $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;DROP TABLE IF EXISTS &quot;</span> . <a class="code" href="class_personne.html#a929a03de916b4bf52b6d52fbb4d7a872">Personne::TABLENAME</a> . <span class="stringliteral">&quot; CASCADE;&quot;</span>);
+<a name="l00170"></a>00170     }
+<a name="l00171"></a>00171 
+<a name="l00172"></a><a class="code" href="class_base_de_donnees.html#a78572828d11dcdf2a498497d9001d557">00172</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#a78572828d11dcdf2a498497d9001d557">connect</a>()
+<a name="l00173"></a>00173     {
+<a name="l00174"></a>00174         $param = <span class="stringliteral">&quot;user=&quot;</span> . $this-&gt;user;
+<a name="l00175"></a>00175 
+<a name="l00176"></a>00176         <span class="keywordflow">if</span> ($this-&gt;dbname)
+<a name="l00177"></a>00177         {
+<a name="l00178"></a>00178             $param .= <span class="stringliteral">&quot; dbname=&quot;</span> . $this-&gt;dbname;
+<a name="l00179"></a>00179         }
+<a name="l00180"></a>00180 
+<a name="l00181"></a>00181         <span class="keywordflow">if</span> ($this-&gt;password)
+<a name="l00182"></a>00182         {
+<a name="l00183"></a>00183             $param .= <span class="stringliteral">&quot; password=&quot;</span> . $this-&gt;password;
+<a name="l00184"></a>00184         }
+<a name="l00185"></a>00185 
+<a name="l00186"></a>00186         <span class="keywordflow">if</span> ($this-&gt;host)
+<a name="l00187"></a>00187         {
+<a name="l00188"></a>00188             $param .= <span class="stringliteral">&quot; host=&quot;</span> . $this-&gt;host;
+<a name="l00189"></a>00189         }
+<a name="l00190"></a>00190 
+<a name="l00191"></a>00191         <span class="keywordflow">return</span> pg_pconnect($param);
+<a name="l00192"></a>00192     }
+<a name="l00193"></a>00193 
+<a name="l00194"></a><a class="code" href="class_base_de_donnees.html#aa69c8bf1f1dcf4e72552efff1fe3e87e">00194</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#aa69c8bf1f1dcf4e72552efff1fe3e87e">close</a>()
+<a name="l00195"></a>00195     {
+<a name="l00196"></a>00196         pg_close($this-&gt;<a class="code" href="class_base_de_donnees.html#a78572828d11dcdf2a498497d9001d557">connect</a>());
+<a name="l00197"></a>00197     }
+<a name="l00198"></a>00198 
+<a name="l00199"></a><a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">00199</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">show_error</a>($explication=null)
+<a name="l00200"></a>00200     {
+<a name="l00201"></a>00201         $out=<span class="stringliteral">&quot;&lt;div style=&#39;z-index:2;border-style:solid;background-color:#AAAAAA&#39;&gt;&quot;</span>;
+<a name="l00202"></a>00202         $out.=$this-&gt;error_sql_message;
+<a name="l00203"></a>00203         <span class="keywordflow">if</span>(is_string($explication))
+<a name="l00204"></a>00204             $out.=<span class="stringliteral">&quot;&lt;p&gt;&lt;i&gt;&lt;b&gt;Explanation:&lt;/b&gt;$explication&lt;/i&gt;&lt;/p&gt;&quot;</span>;
+<a name="l00205"></a>00205         $out.=<span class="stringliteral">&quot;&lt;/div&gt;&quot;</span>;
+<a name="l00206"></a>00206         echo $out;
+<a name="l00207"></a>00207     }
+<a name="l00208"></a>00208 
+<a name="l00209"></a><a class="code" href="class_base_de_donnees.html#a91098fa7d1917ce4833f284bbef12627">00209</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_base_de_donnees.html#a91098fa7d1917ce4833f284bbef12627">initialize</a>()
+<a name="l00210"></a>00210     {
+<a name="l00211"></a>00211         $this-&gt;<a class="code" href="class_base_de_donnees.html#aa821bec12eaa7e0f649397c9675ff505">clear</a>();
+<a name="l00212"></a>00212         $this-&gt;<a class="code" href="class_base_de_donnees.html#a9d539cd8405c9f160abd02a34cf1ff46">dropAll</a>();
+<a name="l00213"></a>00213         $result = $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> . <a class="code" href="class_personne.html#a929a03de916b4bf52b6d52fbb4d7a872">Personne::TABLENAME</a> . <span class="stringliteral">&quot; (&quot;</span> . <a class="code" href="class_personne.html#a1890a9aada59b85496ae83fc4629168d">Personne::SQLcolumns</a> . <span class="stringliteral">&quot;);&quot;</span>);
+<a name="l00214"></a>00214 
+<a name="l00215"></a>00215         <span class="keywordflow">if</span> ($result)
+<a name="l00216"></a>00216         {
+<a name="l00217"></a>00217             $result = $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> . <a class="code" href="class_utilisateur.html#a929a03de916b4bf52b6d52fbb4d7a872">Utilisateur::TABLENAME</a> . <span class="stringliteral">&quot; (&quot;</span> . <a class="code" href="class_utilisateur.html#a1890a9aada59b85496ae83fc4629168d">Utilisateur::SQLcolumns</a> . <span class="stringliteral">&quot;);&quot;</span>);
+<a name="l00218"></a>00218         }
+<a name="l00219"></a>00219         <span class="keywordflow">else</span>
+<a name="l00220"></a>00220         {
+<a name="l00221"></a>00221             $this-&gt;<a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">show_error</a>();
+<a name="l00222"></a>00222         }
+<a name="l00223"></a>00223 
+<a name="l00224"></a>00224         <span class="keywordflow">if</span> ($result)
+<a name="l00225"></a>00225         {
+<a name="l00226"></a>00226             $result = $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> . <a class="code" href="class_statut__personne.html#a929a03de916b4bf52b6d52fbb4d7a872">Statut_personne::TABLENAME</a> . <span class="stringliteral">&quot; (&quot;</span> . <a class="code" href="class_statut__personne.html#a1890a9aada59b85496ae83fc4629168d">Statut_personne::SQLcolumns</a> . <span class="stringliteral">&quot;);&quot;</span>);
+<a name="l00227"></a>00227         }
+<a name="l00228"></a>00228         <span class="keywordflow">else</span>
+<a name="l00229"></a>00229         {
+<a name="l00230"></a>00230             $this-&gt;<a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">show_error</a>();
+<a name="l00231"></a>00231         }
+<a name="l00232"></a>00232 
+<a name="l00233"></a>00233         <span class="keywordflow">if</span> ($result)
+<a name="l00234"></a>00234         {
+<a name="l00235"></a>00235             $result = $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> . <a class="code" href="class_e_d_t.html#a929a03de916b4bf52b6d52fbb4d7a872">EDT::TABLENAME</a> . <span class="stringliteral">&quot; (&quot;</span> . <a class="code" href="class_e_d_t.html#a1890a9aada59b85496ae83fc4629168d">EDT::SQLcolumns</a> . <span class="stringliteral">&quot;);&quot;</span>);
+<a name="l00236"></a>00236         }
+<a name="l00237"></a>00237         <span class="keywordflow">else</span>
+<a name="l00238"></a>00238         {
+<a name="l00239"></a>00239             $this-&gt;<a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">show_error</a>();
+<a name="l00240"></a>00240         }
+<a name="l00241"></a>00241 
+<a name="l00242"></a>00242         <span class="keywordflow">if</span> ($result)
+<a name="l00243"></a>00243         {
+<a name="l00244"></a>00244             $result = $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; (&quot;</span> . <a class="code" href="class_groupe.html#a1890a9aada59b85496ae83fc4629168d">Groupe::SQLcolumns</a> . <span class="stringliteral">&quot;);&quot;</span>);
+<a name="l00245"></a>00245         }
+<a name="l00246"></a>00246         <span class="keywordflow">else</span>
+<a name="l00247"></a>00247         {
+<a name="l00248"></a>00248             $this-&gt;<a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">show_error</a>();
+<a name="l00249"></a>00249         }
+<a name="l00250"></a>00250 
+<a name="l00251"></a>00251         <span class="keywordflow">if</span> ($result)
+<a name="l00252"></a>00252         {
+<a name="l00253"></a>00253             $result = $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> . <a class="code" href="class_groupe.html#ac0062e0e4d6d9fdbed95749002df7246">Groupe::composedOfTABLENAME</a> . <span class="stringliteral">&quot; (&quot;</span> . <a class="code" href="class_groupe.html#afb18e06186c8ea811dfda49528c06ecc">Groupe::composedOfSQLcolumns</a> . <span class="stringliteral">&quot;);&quot;</span>);
+<a name="l00254"></a>00254         }
+<a name="l00255"></a>00255         <span class="keywordflow">else</span>
+<a name="l00256"></a>00256         {
+<a name="l00257"></a>00257             $this-&gt;<a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">show_error</a>();
+<a name="l00258"></a>00258         }
+<a name="l00259"></a>00259 
+<a name="l00260"></a>00260         <span class="keywordflow">if</span> ($result)
+<a name="l00261"></a>00261         {
+<a name="l00262"></a>00262             $result = $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> . <a class="code" href="class_groupe.html#a2628fda83b614cf50b1559f80b3ea3fd">Groupe::linkedToTABLENAME</a> . <span class="stringliteral">&quot; (&quot;</span> . <a class="code" href="class_groupe.html#a141bb0738a318890a0035297a6f75367">Groupe::linkedToSQLcolumns</a> . <span class="stringliteral">&quot;);&quot;</span>);
+<a name="l00263"></a>00263         }
+<a name="l00264"></a>00264         <span class="keywordflow">else</span>
+<a name="l00265"></a>00265         {
+<a name="l00266"></a>00266             $this-&gt;<a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">show_error</a>();
+<a name="l00267"></a>00267         }
+<a name="l00268"></a>00268 
+<a name="l00269"></a>00269         <span class="keywordflow">if</span> ($result)
+<a name="l00270"></a>00270         {
+<a name="l00271"></a>00271             $result = $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot; (&quot;</span> . <a class="code" href="class_matiere.html#a1890a9aada59b85496ae83fc4629168d">Matiere::SQLcolumns</a> . <span class="stringliteral">&quot;);&quot;</span>);
+<a name="l00272"></a>00272         }
+<a name="l00273"></a>00273         <span class="keywordflow">else</span>
+<a name="l00274"></a>00274         {
+<a name="l00275"></a>00275             $this-&gt;<a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">show_error</a>();
+<a name="l00276"></a>00276         }
+<a name="l00277"></a>00277 
+<a name="l00278"></a>00278         <span class="keywordflow">if</span> ($result)
+<a name="l00279"></a>00279         {
+<a name="l00280"></a>00280             $result = $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> . <a class="code" href="class_cours.html#a929a03de916b4bf52b6d52fbb4d7a872">Cours::TABLENAME</a> . <span class="stringliteral">&quot; (&quot;</span> . <a class="code" href="class_cours.html#a1890a9aada59b85496ae83fc4629168d">Cours::SQLcolumns</a> . <span class="stringliteral">&quot;);&quot;</span>);
+<a name="l00281"></a>00281         }
+<a name="l00282"></a>00282         <span class="keywordflow">else</span>
+<a name="l00283"></a>00283         {
+<a name="l00284"></a>00284             $this-&gt;<a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">show_error</a>();
+<a name="l00285"></a>00285         }
+<a name="l00286"></a>00286 
+<a name="l00287"></a>00287         <span class="keywordflow">if</span> ($result)
+<a name="l00288"></a>00288         {
+<a name="l00289"></a>00289             $result = $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> . <a class="code" href="class_cours.html#a422f65442f186f72ecb4a9de34308679">Cours::belongsToTABLENAME</a> . <span class="stringliteral">&quot; (&quot;</span> . <a class="code" href="class_cours.html#a39243a31094977b1a73a2eeeb00fcd80">Cours::belongsToSQLcolumns</a> . <span class="stringliteral">&quot;);&quot;</span>);
+<a name="l00290"></a>00290         }
+<a name="l00291"></a>00291         <span class="keywordflow">else</span>
+<a name="l00292"></a>00292         {
+<a name="l00293"></a>00293             $this-&gt;<a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">show_error</a>();
+<a name="l00294"></a>00294         }
+<a name="l00295"></a>00295 
+<a name="l00296"></a>00296         <span class="keywordflow">if</span> ($result)
+<a name="l00297"></a>00297         {
+<a name="l00298"></a>00298             $result = $this-&gt;<a class="code" href="class_base_de_donnees.html#a3d2e78e13e90a2b9e014c0ae9e0e04e8">executeQuery</a>(<span class="stringliteral">&quot;CREATE TABLE &quot;</span> . <a class="code" href="class_modification.html#a929a03de916b4bf52b6d52fbb4d7a872">Modification::TABLENAME</a> . <span class="stringliteral">&quot; (&quot;</span> . <a class="code" href="class_modification.html#a1890a9aada59b85496ae83fc4629168d">Modification::SQLcolumns</a> . <span class="stringliteral">&quot;);&quot;</span>);
+<a name="l00299"></a>00299         }
+<a name="l00300"></a>00300         <span class="keywordflow">else</span>
+<a name="l00301"></a>00301         {
+<a name="l00302"></a>00302             $this-&gt;<a class="code" href="class_base_de_donnees.html#a83a82273cd8a8f10d4ba9d51da11d1e9">show_error</a>();
+<a name="l00303"></a>00303         }
+<a name="l00304"></a>00304         <span class="comment">/*** TODO Autres tables ***/</span>
+<a name="l00305"></a>00305 
+<a name="l00306"></a>00306         <span class="keywordflow">return</span> $result;
+<a name="l00307"></a>00307     }
+<a name="l00308"></a>00308 }
+<a name="l00309"></a>00309 ?&gt;
+</pre></div></div><!-- contents -->
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Tout</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Structures de données</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Fichiers</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Fonctions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Énumérations</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+
+
+<hr class="footer"/><address class="footer"><small>
+Généré le Lundi Avril 13 2015 21:12:36 pour GaliDAV Documentation par &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.7.6.1
+</small></address>
+
+</body>
+</html>
