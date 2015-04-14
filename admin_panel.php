@@ -23,7 +23,7 @@ error_reporting(E_ALL);
   <?php
  
   $agendav_path="http://edthote.fr/agendav2";
-  	echo("<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><a href='$agendav_path/index.php' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role='button' aria-disabled='false'> <span class='ui-button-text'>Retour aux emplois du temps</span></a></li>");
+  	echo("<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><a href='".$agendav_path."/index.php' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role='button' aria-disabled='false'> <span class='ui-button-text'>Retour aux emplois du temps</span></a></li>");
   	
   	?>
     <li class="dropdown" id="usermenu"><a href="#"><span class="username">X</span></a></li>

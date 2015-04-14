@@ -194,13 +194,13 @@ if (isset($_POST['action']))
 			
 			}
 		}
-		header('Location: ./admin_panel.php');
+		header('Location: ./admin_panel2.php');
 	}
 
 	if ($_POST['action'] == 'add_user')
 	{
 		if($_POST['password']!=$_POST['password2'])
-			header('Location: ./admin_panel.php?GMESSAGE_ERROR=DIFFERENT_PASS');
+			header('Location: ./admin_panel2.php?GMESSAGE_ERROR=DIFFERENT_PASS');
 		else{
 			if ($_POST['status'] == 'secretary')
 			{
@@ -219,7 +219,7 @@ if (isset($_POST['action']))
 				$U=new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
 			}
 			echo($U->toHTML());
-			header('Location: ./admin_panel.php');
+			header('Location: ./admin_panel2.php');
 		}
 	}
 
@@ -241,7 +241,7 @@ if (isset($_POST['action']))
 			$P->addStatus(new Statut_personne(Statut_personne::SPEAKER));
 		}
 		echo($P->toHTML());
-		header('Location: ./admin_panel.php');
+		header('Location: ./admin_panel2.php');
 	}
 
 	if ($_POST['action'] == 'delete_person')
@@ -249,13 +249,20 @@ if (isset($_POST['action']))
 		$P = new Personne();
 		$P->loadFromDB(intval($_POST['id']));
 		$P->removeFromDB();
-		header('Location: ./admin_panel.php');
+		header('Location: ./admin_panel2.php');
 	}
 	if ($_POST['action'] == 'clear_db')
 	{
 		BaseDeDonnees::currentDB()->clear();
 		
-		header('Location: ./admin_panel.php');
+		header('Location: ./admin_panel2.php');
+	}
+	
+	if ($_POST['action'] == 'init_db')
+	{
+		BaseDeDonnees::currentDB()->initialize();
+		
+		header('Location: ./admin_panel2.php');
 	}
 	
 	if ($_POST['action'] == 'delete_group')
@@ -264,7 +271,7 @@ if (isset($_POST['action']))
 		if(!$G->loadFromDB(intval($_POST['id'])))die('Ooops: Group not found');
 		else echo("G id/name= ".$G->getId()." / ".$G->getName());
 		$G->removeFromDB();
-		header('Location: ./admin_panel.php');
+		header('Location: ./admin_panel2.php');
 	}
 }
 ?>

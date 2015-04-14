@@ -2,38 +2,10 @@
 ini_set('display_errors', 1); 
 error_reporting(E_ALL);
 
-require_once("class.BaseDeDonnees.php");
-require_once("class.Utilisateur.php");
-require_once('AWLUtilities.php');
-$error=false;
-
-if(isset($_POST['user'])){
-	$params=array($_POST['user']);
-	$query="select password from ".Utilisateur::TABLENAME." where login=$1 and id_person in (select id_person from  ".Statut_personne::TABLENAME." where status=6);";
-	$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
-	if($result){
-		$array=pg_fetch_assoc($result);
-		if($array!=null){
-	
-			if(session_validate_password($_POST['passwd'],$array['password'])){
-				header('Location: admin_panel.php');
-			}	
-		}
-	}
-	
-	$error=true;
-	if($error){
-			$error="<div class='ui-widget loginerrors'>
- 				<div class='ui-state-error ui-corner-all' style='padding: 0 .7em;'> 
-  <p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span> 
-   </p><p>Le mot de passe est erroné ou vous n'avez pas les droits nécessaires.</p>
-  <p></p>
-  </div>
-</div>";
-	}
-
-}
+ $agendav_path="http://edthote.fr/agendav2";
+ $galidav_path="http://edthote.fr/GaliDAV";
 ?>
+
 
  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -43,6 +15,61 @@ if(isset($_POST['user'])){
 <link rel="stylesheet" href="./boostrap.agendav.css">
 <title>Panneau d'administration</title></head>
 <body> 
+
+
+
+
+<form name="form1" method="post" action="<?php echo $galidav_path; ?>/admin_panel2.php"> 
+<input type="hidden" name="libelle" value="<?php echo $libelle; ?>" /> 
+</form> 
+
+
+<?php
+	require_once("class.BaseDeDonnees.php");
+	require_once("class.Utilisateur.php");
+	require_once('AWLUtilities.php');
+	$error=false;
+	
+	if(!BaseDeDonnees::currentDB()->connect()){
+		BaseDeDonnees::currentDB()->initialize();
+	}
+	
+	$query="select id_person from ".Utilisateur::TABLENAME." where id_person in (select id_person from  ".Statut_personne::TABLENAME." where status=6);";
+	//$query="select id_person from ".Utilisateur::TABLENAME.";";
+	$result=BaseDeDonnees::currentDB()->executeQuery($query);
+	if($result!=null and pg_fetch_assoc($result)!=null){//We have found an admin user in our database
+		if(isset($_POST['user'])) //If teh user has registered, check his data
+		{
+			$params=array($_POST['user']);
+			$query="select password from ".Utilisateur::TABLENAME." where login=$1 and id_person in (select id_person from  ".Statut_personne::TABLENAME." where status=6);";
+			$result=BaseDeDonnees::currentDB()->executeQuery($query,$params);
+			if($result){
+				$array=pg_fetch_assoc($result);
+				if($array!=null){
+					if(session_validate_password($_POST['passwd'],$array['password'])){
+						echo("
+						<script type='text/javascript'> 
+					 document.form1.submit(); </script>");
+					}	
+				}
+			}
+			$error=true;
+			if($error){
+					$error="<div class='ui-widget loginerrors'>
+		 				<div class='ui-state-error ui-corner-all' style='padding: 0 .7em;'> 
+		  <p><span class='ui-icon ui-icon-alert' style='float: left; margin-right: .3em;'></span> 
+		   </p><p>Le mot de passe est erroné ou vous n'avez pas les droits nécessaires.</p>
+		  <p></p>
+		  </div>
+		</div>";
+			}
+
+		}
+	}
+	else { //Theres no admin user thus, we should authorize access to admin_panel2
+		echo("<script type='text/javascript'>document.form1.submit(); </script>");
+	}
+?>
 <div class="navbar">
  <div class="navbar-inner">
   <div class="container-fluid">
@@ -55,7 +82,7 @@ if(isset($_POST['user'])){
    <ul class="nav pull-right">
   <?php
  
-  $agendav_path="http://edthote.fr/agendav2";
+ 
   	echo("<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><a href='$agendav_path/index.php' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role='button' aria-disabled='false'> <span class='ui-button-text'>Retour aux emplois du temps</span></a></li>");
   	
   	?>
@@ -83,7 +110,7 @@ if(isset($_POST['user'])){
             else 
             echo  "<input name='user' value='' id='login_user' maxlength='40' size='15' class='input-medium' autofocus='autofocus' type='text'>";
             ?>
-            </div>            </div>
+            </div></div>
                       <div class="control-group">
             <label class="control-label">Mot de passe</label><div class="controls"><input name="passwd" value="" id="login_passwd" maxlength="40" class="input-medium" size="15" type="password"></div>            </div>
         <input aria-disabled="false" role="button" class="ui-button ui-widget ui-state-default ui-corner-all" name="login" value="Se connecter" type="submit"></form></div>
