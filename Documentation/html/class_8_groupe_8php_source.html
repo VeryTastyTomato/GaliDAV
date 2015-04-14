@@ -489,31 +489,45 @@ var searchBox = new SearchBox("searchBox", "search",false,'Recherche');
 <a name="l00408"></a>00408         $this-&gt;<a class="code" href="class_groupe.html#a85d325d046caa63365edfec8f398b066">setListOfStudents</a>(); <span class="comment">// remove all students from the group (DB)</span>
 <a name="l00409"></a>00409         $this-&gt;<a class="code" href="class_groupe.html#ad61c43b56cac228cf0dddd4b9b1effc5">setListOfLinkedGroups</a>(); <span class="comment">// remove all links with other groups/classes (DB)</span>
 <a name="l00410"></a>00410         $params = array(intval($this-&gt;sqlid));
-<a name="l00411"></a>00411         $query  = <span class="stringliteral">&quot;delete from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; where id=$1;&quot;</span>;
-<a name="l00412"></a>00412         <span class="comment">//TODO remove the group calendar and the subject calendar</span>
-<a name="l00413"></a>00413         <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query, $params))
-<a name="l00414"></a>00414         {           
-<a name="l00415"></a>00415             $BDD = <span class="keyword">new</span> <a class="code" href="class_base_de_donnees.html">BaseDeDonnees</a>(<span class="stringliteral">&quot;davical_app&quot;</span>, <span class="stringliteral">&quot;davical&quot;</span>);
-<a name="l00416"></a>00416             <span class="keywordflow">if</span> (!$BDD-&gt;connect())
-<a name="l00417"></a>00417             {
-<a name="l00418"></a>00418                 echo(<span class="stringliteral">&quot;pas de connexion vrs davical&quot;</span>);
-<a name="l00419"></a>00419             }
-<a name="l00420"></a>00420             <span class="keywordflow">else</span>
-<a name="l00421"></a>00421             {
-<a name="l00422"></a>00422                 $params = array($this-&gt;name);
-<a name="l00423"></a>00423                 $query2 = <span class="stringliteral">&quot;delete from dav_principal where username=$1;&quot;</span>;
-<a name="l00424"></a>00424                 $BDD-&gt;executeQuery($query2, $params);
-<a name="l00425"></a>00425                 $BDD-&gt;close();
-<a name="l00426"></a>00426             }
-<a name="l00427"></a>00427         
-<a name="l00428"></a>00428         }
-<a name="l00429"></a>00429         <span class="keywordflow">else</span>
-<a name="l00430"></a>00430         {
-<a name="l00431"></a>00431             <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error();
-<a name="l00432"></a>00432         }
-<a name="l00433"></a>00433     }
-<a name="l00434"></a>00434 }
-<a name="l00435"></a>00435 ?&gt;
+<a name="l00411"></a>00411         $this-&gt;timetable-&gt;removeFromDB();
+<a name="l00412"></a>00412         
+<a name="l00413"></a>00413         $query  = <span class="stringliteral">&quot;select id from &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot; where id_group=$1;&quot;</span>;
+<a name="l00414"></a>00414         $result=<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query, $params);
+<a name="l00415"></a>00415         <span class="keywordflow">if</span>($result){
+<a name="l00416"></a>00416             $array=pg_fetch_assoc($result);
+<a name="l00417"></a>00417             <span class="keywordflow">while</span>($array!=null){
+<a name="l00418"></a>00418                 $array=$array[<span class="stringliteral">&#39;id&#39;</span>];
+<a name="l00419"></a>00419                 $S=<span class="keyword">new</span> <a class="code" href="class_matiere.html">Matiere</a>();
+<a name="l00420"></a>00420                 <span class="keywordflow">if</span>($S-&gt;loadFromDB($array[<span class="stringliteral">&#39;id&#39;</span>]))
+<a name="l00421"></a>00421                     $S-&gt;removeFromDB();
+<a name="l00422"></a>00422                 $array=pg_fetch_assoc($result);
+<a name="l00423"></a>00423             }
+<a name="l00424"></a>00424         }
+<a name="l00425"></a>00425         
+<a name="l00426"></a>00426         $query  = <span class="stringliteral">&quot;delete from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; where id=$1;&quot;</span>;
+<a name="l00427"></a>00427         <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query, $params))
+<a name="l00428"></a>00428         {           
+<a name="l00429"></a>00429             $BDD = <span class="keyword">new</span> <a class="code" href="class_base_de_donnees.html">BaseDeDonnees</a>(<span class="stringliteral">&quot;davical_app&quot;</span>, <span class="stringliteral">&quot;davical&quot;</span>);
+<a name="l00430"></a>00430             <span class="keywordflow">if</span> (!$BDD-&gt;connect())
+<a name="l00431"></a>00431             {
+<a name="l00432"></a>00432                 echo(<span class="stringliteral">&quot;pas de connexion vrs davical&quot;</span>);
+<a name="l00433"></a>00433             }
+<a name="l00434"></a>00434             <span class="keywordflow">else</span>
+<a name="l00435"></a>00435             {
+<a name="l00436"></a>00436                 $params = array($this-&gt;name);
+<a name="l00437"></a>00437                 $query2 = <span class="stringliteral">&quot;delete from dav_principal where username=$1;&quot;</span>;
+<a name="l00438"></a>00438                 $BDD-&gt;executeQuery($query2, $params);
+<a name="l00439"></a>00439                 $BDD-&gt;close();
+<a name="l00440"></a>00440             }
+<a name="l00441"></a>00441         
+<a name="l00442"></a>00442         }
+<a name="l00443"></a>00443         <span class="keywordflow">else</span>
+<a name="l00444"></a>00444         {
+<a name="l00445"></a>00445             <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error();
+<a name="l00446"></a>00446         }
+<a name="l00447"></a>00447     }
+<a name="l00448"></a>00448 }
+<a name="l00449"></a>00449 ?&gt;
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -532,7 +546,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Recherche');
 
 
 <hr class="footer"/><address class="footer"><small>
-Généré le Lundi Avril 13 2015 22:05:26 pour GaliDAV par &#160;<a href="http://www.doxygen.org/index.html">
+Généré le Mardi Avril 14 2015 05:38:36 pour GaliDAV par &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

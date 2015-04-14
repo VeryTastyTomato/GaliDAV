@@ -2,8 +2,10 @@
 ini_set('display_errors', 1); 
 error_reporting(E_ALL);
 
+
  $agendav_path="http://edthote.fr/agendav2";
  $galidav_path="http://edthote.fr/GaliDAV";
+
 ?>
 
 
@@ -81,7 +83,6 @@ error_reporting(E_ALL);
 
    <ul class="nav pull-right">
   <?php
- 
  
   	echo("<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><a href='$agendav_path/index.php' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role='button' aria-disabled='false'> <span class='ui-button-text'>Retour aux emplois du temps</span></a></li>");
   	

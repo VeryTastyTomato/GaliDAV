@@ -90,841 +90,846 @@ var searchBox = new SearchBox("searchBox", "search",false,'Recherche');
 <a name="l00009"></a>00009 require_once(<span class="stringliteral">&#39;class.Cours.php&#39;</span>);
 <a name="l00010"></a>00010 require_once(<span class="stringliteral">&#39;class.Modification.php&#39;</span>);
 <a name="l00011"></a>00011 require_once(<span class="stringliteral">&#39;class.Utilisateur.php&#39;</span>);
-<a name="l00012"></a>00012 
-<a name="l00013"></a><a class="code" href="class_e_d_t.html">00013</a> <span class="keyword">class </span><a class="code" href="class_e_d_t.html">EDT</a>
-<a name="l00014"></a>00014 {
-<a name="l00015"></a>00015     <span class="comment">// --- ASSOCIATIONS ---</span>
-<a name="l00016"></a>00016 
-<a name="l00017"></a>00017     <span class="comment">// --- ATTRIBUTES --- // Flora: Attributes shouldn’t be private since they are used by inheriting classes</span>
-<a name="l00018"></a><a class="code" href="class_e_d_t.html#a1ecc26a6f432fee8ea28929497d08413">00018</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#a1ecc26a6f432fee8ea28929497d08413">$sqlid</a> = NULL;
-<a name="l00019"></a><a class="code" href="class_e_d_t.html#a12a56fc0f8f35e912ab3ddef3cee1b33">00019</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#a12a56fc0f8f35e912ab3ddef3cee1b33">$modifiedBy</a> = NULL;
-<a name="l00020"></a><a class="code" href="class_e_d_t.html#a0502060f95bc31c96fe662bbc271358a">00020</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#a0502060f95bc31c96fe662bbc271358a">$listCourses</a> = array();
-<a name="l00021"></a><a class="code" href="class_e_d_t.html#a3319db202042c34ec12aef5e0c043699">00021</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#a3319db202042c34ec12aef5e0c043699">$listModif</a> = array();
-<a name="l00022"></a><a class="code" href="class_e_d_t.html#ad530a85733b0ec1dc321859fd8faa0dc">00022</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#ad530a85733b0ec1dc321859fd8faa0dc">$group</a> = NULL;
-<a name="l00023"></a><a class="code" href="class_e_d_t.html#aca333f74c2093b057b0946fb7c3b37b1">00023</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#aca333f74c2093b057b0946fb7c3b37b1">$teacherOwner</a> = NULL; <span class="comment">// if it’s a teacher’s timetable, else it’s value is NULL</span>
-<a name="l00024"></a><a class="code" href="class_e_d_t.html#afea90503726cd5ad2eb80baf0b6d217d">00024</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#afea90503726cd5ad2eb80baf0b6d217d">$subject</a> = NULL; <span class="comment">// Flora: for subject calendars, useful?</span>
-<a name="l00025"></a><a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">00025</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">$validated</a> = FALSE;
-<a name="l00026"></a><a class="code" href="class_e_d_t.html#a040df372a2881a0d8321f62f94263a07">00026</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#a040df372a2881a0d8321f62f94263a07">$idcollection</a>=null;
-<a name="l00027"></a>00027 
-<a name="l00028"></a><a class="code" href="class_e_d_t.html#a929a03de916b4bf52b6d52fbb4d7a872">00028</a>     <span class="keyword">const</span> <a class="code" href="class_e_d_t.html#a929a03de916b4bf52b6d52fbb4d7a872">TABLENAME</a> = <span class="stringliteral">&quot;gcalendar&quot;</span>;
-<a name="l00029"></a><a class="code" href="class_e_d_t.html#a1890a9aada59b85496ae83fc4629168d">00029</a>     <span class="keyword">const</span> <a class="code" href="class_e_d_t.html#a1890a9aada59b85496ae83fc4629168d">SQLcolumns</a> = <span class="stringliteral">&quot;id serial PRIMARY KEY, id_collection bigint unique, id_teacher integer REFERENCES guser(id_person), is_class_calendar boolean default false, is_validated_calendar boolean default false, is_being_modified_by integer REFERENCES guser(id_person), date_creation timestamp default &#39;now&#39;&quot;</span>;
-<a name="l00030"></a>00030 
-<a name="l00031"></a>00031     <span class="comment">/* Flora : </span>
-<a name="l00032"></a>00032 <span class="comment">    A timetable or calendar in the GaliDAV database can be a calendar of a class, a group, a subject or a teacher, since AgenDAV doesn’t implement a hierarchy of calendars. Moreover, a class is linked to a current calendar and a validated calendar. Groups, subjects and teachers don’t require a validated calendar.</span>
-<a name="l00033"></a>00033 <span class="comment">    </span>
-<a name="l00034"></a>00034 <span class="comment">    It is expected that every change to a current calendar affects all the calendars that are linked to it.</span>
-<a name="l00035"></a>00035 <span class="comment">    See the class Groupe and its table named linkedTo.</span>
-<a name="l00036"></a>00036 <span class="comment">    </span>
-<a name="l00037"></a>00037 <span class="comment">    User changes are possible on class and subject current calendars. The system is in charge of updating all calendars related</span>
-<a name="l00038"></a>00038 <span class="comment">    Note: There’s no SQL reference to a group id or a subject id in this table since there’s already one in group table and subject table.</span>
-<a name="l00039"></a>00039 <span class="comment">    */</span>
-<a name="l00040"></a>00040 
+<a name="l00012"></a>00012 <span class="comment">//require_once(&#39;shared_calendars.php&#39;);</span>
+<a name="l00013"></a>00013 
+<a name="l00014"></a><a class="code" href="class_e_d_t.html">00014</a> <span class="keyword">class </span><a class="code" href="class_e_d_t.html">EDT</a>
+<a name="l00015"></a>00015 {
+<a name="l00016"></a>00016     <span class="comment">// --- ASSOCIATIONS ---</span>
+<a name="l00017"></a>00017 
+<a name="l00018"></a>00018     <span class="comment">// --- ATTRIBUTES --- // Flora: Attributes shouldn’t be private since they are used by inheriting classes</span>
+<a name="l00019"></a><a class="code" href="class_e_d_t.html#a1ecc26a6f432fee8ea28929497d08413">00019</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#a1ecc26a6f432fee8ea28929497d08413">$sqlid</a> = NULL;
+<a name="l00020"></a><a class="code" href="class_e_d_t.html#a12a56fc0f8f35e912ab3ddef3cee1b33">00020</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#a12a56fc0f8f35e912ab3ddef3cee1b33">$modifiedBy</a> = NULL;
+<a name="l00021"></a><a class="code" href="class_e_d_t.html#a0502060f95bc31c96fe662bbc271358a">00021</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#a0502060f95bc31c96fe662bbc271358a">$listCourses</a> = array();
+<a name="l00022"></a><a class="code" href="class_e_d_t.html#a3319db202042c34ec12aef5e0c043699">00022</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#a3319db202042c34ec12aef5e0c043699">$listModif</a> = array();
+<a name="l00023"></a><a class="code" href="class_e_d_t.html#ad530a85733b0ec1dc321859fd8faa0dc">00023</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#ad530a85733b0ec1dc321859fd8faa0dc">$group</a> = NULL;
+<a name="l00024"></a><a class="code" href="class_e_d_t.html#aca333f74c2093b057b0946fb7c3b37b1">00024</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#aca333f74c2093b057b0946fb7c3b37b1">$teacherOwner</a> = NULL; <span class="comment">// if it’s a teacher’s timetable, else it’s value is NULL</span>
+<a name="l00025"></a><a class="code" href="class_e_d_t.html#afea90503726cd5ad2eb80baf0b6d217d">00025</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#afea90503726cd5ad2eb80baf0b6d217d">$subject</a> = NULL; <span class="comment">// Flora: for subject calendars, useful?</span>
+<a name="l00026"></a><a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">00026</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">$validated</a> = FALSE;
+<a name="l00027"></a><a class="code" href="class_e_d_t.html#a040df372a2881a0d8321f62f94263a07">00027</a>     <span class="keyword">protected</span> <a class="code" href="class_e_d_t.html#a040df372a2881a0d8321f62f94263a07">$idcollection</a>=null;
+<a name="l00028"></a>00028 
+<a name="l00029"></a><a class="code" href="class_e_d_t.html#a929a03de916b4bf52b6d52fbb4d7a872">00029</a>     <span class="keyword">const</span> <a class="code" href="class_e_d_t.html#a929a03de916b4bf52b6d52fbb4d7a872">TABLENAME</a> = <span class="stringliteral">&quot;gcalendar&quot;</span>;
+<a name="l00030"></a><a class="code" href="class_e_d_t.html#a1890a9aada59b85496ae83fc4629168d">00030</a>     <span class="keyword">const</span> <a class="code" href="class_e_d_t.html#a1890a9aada59b85496ae83fc4629168d">SQLcolumns</a> = <span class="stringliteral">&quot;id serial PRIMARY KEY, id_collection bigint unique, id_teacher integer REFERENCES guser(id_person), is_class_calendar boolean default false, is_validated_calendar boolean default false, is_being_modified_by integer REFERENCES guser(id_person), date_creation timestamp default &#39;now&#39;&quot;</span>;
+<a name="l00031"></a>00031 
+<a name="l00032"></a>00032     <span class="comment">/* Flora : </span>
+<a name="l00033"></a>00033 <span class="comment">    A timetable or calendar in the GaliDAV database can be a calendar of a class, a group, a subject or a teacher, since AgenDAV doesn’t implement a hierarchy of calendars. Moreover, a class is linked to a current calendar and a validated calendar. Groups, subjects and teachers don’t require a validated calendar.</span>
+<a name="l00034"></a>00034 <span class="comment">    </span>
+<a name="l00035"></a>00035 <span class="comment">    It is expected that every change to a current calendar affects all the calendars that are linked to it.</span>
+<a name="l00036"></a>00036 <span class="comment">    See the class Groupe and its table named linkedTo.</span>
+<a name="l00037"></a>00037 <span class="comment">    </span>
+<a name="l00038"></a>00038 <span class="comment">    User changes are possible on class and subject current calendars. The system is in charge of updating all calendars related</span>
+<a name="l00039"></a>00039 <span class="comment">    Note: There’s no SQL reference to a group id or a subject id in this table since there’s already one in group table and subject table.</span>
+<a name="l00040"></a>00040 <span class="comment">    */</span>
 <a name="l00041"></a>00041 
-<a name="l00042"></a>00042     <span class="comment">// --- OPERATIONS ---</span>
-<a name="l00043"></a>00043     <span class="comment">// constructor</span>
-<a name="l00044"></a><a class="code" href="class_e_d_t.html#aad3e3d18c10d1440771db252b047003a">00044</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#aad3e3d18c10d1440771db252b047003a">__construct</a>($Object = NULL, <a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">$validated</a> = FALSE)
-<a name="l00045"></a>00045     {
-<a name="l00046"></a>00046         <span class="keywordflow">if</span> (is_a($Object, <span class="stringliteral">&quot;Groupe&quot;</span>) or is_a($Object, <span class="stringliteral">&quot;Matiere&quot;</span>) or is_a($Object, <span class="stringliteral">&quot;Enseignant&quot;</span>))
-<a name="l00047"></a>00047         {
-<a name="l00048"></a>00048             $this-&gt;validated = FALSE;
-<a name="l00049"></a>00049             $query           = <span class="stringliteral">&quot;insert into &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; DEFAULT VALUES;&quot;</span>;
-<a name="l00050"></a>00050             <span class="keywordflow">if</span>(!<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00051"></a>00051             {
-<a name="l00052"></a>00052                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00053"></a>00053             }
-<a name="l00054"></a>00054             
-<a name="l00055"></a>00055             $query       = <span class="stringliteral">&quot;select id from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; order by date_creation desc;&quot;</span>;
-<a name="l00056"></a>00056             $result= <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
-<a name="l00057"></a>00057             <span class="keywordflow">if</span>($result) 
-<a name="l00058"></a>00058             {
-<a name="l00059"></a>00059                 $result      = pg_fetch_assoc($result);
-<a name="l00060"></a>00060                 $this-&gt;sqlid = $result[<span class="stringliteral">&#39;id&#39;</span>];
-<a name="l00061"></a>00061             }
-<a name="l00062"></a>00062             <span class="keywordflow">else</span>
-<a name="l00063"></a>00063             {
-<a name="l00064"></a>00064                 
-<a name="l00065"></a>00065                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00066"></a>00066             }
-<a name="l00067"></a>00067             
-<a name="l00068"></a>00068 
-<a name="l00069"></a>00069             <span class="keywordflow">if</span> (is_a($Object, <span class="stringliteral">&quot;Groupe&quot;</span>))
-<a name="l00070"></a>00070             {
-<a name="l00071"></a>00071                 $G = $Object;
-<a name="l00072"></a>00072 
-<a name="l00073"></a>00073                 <span class="keywordflow">if</span> ($G-&gt;getIsAClass())
-<a name="l00074"></a>00074                 {
-<a name="l00075"></a>00075                     $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set is_class_calendar=true where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00076"></a>00076 
-<a name="l00077"></a>00077                     <span class="keywordflow">if</span> (!<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00078"></a>00078                     {
-<a name="l00079"></a>00079                         <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00080"></a>00080                     }
-<a name="l00081"></a>00081 
-<a name="l00082"></a>00082                     <span class="keywordflow">if</span> (<a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">$validated</a>)
-<a name="l00083"></a>00083                     {
-<a name="l00084"></a>00084                         $this-&gt;validated = TRUE;
-<a name="l00085"></a>00085                         $query           = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set is_validated_calendar=true where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00086"></a>00086                         <span class="keywordflow">if</span> (!<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00087"></a>00087                         {
-<a name="l00088"></a>00088                             <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00089"></a>00089                         }
-<a name="l00090"></a>00090                     }
-<a name="l00091"></a>00091                 }
-<a name="l00092"></a>00092                 <span class="keywordflow">else</span>
-<a name="l00093"></a>00093                 {
-<a name="l00094"></a>00094                     <a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">$validated</a> = FALSE; <span class="comment">// only Classes have validated calendars (-&gt;PDF)</span>
-<a name="l00095"></a>00095                 }
-<a name="l00096"></a>00096 
-<a name="l00097"></a>00097                 <span class="keywordflow">if</span> (<a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">$validated</a>)
-<a name="l00098"></a>00098                 {
-<a name="l00099"></a>00099                     $query = <span class="stringliteral">&quot;update &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_validated_timetable=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span> . $G-&gt;getId() . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00100"></a>00100                 }
-<a name="l00101"></a>00101                 <span class="keywordflow">else</span>
-<a name="l00102"></a>00102                 {
-<a name="l00103"></a>00103                     $query = <span class="stringliteral">&quot;update &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_current_timetable=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span> . $G-&gt;getId() . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00104"></a>00104                 }
-<a name="l00105"></a>00105 
-<a name="l00106"></a>00106                 <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00107"></a>00107                 {
-<a name="l00108"></a>00108                     $idcollec=(int)<a class="code" href="test__davical__operations_8php.html#ac31342552caa14576478e347cd0fa901">CreateCalendar</a>($G-&gt;getName(), $G-&gt;getName() . <span class="stringliteral">&quot; EDT&quot;</span>);
-<a name="l00109"></a>00109                     $this-&gt;<a class="code" href="class_e_d_t.html#a8d0522e673fbb7629abb95550261d0cd">setIdCollection</a>($idcollec);
-<a name="l00110"></a>00110                     $this-&gt;group = $G;
-<a name="l00111"></a>00111                 }
-<a name="l00112"></a>00112                 <span class="keywordflow">else</span>
-<a name="l00113"></a>00113                 {
-<a name="l00114"></a>00114                     <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS_);
-<a name="l00115"></a>00115                 }
-<a name="l00116"></a>00116             }
-<a name="l00117"></a>00117             <span class="keywordflow">else</span> <span class="keywordflow">if</span> (is_a($Object, <span class="stringliteral">&quot;Matiere&quot;</span>))
-<a name="l00118"></a>00118             {
-<a name="l00119"></a>00119                 $M     = $Object;
-<a name="l00120"></a>00120                 $query = <span class="stringliteral">&quot;update &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot; set id_calendar=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span>.$M-&gt;getSqlid().<span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00121"></a>00121 
-<a name="l00122"></a>00122                 <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00123"></a>00123                 {
-<a name="l00124"></a>00124                     $idcollec=(int)<a class="code" href="test__davical__operations_8php.html#ac31342552caa14576478e347cd0fa901">CreateCalendar</a>($M-&gt;getGroup()-&gt;getName(), $M-&gt;getName().<span class="stringliteral">&quot; &quot;</span>.$M-&gt;getGroup()-&gt;getName());
-<a name="l00125"></a>00125                     $this-&gt;<a class="code" href="class_e_d_t.html#a8d0522e673fbb7629abb95550261d0cd">setIdCollection</a>($idcollec);
-<a name="l00126"></a>00126                     $this-&gt;subject = $M;
-<a name="l00127"></a>00127                 }
-<a name="l00128"></a>00128                 <span class="keywordflow">else</span>
-<a name="l00129"></a>00129                 {   
-<a name="l00130"></a>00130                         <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS_);
-<a name="l00131"></a>00131                 }
-<a name="l00132"></a>00132             }
-<a name="l00133"></a>00133             <span class="keywordflow">else</span> <span class="keywordflow">if</span> (is_a($Object, <span class="stringliteral">&quot;Enseignant&quot;</span>))
-<a name="l00134"></a>00134             {
-<a name="l00135"></a>00135                 $E     = $Object;
-<a name="l00136"></a>00136                 $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set id_teacher=&quot;</span> . $E-&gt;getSqlid() . <span class="stringliteral">&quot; where id=&quot;</span>.$this-&gt;sqlid.<span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00137"></a>00137 
-<a name="l00138"></a>00138                 <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00139"></a>00139                 {
-<a name="l00140"></a>00140                     $idcollec=(int)<a class="code" href="test__davical__operations_8php.html#ac31342552caa14576478e347cd0fa901">CreateCalendar</a>($E-&gt;getLogin(), $E-&gt;getFullName() . <span class="stringliteral">&quot; EDT&quot;</span>);
-<a name="l00141"></a>00141                     $this-&gt;<a class="code" href="class_e_d_t.html#a8d0522e673fbb7629abb95550261d0cd">setIdCollection</a>($idcollec);
-<a name="l00142"></a>00142                     $this-&gt;teacherOwner = $E;
-<a name="l00143"></a>00143                 }
-<a name="l00144"></a>00144                 <span class="keywordflow">else</span>
-<a name="l00145"></a>00145                 {
-<a name="l00146"></a>00146                     <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00147"></a>00147                 }
-<a name="l00148"></a>00148             }
-<a name="l00149"></a>00149             
-<a name="l00150"></a>00150             $this-&gt;<a class="code" href="class_e_d_t.html#ab050dd66d46a6fff00172e8d5974dcdf">autoShare</a>();
-<a name="l00151"></a>00151         }
-<a name="l00152"></a>00152     }
-<a name="l00153"></a>00153 
-<a name="l00154"></a>00154     <span class="comment">// getters</span>
-<a name="l00155"></a><a class="code" href="class_e_d_t.html#a12251d0c022e9e21c137a105ff683f13">00155</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a12251d0c022e9e21c137a105ff683f13">getId</a>()
-<a name="l00156"></a>00156     {
-<a name="l00157"></a>00157         <span class="keywordflow">return</span> $this-&gt;sqlid;
-<a name="l00158"></a>00158     }
-<a name="l00159"></a>00159 
-<a name="l00160"></a><a class="code" href="class_e_d_t.html#a953c961ababda0eb06026fa42b4903e1">00160</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a953c961ababda0eb06026fa42b4903e1">getModifiedBy</a>()
-<a name="l00161"></a>00161     {
-<a name="l00162"></a>00162         <span class="keywordflow">return</span> $this-&gt;modifiedBy;
-<a name="l00163"></a>00163     }
-<a name="l00164"></a>00164 
-<a name="l00165"></a><a class="code" href="class_e_d_t.html#ac5b5b08687b6ff9e0ec097dd34532012">00165</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ac5b5b08687b6ff9e0ec097dd34532012">getListCourses</a>()
-<a name="l00166"></a>00166     {
-<a name="l00167"></a>00167         <span class="keywordflow">return</span> $this-&gt;listCourses;
-<a name="l00168"></a>00168     }
-<a name="l00169"></a>00169 
-<a name="l00170"></a><a class="code" href="class_e_d_t.html#ade1c7e7114c5bfb2a9ab6a6e028f173c">00170</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ade1c7e7114c5bfb2a9ab6a6e028f173c">getListModif</a>()
-<a name="l00171"></a>00171     {
-<a name="l00172"></a>00172         <span class="keywordflow">return</span> $this-&gt;listModif;
-<a name="l00173"></a>00173     }
-<a name="l00174"></a>00174 
-<a name="l00175"></a><a class="code" href="class_e_d_t.html#a4f44e7bc9de772c21b4304d11e87bf16">00175</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a4f44e7bc9de772c21b4304d11e87bf16">getGroup</a>()
-<a name="l00176"></a>00176     {
-<a name="l00177"></a>00177         <span class="keywordflow">return</span> $this-&gt;group;
-<a name="l00178"></a>00178     }
-<a name="l00179"></a>00179 
-<a name="l00180"></a><a class="code" href="class_e_d_t.html#a7ec8f5b794ded8f3c0df9afd96c8233c">00180</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a7ec8f5b794ded8f3c0df9afd96c8233c">getSubject</a>()
-<a name="l00181"></a>00181     {
-<a name="l00182"></a>00182         <span class="keywordflow">return</span> $this-&gt;subject;
-<a name="l00183"></a>00183     }
-<a name="l00184"></a>00184 
-<a name="l00185"></a><a class="code" href="class_e_d_t.html#a349924800b9cc6134a6606c4ee4a4e27">00185</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a349924800b9cc6134a6606c4ee4a4e27">getTeacherOwner</a>()
-<a name="l00186"></a>00186     {
-<a name="l00187"></a>00187         <span class="keywordflow">return</span> $this-&gt;teacherOwner;
-<a name="l00188"></a>00188     }
-<a name="l00189"></a><a class="code" href="class_e_d_t.html#ae343e775e67f544a1be10343d21e2c21">00189</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ae343e775e67f544a1be10343d21e2c21">getIdCollection</a>()
-<a name="l00190"></a>00190     {
-<a name="l00191"></a>00191         <span class="keywordflow">return</span> $this-&gt;idcollection;
-<a name="l00192"></a>00192     }
-<a name="l00193"></a>00193 
-<a name="l00194"></a><a class="code" href="class_e_d_t.html#a62ffea6af35973c517b05a2447b2e802">00194</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a62ffea6af35973c517b05a2447b2e802">containsCourse</a>(<a class="code" href="class_cours.html">Cours</a> $C)
-<a name="l00195"></a>00195     {
-<a name="l00196"></a>00196         <span class="keywordflow">foreach</span> ($this-&gt;listCourses as $oneCourse)
-<a name="l00197"></a>00197         {
-<a name="l00198"></a>00198             <span class="keywordflow">if</span> ($oneCourse == $C)
-<a name="l00199"></a>00199             {
-<a name="l00200"></a>00200                 <span class="keywordflow">return</span> TRUE;
-<a name="l00201"></a>00201             }
-<a name="l00202"></a>00202         }
-<a name="l00203"></a>00203 
-<a name="l00204"></a>00204         <span class="keywordflow">return</span> FALSE;
-<a name="l00205"></a>00205     }
-<a name="l00206"></a>00206 
-<a name="l00207"></a><a class="code" href="class_e_d_t.html#ae342a57b384c876b57ca4a51da2e58d9">00207</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ae342a57b384c876b57ca4a51da2e58d9">hasModification</a>(<a class="code" href="class_modification.html">Modification</a> $M)
-<a name="l00208"></a>00208     {
-<a name="l00209"></a>00209         <span class="keywordflow">foreach</span> ($this-&gt;listModif as $oneModif)
-<a name="l00210"></a>00210         {
-<a name="l00211"></a>00211             <span class="keywordflow">if</span> ($oneModif == $M)
-<a name="l00212"></a>00212             {
-<a name="l00213"></a>00213                 <span class="keywordflow">return</span> TRUE;
-<a name="l00214"></a>00214             }
-<a name="l00215"></a>00215         }
-<a name="l00216"></a>00216 
-<a name="l00217"></a>00217         <span class="keywordflow">return</span> FALSE;
-<a name="l00218"></a>00218     }
-<a name="l00219"></a>00219 
-<a name="l00220"></a>00220     <span class="comment">// setters</span>
-<a name="l00221"></a><a class="code" href="class_e_d_t.html#aa0453166d92d2b7b639e0b01eae8e90c">00221</a>     <span class="keyword">protected</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#aa0453166d92d2b7b639e0b01eae8e90c">setId</a>($newIdTimetable)
-<a name="l00222"></a>00222     {
-<a name="l00223"></a>00223         <span class="keywordflow">if</span> (is_int($newIdTimetable))
-<a name="l00224"></a>00224         {
-<a name="l00225"></a>00225             $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set id=&quot;</span> . $newIdTimetable . <span class="stringliteral">&quot; where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00226"></a>00226 
-<a name="l00227"></a>00227             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00228"></a>00228             {
-<a name="l00229"></a>00229                 $this-&gt;sqlid = $newIdTimetable;
-<a name="l00230"></a>00230             }
-<a name="l00231"></a>00231             <span class="keywordflow">else</span>
-<a name="l00232"></a>00232             {
-<a name="l00233"></a>00233                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00234"></a>00234             }
-<a name="l00235"></a>00235         }
-<a name="l00236"></a>00236     }
-<a name="l00237"></a>00237 
-<a name="l00238"></a><a class="code" href="class_e_d_t.html#a8d0522e673fbb7629abb95550261d0cd">00238</a>     <span class="keyword">protected</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a8d0522e673fbb7629abb95550261d0cd">setIdCollection</a>($newId)
-<a name="l00239"></a>00239     {
-<a name="l00240"></a>00240         <span class="keywordflow">if</span> (is_int($newId))
-<a name="l00241"></a>00241         {
-<a name="l00242"></a>00242             $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set id_collection=&quot;</span> . $newId . <span class="stringliteral">&quot; where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00243"></a>00243 
-<a name="l00244"></a>00244             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00245"></a>00245             {
-<a name="l00246"></a>00246                 $this-&gt;idcollection = $newId;
-<a name="l00247"></a>00247             }
-<a name="l00248"></a>00248             <span class="keywordflow">else</span>
-<a name="l00249"></a>00249             {
-<a name="l00250"></a>00250                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00251"></a>00251             }
-<a name="l00252"></a>00252         }
-<a name="l00253"></a>00253     }
-<a name="l00254"></a>00254     
-<a name="l00255"></a><a class="code" href="class_e_d_t.html#adc960879ce9a85edad73a778fb98f227">00255</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#adc960879ce9a85edad73a778fb98f227">setModifiedBy</a>(<a class="code" href="class_personne.html">Personne</a> $newModifiedBy = NULL)
-<a name="l00256"></a>00256     {
-<a name="l00257"></a>00257         <span class="keywordflow">if</span> (!empty($newModifiedBy))
-<a name="l00258"></a>00258         {
-<a name="l00259"></a>00259             $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set is_being_modified_by=&quot;</span> . $newModifiedBy-&gt;getSqlid() . <span class="stringliteral">&quot; where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00260"></a>00260 
-<a name="l00261"></a>00261             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00262"></a>00262             {
-<a name="l00263"></a>00263                 $this-&gt;modifiedBy = $newModifiedBy;
-<a name="l00264"></a>00264             }
-<a name="l00265"></a>00265             <span class="keywordflow">else</span>
-<a name="l00266"></a>00266             {
-<a name="l00267"></a>00267                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00268"></a>00268             }
-<a name="l00269"></a>00269         }
-<a name="l00270"></a>00270         <span class="keywordflow">else</span>
-<a name="l00271"></a>00271         {
-<a name="l00272"></a>00272             $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set is_being_modified_by=NULL where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00273"></a>00273 
-<a name="l00274"></a>00274             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00275"></a>00275             {
-<a name="l00276"></a>00276                 $this-&gt;modifiedBy = NULL;
-<a name="l00277"></a>00277             }
-<a name="l00278"></a>00278             <span class="keywordflow">else</span>
-<a name="l00279"></a>00279             {
-<a name="l00280"></a>00280                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00281"></a>00281             }
-<a name="l00282"></a>00282         }
-<a name="l00283"></a>00283     }
-<a name="l00284"></a>00284 
-<a name="l00285"></a><a class="code" href="class_e_d_t.html#a3b3e623a901ce24b7cf81c84beb86bbb">00285</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a3b3e623a901ce24b7cf81c84beb86bbb">setListCourses</a>($newListCourses = NULL)
-<a name="l00286"></a>00286     {
-<a name="l00287"></a>00287         <span class="keywordflow">foreach</span> ($this-&gt;listCourses as $oneCourse)
-<a name="l00288"></a>00288         {
-<a name="l00289"></a>00289             $this-&gt;<a class="code" href="class_e_d_t.html#a03fa3e0e2e146762ef59e991d379cb8b">removeCourse</a>($oneCourse);
-<a name="l00290"></a>00290         }
-<a name="l00291"></a>00291 
-<a name="l00292"></a>00292         <span class="keywordflow">if</span> (is_array($newListCourses))
-<a name="l00293"></a>00293         {
-<a name="l00294"></a>00294             <span class="keywordflow">foreach</span> ($newListCourses as $aCourse)
-<a name="l00295"></a>00295             {
-<a name="l00296"></a>00296                 $this-&gt;<a class="code" href="class_e_d_t.html#a36aca5b391ab20faf5da65913ed629a6">addCourse</a>($aCourse);
-<a name="l00297"></a>00297             }
-<a name="l00298"></a>00298         }
-<a name="l00299"></a>00299     }
-<a name="l00300"></a>00300 
-<a name="l00301"></a><a class="code" href="class_e_d_t.html#a824aa936757cb9d48e5c8595b489e9bd">00301</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a824aa936757cb9d48e5c8595b489e9bd">setListModif</a>(<a class="code" href="class_modification.html">Modification</a> $newListModif = NULL)
-<a name="l00302"></a>00302     {
-<a name="l00303"></a>00303         <span class="keywordflow">foreach</span> ($this-&gt;listModif as $oneModif)
-<a name="l00304"></a>00304         {
-<a name="l00305"></a>00305             $this-&gt;<a class="code" href="class_e_d_t.html#a76586b167ae509b4048d97baef88f0a5">removeModification</a>($oneModif);
-<a name="l00306"></a>00306         }
-<a name="l00307"></a>00307 
-<a name="l00308"></a>00308         <span class="keywordflow">if</span> (is_array($newListModif))
-<a name="l00309"></a>00309         {
-<a name="l00310"></a>00310             <span class="keywordflow">foreach</span> ($newListModifs as $aModif)
-<a name="l00311"></a>00311             {
-<a name="l00312"></a>00312                 $this-&gt;<a class="code" href="class_e_d_t.html#ae36b050530c7ac89ace6adbf0d875441">addModification</a>($aModif);
-<a name="l00313"></a>00313             }
-<a name="l00314"></a>00314         }
-<a name="l00315"></a>00315     }
-<a name="l00316"></a>00316 
-<a name="l00317"></a>00317     <span class="comment">// This method shouldn’t be outside this class and its children since the attribute shouldn’t change after loading/creating the object</span>
-<a name="l00318"></a><a class="code" href="class_e_d_t.html#a725488f9d2217730ecb62e22f1a59405">00318</a>     <span class="keyword">protected</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a725488f9d2217730ecb62e22f1a59405">setGroup</a>(<a class="code" href="class_groupe.html">Groupe</a> $newGroup = NULL)
-<a name="l00319"></a>00319     {
-<a name="l00320"></a>00320         <span class="keywordflow">if</span> (!empty($newGroup))
-<a name="l00321"></a>00321         {
-<a name="l00322"></a>00322             <span class="keywordflow">if</span> ($this-&gt;validated)
-<a name="l00323"></a>00323             {
-<a name="l00324"></a>00324                 $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_validated_calendar=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span> . $newGroup-&gt;Sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00325"></a>00325             }
-<a name="l00326"></a>00326             <span class="keywordflow">else</span>
-<a name="l00327"></a>00327             {
-<a name="l00328"></a>00328                 $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_current_calendar=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span> . $newGroup-&gt;Sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00329"></a>00329 
-<a name="l00330"></a>00330                 <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00331"></a>00331                 {
-<a name="l00332"></a>00332                     $this-&gt;group = $newGroup;
-<a name="l00333"></a>00333                 }
-<a name="l00334"></a>00334                 <span class="keywordflow">else</span>
-<a name="l00335"></a>00335                 {
-<a name="l00336"></a>00336                     <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00337"></a>00337                 }
-<a name="l00338"></a>00338 
-<a name="l00339"></a>00339                 $this-&gt;setSubject();
-<a name="l00340"></a>00340                 $this-&gt;setTeacherOwner();
-<a name="l00341"></a>00341             }
-<a name="l00342"></a>00342         }
-<a name="l00343"></a>00343         <span class="keywordflow">else</span>
-<a name="l00344"></a>00344         {
-<a name="l00345"></a>00345             <span class="keywordflow">if</span> ($this-&gt;validated)
-<a name="l00346"></a>00346             {
-<a name="l00347"></a>00347                 $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_validated_calendar=NULL where id=&quot;</span> . $newGroup-&gt;Sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00348"></a>00348             }
-<a name="l00349"></a>00349             <span class="keywordflow">else</span>
-<a name="l00350"></a>00350             {
-<a name="l00351"></a>00351                 $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_current_calendar=NULL where id=&quot;</span> . $newGroup-&gt;Sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00352"></a>00352                 <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00353"></a>00353                 {
-<a name="l00354"></a>00354                     $this-&gt;group = NULL;
-<a name="l00355"></a>00355                 }
-<a name="l00356"></a>00356                 <span class="keywordflow">else</span>
-<a name="l00357"></a>00357                 {
-<a name="l00358"></a>00358                     <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00359"></a>00359                 }
-<a name="l00360"></a>00360             }
-<a name="l00361"></a>00361         }
-<a name="l00362"></a>00362     }
-<a name="l00363"></a>00363 
-<a name="l00364"></a>00364     <span class="comment">// This method shouldn’t be outside this class since the attribute shouldn’t change after loading/creating the object</span>
-<a name="l00365"></a>00365     <span class="keyword">private</span> <span class="keyword">function</span> setSubject(<a class="code" href="class_matiere.html">Matiere</a> $newSubject = NULL)
-<a name="l00366"></a>00366     {
-<a name="l00367"></a>00367         <span class="keywordflow">if</span> (!empty($newSubject))
-<a name="l00368"></a>00368         {
-<a name="l00369"></a>00369             $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot; set id_calendar=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span> . $newSubject-&gt;sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00370"></a>00370 
-<a name="l00371"></a>00371             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00372"></a>00372             {
-<a name="l00373"></a>00373                 $this-&gt;subject = $newSubject;
-<a name="l00374"></a>00374             }
-<a name="l00375"></a>00375             <span class="keywordflow">else</span>
-<a name="l00376"></a>00376             {
-<a name="l00377"></a>00377                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00378"></a>00378             }
-<a name="l00379"></a>00379 
-<a name="l00380"></a>00380             $this-&gt;<a class="code" href="class_e_d_t.html#a725488f9d2217730ecb62e22f1a59405">setGroup</a>();
-<a name="l00381"></a>00381             $this-&gt;setTeacherOwner();
-<a name="l00382"></a>00382         }
-<a name="l00383"></a>00383         <span class="keywordflow">else</span>
-<a name="l00384"></a>00384         {
-<a name="l00385"></a>00385             $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot; set id_calendar=NULL where id=&quot;</span> . $newSubject-&gt;sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00386"></a>00386 
-<a name="l00387"></a>00387             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00388"></a>00388             {
-<a name="l00389"></a>00389                 $this-&gt;subject = NULL;
-<a name="l00390"></a>00390             }
-<a name="l00391"></a>00391             <span class="keywordflow">else</span>
-<a name="l00392"></a>00392             {
-<a name="l00393"></a>00393                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00394"></a>00394             }
-<a name="l00395"></a>00395         }
-<a name="l00396"></a>00396     }
-<a name="l00397"></a>00397 
-<a name="l00398"></a>00398     <span class="comment">// This method shouldn’t be outside this class since the attribute shouldn’t change after loading/creating the object</span>
-<a name="l00399"></a>00399     <span class="keyword">private</span> <span class="keyword">function</span> setTeacherOwner(<a class="code" href="class_enseignant.html">Enseignant</a> $newTeacherOwner = NULL)
-<a name="l00400"></a>00400     {
-<a name="l00401"></a>00401         <span class="keywordflow">if</span> (!empty($newTeacherOwner))
-<a name="l00402"></a>00402         {
-<a name="l00403"></a>00403             $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set id_teacher=&quot;</span> . $newTeacherOwner-&gt;getSqlid() . <span class="stringliteral">&quot; where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00404"></a>00404 
-<a name="l00405"></a>00405             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00406"></a>00406             {
-<a name="l00407"></a>00407                 $this-&gt;teacherOwner = $newTeacherOwner;
-<a name="l00408"></a>00408             }
-<a name="l00409"></a>00409             <span class="keywordflow">else</span>
-<a name="l00410"></a>00410             {
-<a name="l00411"></a>00411                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00412"></a>00412             }
-<a name="l00413"></a>00413 
-<a name="l00414"></a>00414             $this-&gt;setSubject();
-<a name="l00415"></a>00415             $this-&gt;<a class="code" href="class_e_d_t.html#a725488f9d2217730ecb62e22f1a59405">setGroup</a>();
-<a name="l00416"></a>00416         }
-<a name="l00417"></a>00417         <span class="keywordflow">else</span>
-<a name="l00418"></a>00418         {
-<a name="l00419"></a>00419             $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set id_teacher=NULL where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00420"></a>00420             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00421"></a>00421             {
-<a name="l00422"></a>00422                 $this-&gt;teacherOwner = NULL;
-<a name="l00423"></a>00423             }
-<a name="l00424"></a>00424             <span class="keywordflow">else</span>
-<a name="l00425"></a>00425             {
-<a name="l00426"></a>00426                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00427"></a>00427             }
-<a name="l00428"></a>00428         }
-<a name="l00429"></a>00429     }
-<a name="l00430"></a>00430 
-<a name="l00431"></a>00431     <span class="comment">// others</span>
-<a name="l00432"></a><a class="code" href="class_e_d_t.html#a0d103c0baeb601e1880585f5fa60c4b7">00432</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a0d103c0baeb601e1880585f5fa60c4b7">extractExams</a>()
-<a name="l00433"></a>00433     {
-<a name="l00434"></a>00434         $examList = array();
-<a name="l00435"></a>00435 
-<a name="l00436"></a>00436         <span class="keywordflow">foreach</span> ($this-&gt;listCourses as $tempCourse)
-<a name="l00437"></a>00437         {
-<a name="l00438"></a>00438             <span class="keywordflow">if</span> ($tempCourse-&gt;getTypeOfCourse() == <a class="code" href="unknown_8_type__cours_8php.html#ae7fabd9a1752bb7d2034279f5829d55b">EXAMEN</a>)
-<a name="l00439"></a>00439             {
-<a name="l00440"></a>00440                 $examList[] = $tempCourse;
-<a name="l00441"></a>00441             }
-<a name="l00442"></a>00442         }
-<a name="l00443"></a>00443 
-<a name="l00444"></a>00444         <span class="keywordflow">return</span> $examList;
-<a name="l00445"></a>00445     }
-<a name="l00446"></a>00446 
-<a name="l00447"></a><a class="code" href="class_e_d_t.html#a36aca5b391ab20faf5da65913ed629a6">00447</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a36aca5b391ab20faf5da65913ed629a6">addCourse</a>(<a class="code" href="class_cours.html">Cours</a> $newCourse) <span class="comment">// TODO adapt davical dB en créant des évènements de même nom/horaires et salle pour tous les EDT concernés</span>
-<a name="l00448"></a>00448     {
-<a name="l00449"></a>00449         <span class="keywordflow">if</span> (!$this-&gt;<a class="code" href="class_e_d_t.html#a62ffea6af35973c517b05a2447b2e802">containsCourse</a>($newCourse))
-<a name="l00450"></a>00450         {
-<a name="l00451"></a>00451             $query = <span class="stringliteral">&quot;insert &quot;</span> . <a class="code" href="class_cours.html#a422f65442f186f72ecb4a9de34308679">Cours::belongsToTABLENAME</a> . <span class="stringliteral">&quot; (id_course,id_calendar) VALUES(&quot;</span> . $newCourse-&gt;<a class="code" href="class_cours.html#ac9084f2f4f5f491d8a4781c999429475">getSqlid</a>() . <span class="stringliteral">&quot;,&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;) ;&quot;</span>;
-<a name="l00452"></a>00452 
-<a name="l00453"></a>00453             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00454"></a>00454             {
-<a name="l00455"></a>00455                 $this-&gt;listCourses[] = $newCourse;
-<a name="l00456"></a>00456                 $S                   = $newCourse-&gt;<a class="code" href="class_cours.html#a7ec8f5b794ded8f3c0df9afd96c8233c">getSubject</a>();
-<a name="l00457"></a>00457 
-<a name="l00458"></a>00458                 <span class="comment">// the two next blocs add the new course to all calendars related to this one</span>
-<a name="l00459"></a>00459                 <span class="keywordflow">if</span> (!empty($S))
-<a name="l00460"></a>00460                 {
-<a name="l00461"></a>00461                     $S-&gt;getTimetable()-&gt;addCourse($newCourse); <span class="comment">// ADD course to calendar of the course’s subject</span>
-<a name="l00462"></a>00462 
-<a name="l00463"></a>00463                     <span class="keywordflow">foreach</span> ($S-&gt;getTeachedBy() as $oneSpeaker) <span class="comment">// for all speakers of this course</span>
-<a name="l00464"></a>00464                     {
-<a name="l00465"></a>00465                         $E = <span class="keyword">new</span> <a class="code" href="class_enseignant.html">Enseignant</a>();
-<a name="l00466"></a>00466 
-<a name="l00467"></a>00467                         <span class="keywordflow">if</span> ($E-&gt;loadFromDB($oneSpeaker-&gt;getSqlId())) <span class="comment">// we check that $onespeaker is a user</span>
-<a name="l00468"></a>00468                         {
-<a name="l00469"></a>00469                             $E-&gt;getTimetable()-&gt;addCourse($newCourse); <span class="comment">// ADD course to teacher’s calendar</span>
-<a name="l00470"></a>00470                         }
-<a name="l00471"></a>00471                     }
-<a name="l00472"></a>00472                 }
-<a name="l00473"></a>00473 
-<a name="l00474"></a>00474                 <span class="keywordflow">if</span> (!empty($this-&gt;group)) <span class="comment">// ADD course in all linked groups calendars</span>
-<a name="l00475"></a>00475                 {
-<a name="l00476"></a>00476                     $G = $this-&gt;group;
-<a name="l00477"></a>00477 
-<a name="l00478"></a>00478                     <span class="keywordflow">foreach</span> ($G-&gt;getListOfLinkedGroups() as $onegroup)
-<a name="l00479"></a>00479                     {
-<a name="l00480"></a>00480                         $T = $onegroup-&gt;getTimeTable();
-<a name="l00481"></a>00481 
-<a name="l00482"></a>00482                         <span class="keywordflow">if</span> (!empty($T))
-<a name="l00483"></a>00483                         {
-<a name="l00484"></a>00484                             $T-&gt;addCourse($newCourse);
-<a name="l00485"></a>00485                         }
-<a name="l00486"></a>00486                     }
-<a name="l00487"></a>00487                 }
-<a name="l00488"></a>00488             }
-<a name="l00489"></a>00489             <span class="keywordflow">else</span>
-<a name="l00490"></a>00490             {
-<a name="l00491"></a>00491                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00492"></a>00492             }
-<a name="l00493"></a>00493         }
-<a name="l00494"></a>00494     }
-<a name="l00495"></a>00495 
-<a name="l00496"></a><a class="code" href="class_e_d_t.html#a03fa3e0e2e146762ef59e991d379cb8b">00496</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a03fa3e0e2e146762ef59e991d379cb8b">removeCourse</a>(<a class="code" href="class_cours.html">Cours</a> $courseToRemove)
-<a name="l00497"></a>00497     {
-<a name="l00498"></a>00498         $S = $courseToRemove();
-<a name="l00499"></a>00499 
-<a name="l00500"></a>00500         <span class="keywordflow">if</span> ($this-&gt;<a class="code" href="class_e_d_t.html#a62ffea6af35973c517b05a2447b2e802">containsCourse</a>($courseToRemove))
-<a name="l00501"></a>00501         {
-<a name="l00502"></a>00502             $query = <span class="stringliteral">&quot;delete from &quot;</span> . <a class="code" href="class_cours.html#a422f65442f186f72ecb4a9de34308679">Cours::belongsToTABLENAME</a> . <span class="stringliteral">&quot; where id_course=&quot;</span> . $courseToRemove-&gt;<a class="code" href="class_cours.html#ac9084f2f4f5f491d8a4781c999429475">getSqlid</a>() . <span class="stringliteral">&quot; and id_calendar=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00503"></a>00503 
-<a name="l00504"></a>00504             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00505"></a>00505             {
-<a name="l00506"></a>00506                 unset($this-&gt;listCourses[array_search($courseToRemove, $this-&gt;listCourses)]);
-<a name="l00507"></a>00507                 <span class="comment">// The two next blocs remove the course from all calendars related to this one</span>
-<a name="l00508"></a>00508 
-<a name="l00509"></a>00509                 <span class="keywordflow">if</span> (!empty($S))
-<a name="l00510"></a>00510                 {
-<a name="l00511"></a>00511                     $S-&gt;getTimetable()-&gt;removeCourse($courseToRemove); <span class="comment">// REMOVE course from calendar of the course’s subject</span>
-<a name="l00512"></a>00512 
-<a name="l00513"></a>00513                     <span class="keywordflow">foreach</span> ($S-&gt;getTeachedBy() as $oneSpeaker) <span class="comment">// for all speakers of this course</span>
-<a name="l00514"></a>00514                     {
-<a name="l00515"></a>00515                         $E = <span class="keyword">new</span> <a class="code" href="class_enseignant.html">Enseignant</a>();
-<a name="l00516"></a>00516 
-<a name="l00517"></a>00517                         <span class="keywordflow">if</span> ($E-&gt;loadFromDB($oneSpeaker-&gt;getSqlId())) <span class="comment">// We check that $onespeaker is a user</span>
-<a name="l00518"></a>00518                         {
-<a name="l00519"></a>00519                             $E-&gt;getTimetable()-&gt;removeCourse($courseToRemove); <span class="comment">// REMOVE course from teacher’s calendar</span>
-<a name="l00520"></a>00520                         }
-<a name="l00521"></a>00521                     }
-<a name="l00522"></a>00522                 }
-<a name="l00523"></a>00523 
-<a name="l00524"></a>00524                 <span class="keywordflow">if</span> (!empty($this-&gt;group)) <span class="comment">// REMOVE course from all linked groups calendars</span>
-<a name="l00525"></a>00525                 {
-<a name="l00526"></a>00526                     $G = $this-&gt;group;
-<a name="l00527"></a>00527 
-<a name="l00528"></a>00528                     <span class="keywordflow">foreach</span> ($G-&gt;getListOfLinkedGroups() as $onegroup)
-<a name="l00529"></a>00529                     {
-<a name="l00530"></a>00530                         $T = $onegroup-&gt;getTimeTable();
-<a name="l00531"></a>00531 
-<a name="l00532"></a>00532                         <span class="keywordflow">if</span> (!empty($T))
-<a name="l00533"></a>00533                         {
-<a name="l00534"></a>00534                             $T-&gt;removeCourse($courseToRemove);
-<a name="l00535"></a>00535                         }
-<a name="l00536"></a>00536                     }
-<a name="l00537"></a>00537                 }
-<a name="l00538"></a>00538             }
-<a name="l00539"></a>00539             <span class="keywordflow">else</span>
-<a name="l00540"></a>00540             {
-<a name="l00541"></a>00541                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00542"></a>00542             }
-<a name="l00543"></a>00543         }
-<a name="l00544"></a>00544     }
-<a name="l00545"></a>00545 
-<a name="l00546"></a><a class="code" href="class_e_d_t.html#ae36b050530c7ac89ace6adbf0d875441">00546</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ae36b050530c7ac89ace6adbf0d875441">addModification</a>(<a class="code" href="class_modification.html">Modification</a> $M)
-<a name="l00547"></a>00547     {
-<a name="l00548"></a>00548         <span class="keywordflow">if</span> (!<a class="code" href="class_e_d_t.html#ae342a57b384c876b57ca4a51da2e58d9">hasModification</a>($M))
-<a name="l00549"></a>00549         {
-<a name="l00550"></a>00550             $this-&gt;listModif[] = $M;
-<a name="l00551"></a>00551             <span class="comment">// No need for a SQL query, the modification should already have been registered in the DB</span>
-<a name="l00552"></a>00552         }
-<a name="l00553"></a>00553     }
-<a name="l00554"></a>00554 
-<a name="l00555"></a>00555     <span class="comment">// This method shouldn’t be called outside this class because there’s no reason that only one modification of timetable to be removed</span>
-<a name="l00556"></a><a class="code" href="class_e_d_t.html#a76586b167ae509b4048d97baef88f0a5">00556</a>     <span class="keyword">protected</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a76586b167ae509b4048d97baef88f0a5">removeModification</a>(<a class="code" href="class_modification.html">Modification</a> $M)
-<a name="l00557"></a>00557     {
-<a name="l00558"></a>00558         <span class="keywordflow">if</span> (!<a class="code" href="class_e_d_t.html#ae342a57b384c876b57ca4a51da2e58d9">hasModification</a>($M))
-<a name="l00559"></a>00559         {
-<a name="l00560"></a>00560             $M-&gt;<a class="code" href="class_modification.html#a260b34e3ce5a0be2e2539c1291b989a5">removeFromDB</a>();
-<a name="l00561"></a>00561             unset($this-&gt;listModif[array_search($M, $this-&gt;listModif)]);
-<a name="l00562"></a>00562         }
-<a name="l00563"></a>00563     }
-<a name="l00564"></a>00564 
-<a name="l00565"></a><a class="code" href="class_e_d_t.html#a2f3a37854d1a6a04be2a135da1c495bd">00565</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a2f3a37854d1a6a04be2a135da1c495bd">clearModifications</a>()
-<a name="l00566"></a>00566     {
-<a name="l00567"></a>00567         <span class="keywordflow">foreach</span> ($this-&gt;listModif as $oneModif)
-<a name="l00568"></a>00568         {
-<a name="l00569"></a>00569             $oneModif-&gt;removeFromDB();
-<a name="l00570"></a>00570         }
-<a name="l00571"></a>00571 
-<a name="l00572"></a>00572         $this-&gt;listModif = array();
-<a name="l00573"></a>00573     }
-<a name="l00574"></a>00574 
-<a name="l00575"></a><a class="code" href="class_e_d_t.html#abe93d63108b754bc99754ef32a2bf86e">00575</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#abe93d63108b754bc99754ef32a2bf86e">loadCourseFromRessource</a>($ressource)
-<a name="l00576"></a>00576     {
-<a name="l00577"></a>00577         $C = <span class="keyword">new</span> <a class="code" href="class_cours.html">Cours</a>();
-<a name="l00578"></a>00578         $C-&gt;loadFromDB(int_val($ressource[<span class="stringliteral">&#39;id_course&#39;</span>]));
-<a name="l00579"></a>00579         $this-&gt;<a class="code" href="class_e_d_t.html#a36aca5b391ab20faf5da65913ed629a6">addCourse</a>($C);
-<a name="l00580"></a>00580     }
-<a name="l00581"></a>00581 
-<a name="l00582"></a>00582     <span class="comment">// This method expects an array describing a ressource from a select query on modification table</span>
-<a name="l00583"></a><a class="code" href="class_e_d_t.html#a948d11bea42951fbf6e22929caf0be7b">00583</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a948d11bea42951fbf6e22929caf0be7b">loadModificationFromRessource</a>($ressource)
-<a name="l00584"></a>00584     {
-<a name="l00585"></a>00585         $M = <span class="keyword">new</span> <a class="code" href="class_modification.html">Modification</a>();
-<a name="l00586"></a>00586         $M-&gt;setDate($ressource[<span class="stringliteral">&#39;date&#39;</span>]);
-<a name="l00587"></a>00587         $U = <span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
-<a name="l00588"></a>00588         $U-&gt;loadFromDB(int_val($ressource[<span class="stringliteral">&#39;id_user&#39;</span>]));
-<a name="l00589"></a>00589         $M-&gt;setModifiedBy($U);
-<a name="l00590"></a>00590         $C = <span class="keyword">new</span> <a class="code" href="class_cours.html">Cours</a>();
-<a name="l00591"></a>00591         $C-&gt;loadFromDB(int_val($ressource[<span class="stringliteral">&#39;id_course&#39;</span>]));
-<a name="l00592"></a>00592         $M-&gt;setCourseModified($C);
-<a name="l00593"></a>00593         $this-&gt;<a class="code" href="class_e_d_t.html#ae36b050530c7ac89ace6adbf0d875441">addModification</a>($M);
-<a name="l00594"></a>00594     }
-<a name="l00595"></a>00595 
-<a name="l00596"></a><a class="code" href="class_e_d_t.html#a2f014444c5fde45b477dccfd4ae1a63f">00596</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a2f014444c5fde45b477dccfd4ae1a63f">loadFromDB</a>($id = NULL, $onlyclasscalendar = FALSE)
-<a name="l00597"></a>00597     {
-<a name="l00598"></a>00598         <span class="keywordflow">if</span> ($id == NULL) <span class="comment">// if we do not want to load a particularEDT</span>
-<a name="l00599"></a>00599         {
-<a name="l00600"></a>00600             <span class="keywordflow">if</span> ($this-&gt;sqlid != NULL) <span class="comment">// check if the current EDT object is defined</span>
-<a name="l00601"></a>00601             {
-<a name="l00602"></a>00602                 $id = $this-&gt;sqlid; <span class="comment">// if yes, we want to “reload” data about this object from the database (UPDATE)</span>
-<a name="l00603"></a>00603             }
-<a name="l00604"></a>00604         }
-<a name="l00605"></a>00605 
-<a name="l00606"></a>00606         <span class="keywordflow">if</span> ($id == NULL) <span class="comment">// if no, the first EDT object of the DB, will be chosen to be loaded</span>
-<a name="l00607"></a>00607         {
-<a name="l00608"></a>00608             <span class="keywordflow">if</span> (!$onlyclasscalendar)
-<a name="l00609"></a>00609             {
-<a name="l00610"></a>00610                 $query = <span class="stringliteral">&quot;select * from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00611"></a>00611             }
-<a name="l00612"></a>00612             <span class="keywordflow">else</span>
-<a name="l00613"></a>00613             {
-<a name="l00614"></a>00614                 $query = <span class="stringliteral">&quot;select * from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; where is_class_calendar=true;&quot;</span>;
-<a name="l00615"></a>00615             }
-<a name="l00616"></a>00616 
-<a name="l00617"></a>00617             $result = <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
-<a name="l00618"></a>00618         }
-<a name="l00619"></a>00619         <span class="keywordflow">else</span> <span class="comment">// (if yes) from here, we load data about the EDT that has $id as sqlid</span>
-<a name="l00620"></a>00620         {
-<a name="l00621"></a>00621             <span class="keywordflow">if</span> ($onlyclasscalendar) <span class="comment">// we load any EDT that matches the criteria</span>
-<a name="l00622"></a>00622             {
-<a name="l00623"></a>00623                 $query = <span class="stringliteral">&quot;select * from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; where id=$1;&quot;</span>;
-<a name="l00624"></a>00624             }
-<a name="l00625"></a>00625             <span class="keywordflow">else</span> <span class="comment">// we load only EDTclasse that matches the criteria</span>
-<a name="l00626"></a>00626             {
-<a name="l00627"></a>00627                 $query = <span class="stringliteral">&quot;select * from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; where id=$1 and is_class_calendar=true;&quot;</span>;
-<a name="l00628"></a>00628             }
-<a name="l00629"></a>00629 
-<a name="l00630"></a>00630             $params = array($id);
-<a name="l00631"></a>00631             $result = <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query, $params);
-<a name="l00632"></a>00632         }
-<a name="l00633"></a>00633 
-<a name="l00634"></a>00634         <span class="keywordflow">if</span> ($result)
-<a name="l00635"></a>00635         {
-<a name="l00636"></a>00636             $ressource = pg_fetch_assoc($result); <span class="comment">// ressource is now an array containing values for each SQLcolumn of the EDT table</span>
-<a name="l00637"></a>00637             $this-&gt;<a class="code" href="class_e_d_t.html#a3a53d2c42489ff72eead988ddfeaa8de">loadFromRessource</a>($ressource);
-<a name="l00638"></a>00638 
-<a name="l00639"></a>00639             <span class="keywordflow">return</span> TRUE;
-<a name="l00640"></a>00640         }
-<a name="l00641"></a>00641 
-<a name="l00642"></a>00642         <span class="keywordflow">return</span> FALSE;
-<a name="l00643"></a>00643     }
-<a name="l00644"></a>00644 
-<a name="l00645"></a><a class="code" href="class_e_d_t.html#a3a53d2c42489ff72eead988ddfeaa8de">00645</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a3a53d2c42489ff72eead988ddfeaa8de">loadFromRessource</a>($ressource)
-<a name="l00646"></a>00646     {
-<a name="l00647"></a>00647         <span class="comment">// we change values of attributes</span>
-<a name="l00648"></a>00648         $this-&gt;sqlid = $ressource[<span class="stringliteral">&#39;id&#39;</span>];
-<a name="l00649"></a>00649         $U           = <span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
-<a name="l00650"></a>00650         $U-&gt;loadFromDB(int_val($ressource[<span class="stringliteral">&#39;is_being_modified_by&#39;</span>]));
-<a name="l00651"></a>00651         $this-&gt;modifiedBy = $U;
-<a name="l00652"></a>00652 
-<a name="l00653"></a>00653         <span class="keywordflow">if</span> ($ressource[<span class="stringliteral">&#39;id_teacher&#39;</span>])
-<a name="l00654"></a>00654         {
-<a name="l00655"></a>00655             $U = <span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
-<a name="l00656"></a>00656             $U-&gt;loadFromDB(int_val($ressource[<span class="stringliteral">&#39;id_teacher&#39;</span>]));
-<a name="l00657"></a>00657             $this-&gt;teacher = $U;
-<a name="l00658"></a>00658         }
-<a name="l00659"></a>00659         <span class="keywordflow">else</span>
-<a name="l00660"></a>00660         {
-<a name="l00661"></a>00661             $this-&gt;teacher = NULL;
-<a name="l00662"></a>00662         }
-<a name="l00663"></a>00663 
-<a name="l00664"></a>00664         $params = array($this-&gt;sqlid);
-<a name="l00665"></a>00665 
-<a name="l00666"></a>00666         <span class="keywordflow">if</span> ($ressource[<span class="stringliteral">&#39;is_validated_calendar&#39;</span>])
-<a name="l00667"></a>00667         {
-<a name="l00668"></a>00668             $this-&gt;validated = TRUE;
-<a name="l00669"></a>00669             $query           = <span class="stringliteral">&quot;select id from &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; where id_validated_calendar=$1;&quot;</span>;
-<a name="l00670"></a>00670         }
-<a name="l00671"></a>00671         <span class="keywordflow">else</span>
-<a name="l00672"></a>00672         {
-<a name="l00673"></a>00673             $this-&gt;validated = FALSE;
-<a name="l00674"></a>00674             $query           = <span class="stringliteral">&quot;select id from &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; where id_current_calendar=$1;&quot;</span>;
-<a name="l00675"></a>00675         }
-<a name="l00676"></a>00676 
-<a name="l00677"></a>00677         <span class="keywordflow">if</span> ($result2 = <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query, $params))
-<a name="l00678"></a>00678         {
-<a name="l00679"></a>00679             $result2 = pg_fetch_assoc($result2);
-<a name="l00680"></a>00680             $G       = <span class="keyword">new</span> <a class="code" href="class_groupe.html">Groupe</a>();
-<a name="l00681"></a>00681             $G-&gt;loadFromDB(int_val($result2[<span class="stringliteral">&#39;id&#39;</span>]));
-<a name="l00682"></a>00682             $this-&gt;group = $G;
-<a name="l00683"></a>00683         }
-<a name="l00684"></a>00684         <span class="keywordflow">else</span>
-<a name="l00685"></a>00685         {
-<a name="l00686"></a>00686             $this-&gt;group = NULL;
-<a name="l00687"></a>00687         }
-<a name="l00688"></a>00688 
-<a name="l00689"></a>00689         $query = <span class="stringliteral">&quot;select id from &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot; where id_calendar=$1;&quot;</span>;
-<a name="l00690"></a>00690 
-<a name="l00691"></a>00691         <span class="keywordflow">if</span> ($result2 = <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query, $params))
-<a name="l00692"></a>00692         {
-<a name="l00693"></a>00693             $result2 = pg_fetch_assoc($result2);
-<a name="l00694"></a>00694             $M       = <span class="keyword">new</span> <a class="code" href="class_matiere.html">Matiere</a>();
-<a name="l00695"></a>00695             $M-&gt;loadFromDB(int_val($result2[<span class="stringliteral">&#39;id&#39;</span>]));
-<a name="l00696"></a>00696             $this-&gt;subject = $M;
-<a name="l00697"></a>00697         }
-<a name="l00698"></a>00698         <span class="keywordflow">else</span>
-<a name="l00699"></a>00699         {
-<a name="l00700"></a>00700             $this-&gt;subject = NULL;
-<a name="l00701"></a>00701         }
-<a name="l00702"></a>00702     }
-<a name="l00703"></a>00703 
-<a name="l00704"></a><a class="code" href="class_e_d_t.html#a260b34e3ce5a0be2e2539c1291b989a5">00704</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a260b34e3ce5a0be2e2539c1291b989a5">removeFromDB</a>()
-<a name="l00705"></a>00705     {
-<a name="l00706"></a>00706         $this-&gt;<a class="code" href="class_e_d_t.html#a824aa936757cb9d48e5c8595b489e9bd">setListModif</a>();
-<a name="l00707"></a>00707         $this-&gt;setTeacherOwner();
-<a name="l00708"></a>00708         $this-&gt;setSubject();
-<a name="l00709"></a>00709         $query = <span class="stringliteral">&quot;delete * from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00710"></a>00710 
-<a name="l00711"></a>00711         <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
-<a name="l00712"></a>00712         {
-<a name="l00713"></a>00713         }
-<a name="l00714"></a>00714         <span class="keywordflow">else</span>
-<a name="l00715"></a>00715         {
-<a name="l00716"></a>00716             <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
-<a name="l00717"></a>00717         }
-<a name="l00718"></a>00718     }
-<a name="l00719"></a>00719     
-<a name="l00720"></a><a class="code" href="class_e_d_t.html#a13723395751469236a43d26867ed86da">00720</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a13723395751469236a43d26867ed86da">shareWith</a>(<a class="code" href="class_utilisateur.html">Utilisateur</a> $U, $write=<span class="keyword">false</span>)
-<a name="l00721"></a>00721     {
-<a name="l00722"></a>00722         $BDD=<span class="keyword">new</span> <a class="code" href="class_base_de_donnees.html">BaseDeDonnees</a>(<span class="stringliteral">&quot;agendav&quot;</span>);
-<a name="l00723"></a>00723         <span class="keywordflow">if</span> (!$BDD-&gt;connect())
-<a name="l00724"></a>00724         {
-<a name="l00725"></a>00725             echo (<span class="stringliteral">&quot;pas de connexion vrs agendav&quot;</span>);
-<a name="l00726"></a>00726         }
-<a name="l00727"></a>00727         <span class="keywordflow">else</span>
-<a name="l00728"></a>00728         {
-<a name="l00729"></a>00729             <span class="keywordflow">if</span>($this-&gt;group)
-<a name="l00730"></a>00730             {
-<a name="l00731"></a>00731                 $params[]=$this-&gt;group-&gt;getName();
-<a name="l00732"></a>00732                 $params[]=$this-&gt;group-&gt;getName().<span class="stringliteral">&quot; EDT&quot;</span>;
-<a name="l00733"></a>00733                 $params[]=$U-&gt;<a class="code" href="class_utilisateur.html#a827998aa84c36eb4260c248cd4797e9b">getLogin</a>();
-<a name="l00734"></a>00734 
-<a name="l00735"></a>00735                 $query=<span class="stringliteral">&quot;select user_from from shared where user_from=&#39;$1&#39; and (calendar=&#39;$2&#39; and user_which=&#39;$3&#39;);&quot;</span>;
-<a name="l00736"></a>00736                 <span class="keywordflow">if</span>(!$BDD-&gt;executeQuery($query,$params))<span class="comment">//if there&#39;s no matching entry, we insert in table</span>
-<a name="l00737"></a>00737                     $query=<span class="stringliteral">&quot;insert into shared (user_from,user_which,calendar,options,write_access) values ($1,$3,$2,&#39;N;&#39;,$4);&quot;</span>;
-<a name="l00738"></a>00738                 $params[]=(bool)$write;
-<a name="l00739"></a>00739                 <span class="keywordflow">if</span>(!$BDD-&gt;executeQuery($query,$params))
-<a name="l00740"></a>00740                     $BDD-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);         
-<a name="l00741"></a>00741             }
-<a name="l00742"></a>00742             <span class="keywordflow">else</span> <span class="keywordflow">if</span>($this-&gt;subject)
-<a name="l00743"></a>00743             {
-<a name="l00744"></a>00744                 $params[]=$this-&gt;subject-&gt;getGroup()-&gt;getName();
-<a name="l00745"></a>00745                 $params[]=$this-&gt;subject-&gt;getName().<span class="stringliteral">&quot; &quot;</span>.$this-&gt;subject-&gt;getGroup()-&gt;getName();
-<a name="l00746"></a>00746                 $params[]=$U-&gt;<a class="code" href="class_utilisateur.html#a827998aa84c36eb4260c248cd4797e9b">getLogin</a>();
-<a name="l00747"></a>00747     
-<a name="l00748"></a>00748                 $query=<span class="stringliteral">&quot;select user_from from shared where user_from=$1 and (calendar=$2 and user_which=$3);&quot;</span>;
-<a name="l00749"></a>00749                 <span class="keywordflow">if</span>(!$BDD-&gt;executeQuery($query,$params))<span class="comment">//if there&#39;s no matching entry, we insert in table</span>
-<a name="l00750"></a>00750                     $query=<span class="stringliteral">&quot;insert into shared (user_from,user_which,calendar,options,write_access) values ($1,$3,$2,&#39;N;&#39;,$4);&quot;</span>;
-<a name="l00751"></a>00751                 $params[]=(bool)$write;
-<a name="l00752"></a>00752                 <span class="keywordflow">if</span>(!$BDD-&gt;executeQuery($query,$params))
-<a name="l00753"></a>00753                     $BDD-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);         
-<a name="l00754"></a>00754             }
-<a name="l00755"></a>00755             <span class="keywordflow">else</span> <span class="keywordflow">if</span>($this-&gt;teacherOwner)
-<a name="l00756"></a>00756             {
-<a name="l00757"></a>00757                 $params[]=$this-&gt;teacherOwner-&gt;getLogin();
-<a name="l00758"></a>00758                 $params[]=$this-&gt;teacherOwner-&gt;getFullName().<span class="stringliteral">&quot; EDT&quot;</span>;
-<a name="l00759"></a>00759                 $params[]=$U-&gt;<a class="code" href="class_utilisateur.html#a827998aa84c36eb4260c248cd4797e9b">getLogin</a>();
-<a name="l00760"></a>00760                 
-<a name="l00761"></a>00761 
-<a name="l00762"></a>00762                 $query=<span class="stringliteral">&quot;select user_from from shared where user_from=&#39;$1&#39; and (calendar=&#39;$2&#39; and user_which=&#39;$3&#39;);&quot;</span>;
-<a name="l00763"></a>00763                     <span class="keywordflow">if</span>(!$BDD-&gt;executeQuery($query,$params))<span class="comment">//if there&#39;s no matching entry, we insert in table</span>
-<a name="l00764"></a>00764                 $query=<span class="stringliteral">&quot;insert into shared (user_from,user_which,calendar,options,write_access) values ($1,$3,$2,&#39;N;&#39;,$4);&quot;</span>;
-<a name="l00765"></a>00765                 $params[]=(bool)$write;
-<a name="l00766"></a>00766                 <span class="keywordflow">if</span>(!$BDD-&gt;executeQuery($query,$params))
-<a name="l00767"></a>00767                     $BDD-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);         
-<a name="l00768"></a>00768             }
-<a name="l00769"></a>00769         }
-<a name="l00770"></a>00770     }
-<a name="l00771"></a><a class="code" href="class_e_d_t.html#ab050dd66d46a6fff00172e8d5974dcdf">00771</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ab050dd66d46a6fff00172e8d5974dcdf">autoShare</a>(){
-<a name="l00772"></a>00772         <span class="keywordflow">if</span>($this-&gt;group or $this-&gt;subject)
-<a name="l00773"></a>00773         {
-<a name="l00774"></a>00774         
-<a name="l00775"></a>00775         <span class="comment">//Shares a group or subject calendar with all secretaries &amp; heads of department (writing privilege)</span>
-<a name="l00776"></a>00776             $S=<span class="keyword">new</span> <a class="code" href="class_statut__personne.html">Statut_personne</a>(<a class="code" href="class_statut__personne.html#a43d3cf541a304c995ca17a9fd44d69e9">Statut_personne::HEAD</a>);
-<a name="l00777"></a>00777             $head=$S-&gt;toInt();
-<a name="l00778"></a>00778             $S=<span class="keyword">new</span> <a class="code" href="class_statut__personne.html">Statut_personne</a>(<a class="code" href="class_statut__personne.html#a536545ace879774ba7d55edeb12bd169">Statut_personne::SECRETARY</a>);
-<a name="l00779"></a>00779             $sec=$S-&gt;toInt();
-<a name="l00780"></a>00780             $query=<span class="stringliteral">&quot;select id_person from guser as G where G.id_person in (select id_person from &quot;</span>.Statut_personne::TABLENAME.<span class="stringliteral">&quot; where status=&quot;</span>. $head.<span class="stringliteral">&quot; or status=&quot;</span>. $sec.<span class="stringliteral">&quot;);&quot;</span>;
-<a name="l00781"></a>00781             $result=<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
-<a name="l00782"></a>00782             <span class="keywordflow">if</span>($result){
-<a name="l00783"></a>00783                 $userid=pg_fetch_assoc($result);
-<a name="l00784"></a>00784                 <span class="keywordflow">while</span>($userid!=null){
-<a name="l00785"></a>00785                     $u=<span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
-<a name="l00786"></a>00786                     $u-&gt;loadFromDB(intval($userid[<span class="stringliteral">&#39;id_person&#39;</span>]));
-<a name="l00787"></a>00787                     <span class="keywordflow">if</span>($u){
-<a name="l00788"></a>00788                         $this-&gt;<a class="code" href="class_e_d_t.html#a13723395751469236a43d26867ed86da">shareWith</a>($u,<span class="keyword">true</span>);
-<a name="l00789"></a>00789                         echo($u-&gt;toHTML());
-<a name="l00790"></a>00790                     }
-<a name="l00791"></a>00791                     $userid=pg_fetch_assoc($result);
-<a name="l00792"></a>00792                 }
-<a name="l00793"></a>00793             }
-<a name="l00794"></a>00794         }
-<a name="l00795"></a>00795         <span class="keywordflow">if</span>($this-&gt;subject)
-<a name="l00796"></a>00796         {
-<a name="l00797"></a>00797             <span class="comment">//Shares a subject calendar with teachers in charge (no writing privilege)</span>
-<a name="l00798"></a>00798             <span class="keywordflow">for</span>($i=1;$i&lt;=3;$i++){
-<a name="l00799"></a>00799                 $query=<span class="stringliteral">&quot;select id_person from guser as G where G.id_person in (select id_speaker&quot;</span>.$i.<span class="stringliteral">&quot; from &quot;</span>.<a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a>.<span class="stringliteral">&quot; where id=&quot;</span>.$this-&gt;subject-&gt;getSqlid().<span class="stringliteral">&quot;);&quot;</span>;
-<a name="l00800"></a>00800                 $result=<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
-<a name="l00801"></a>00801                 <span class="keywordflow">if</span>($result){
-<a name="l00802"></a>00802                     $userid=pg_fetch_assoc($result);
-<a name="l00803"></a>00803                     <span class="keywordflow">while</span>($userid!=null){
-<a name="l00804"></a>00804                         $u=<span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
-<a name="l00805"></a>00805                         $u-&gt;loadFromDB(intval($userid[<span class="stringliteral">&#39;id_person&#39;</span>]));
-<a name="l00806"></a>00806                         <span class="keywordflow">if</span>($u)$this-&gt;<a class="code" href="class_e_d_t.html#a13723395751469236a43d26867ed86da">shareWith</a>($u,<span class="keyword">false</span>);
-<a name="l00807"></a>00807                         $userid=pg_fetch_assoc($result);
-<a name="l00808"></a>00808                     }
-<a name="l00809"></a>00809                 }
-<a name="l00810"></a>00810             }
-<a name="l00811"></a>00811         }
-<a name="l00812"></a>00812         <span class="keywordflow">else</span> <span class="keywordflow">if</span>($this-&gt;teacherOwner)
-<a name="l00813"></a>00813         {
-<a name="l00814"></a>00814             <span class="comment">//Shares a teacher calendar with all secretaries (reading privilege?)</span>
-<a name="l00815"></a>00815             $S=<span class="keyword">new</span> <a class="code" href="class_statut__personne.html">Statut_personne</a>(<a class="code" href="class_statut__personne.html#a536545ace879774ba7d55edeb12bd169">Statut_personne::SECRETARY</a>);
-<a name="l00816"></a>00816             $sec=$S-&gt;toInt();
-<a name="l00817"></a>00817             $query=<span class="stringliteral">&quot;select id_person from guser as G where G.id_person in (select id_person from &quot;</span>.Statut_personne::TABLENAME.<span class="stringliteral">&quot; where status=&quot;</span>. $sec.<span class="stringliteral">&quot;);&quot;</span>;
-<a name="l00818"></a>00818             $result=<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
-<a name="l00819"></a>00819             <span class="keywordflow">if</span>($result){
-<a name="l00820"></a>00820                 $userid=pg_fetch_assoc($result);
-<a name="l00821"></a>00821                 <span class="keywordflow">while</span>($userid!=null){
-<a name="l00822"></a>00822                     $u=<span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
-<a name="l00823"></a>00823                     $u-&gt;loadFromDB(intval($userid[<span class="stringliteral">&#39;id_person&#39;</span>]));
-<a name="l00824"></a>00824                     <span class="keywordflow">if</span>($u)$this-&gt;<a class="code" href="class_e_d_t.html#a13723395751469236a43d26867ed86da">shareWith</a>($u,<span class="keyword">true</span>);
-<a name="l00825"></a>00825                     $userid=pg_fetch_assoc($result);
-<a name="l00826"></a>00826                 }
-<a name="l00827"></a>00827             }       
-<a name="l00828"></a>00828         }
-<a name="l00829"></a>00829 
-<a name="l00830"></a>00830     }
-<a name="l00831"></a>00831     
-<a name="l00832"></a><a class="code" href="class_e_d_t.html#afdff66750c3a7d071dd9d9fb4a248a10">00832</a>     <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#afdff66750c3a7d071dd9d9fb4a248a10">autoShareAllCalendars</a>(){
-<a name="l00833"></a>00833         $query=<span class="stringliteral">&quot;select id from &quot;</span>.self::TABLENAME.<span class="stringliteral">&quot;;&quot;</span>;
-<a name="l00834"></a>00834             $result=<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
-<a name="l00835"></a>00835             <span class="keywordflow">if</span>($result){
-<a name="l00836"></a>00836                 $id=pg_fetch_assoc($result);
-<a name="l00837"></a>00837                 <span class="keywordflow">while</span>($id!=null){
-<a name="l00838"></a>00838                     $C=<span class="keyword">new</span> <a class="code" href="class_e_d_t.html">EDT</a>();
-<a name="l00839"></a>00839                     $C-&gt;loadFromDB($id[<span class="stringliteral">&#39;id&#39;</span>]);
-<a name="l00840"></a>00840                     $C-&gt;autoShare();
-<a name="l00841"></a>00841                     $id=pg_fetch_assoc($result);
-<a name="l00842"></a>00842                 }
-<a name="l00843"></a>00843             }   
-<a name="l00844"></a>00844     }
-<a name="l00845"></a>00845 }
-<a name="l00846"></a>00846 ?&gt;
+<a name="l00042"></a>00042 
+<a name="l00043"></a>00043     <span class="comment">// --- OPERATIONS ---</span>
+<a name="l00044"></a>00044     <span class="comment">// constructor</span>
+<a name="l00045"></a><a class="code" href="class_e_d_t.html#aad3e3d18c10d1440771db252b047003a">00045</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#aad3e3d18c10d1440771db252b047003a">__construct</a>($Object = NULL, <a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">$validated</a> = FALSE)
+<a name="l00046"></a>00046     {
+<a name="l00047"></a>00047         <span class="keywordflow">if</span> (is_a($Object, <span class="stringliteral">&quot;Groupe&quot;</span>) or is_a($Object, <span class="stringliteral">&quot;Matiere&quot;</span>) or is_a($Object, <span class="stringliteral">&quot;Enseignant&quot;</span>))
+<a name="l00048"></a>00048         {
+<a name="l00049"></a>00049             $this-&gt;validated = FALSE;
+<a name="l00050"></a>00050             $query           = <span class="stringliteral">&quot;insert into &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; DEFAULT VALUES;&quot;</span>;
+<a name="l00051"></a>00051             <span class="keywordflow">if</span>(!<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00052"></a>00052             {
+<a name="l00053"></a>00053                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00054"></a>00054             }
+<a name="l00055"></a>00055             
+<a name="l00056"></a>00056             $query       = <span class="stringliteral">&quot;select id from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; where id_collection is null;&quot;</span>;
+<a name="l00057"></a>00057             $result= <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
+<a name="l00058"></a>00058             <span class="keywordflow">if</span>($result) 
+<a name="l00059"></a>00059             {
+<a name="l00060"></a>00060                 $result      = pg_fetch_assoc($result);
+<a name="l00061"></a>00061                 $this-&gt;sqlid = $result[<span class="stringliteral">&#39;id&#39;</span>];
+<a name="l00062"></a>00062             }
+<a name="l00063"></a>00063             <span class="keywordflow">else</span>
+<a name="l00064"></a>00064             {
+<a name="l00065"></a>00065                 
+<a name="l00066"></a>00066                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00067"></a>00067             }
+<a name="l00068"></a>00068             
+<a name="l00069"></a>00069 
+<a name="l00070"></a>00070             <span class="keywordflow">if</span> (is_a($Object, <span class="stringliteral">&quot;Groupe&quot;</span>))
+<a name="l00071"></a>00071             {
+<a name="l00072"></a>00072                 $G = $Object;
+<a name="l00073"></a>00073 
+<a name="l00074"></a>00074                 <span class="keywordflow">if</span> ($G-&gt;getIsAClass())
+<a name="l00075"></a>00075                 {
+<a name="l00076"></a>00076                     $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set is_class_calendar=true where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00077"></a>00077 
+<a name="l00078"></a>00078                     <span class="keywordflow">if</span> (!<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00079"></a>00079                     {
+<a name="l00080"></a>00080                         <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00081"></a>00081                     }
+<a name="l00082"></a>00082 
+<a name="l00083"></a>00083                     <span class="keywordflow">if</span> (<a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">$validated</a>)
+<a name="l00084"></a>00084                     {
+<a name="l00085"></a>00085                         $this-&gt;validated = TRUE;
+<a name="l00086"></a>00086                         $query           = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set is_validated_calendar=true where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00087"></a>00087                         <span class="keywordflow">if</span> (!<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00088"></a>00088                         {
+<a name="l00089"></a>00089                             <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00090"></a>00090                         }
+<a name="l00091"></a>00091                     }
+<a name="l00092"></a>00092                 }
+<a name="l00093"></a>00093                 <span class="keywordflow">else</span>
+<a name="l00094"></a>00094                 {
+<a name="l00095"></a>00095                     <a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">$validated</a> = FALSE; <span class="comment">// only Classes have validated calendars (-&gt;PDF)</span>
+<a name="l00096"></a>00096                 }
+<a name="l00097"></a>00097 
+<a name="l00098"></a>00098                 <span class="keywordflow">if</span> (<a class="code" href="class_e_d_t.html#ac0e460d7fcc33185f2f28e8d4ba1274a">$validated</a>)
+<a name="l00099"></a>00099                 {
+<a name="l00100"></a>00100                     $query = <span class="stringliteral">&quot;update &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_validated_timetable=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span> . $G-&gt;getId() . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00101"></a>00101                 }
+<a name="l00102"></a>00102                 <span class="keywordflow">else</span>
+<a name="l00103"></a>00103                 {
+<a name="l00104"></a>00104                     $query = <span class="stringliteral">&quot;update &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_current_timetable=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span> . $G-&gt;getId() . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00105"></a>00105                 }
+<a name="l00106"></a>00106 
+<a name="l00107"></a>00107                 <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00108"></a>00108                 {
+<a name="l00109"></a>00109                     $idcollec=(int)<a class="code" href="test__davical__operations_8php.html#ac31342552caa14576478e347cd0fa901">CreateCalendar</a>($G-&gt;getName(), $G-&gt;getName() . <span class="stringliteral">&quot; EDT&quot;</span>);
+<a name="l00110"></a>00110                     $this-&gt;<a class="code" href="class_e_d_t.html#a8d0522e673fbb7629abb95550261d0cd">setIdCollection</a>($idcollec);
+<a name="l00111"></a>00111                     $this-&gt;group = $G;
+<a name="l00112"></a>00112                 }
+<a name="l00113"></a>00113                 <span class="keywordflow">else</span>
+<a name="l00114"></a>00114                 {
+<a name="l00115"></a>00115                     <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS_);
+<a name="l00116"></a>00116                 }
+<a name="l00117"></a>00117             }
+<a name="l00118"></a>00118             <span class="keywordflow">else</span> <span class="keywordflow">if</span> (is_a($Object, <span class="stringliteral">&quot;Matiere&quot;</span>))
+<a name="l00119"></a>00119             {
+<a name="l00120"></a>00120                 $M     = $Object;
+<a name="l00121"></a>00121                 $query = <span class="stringliteral">&quot;update &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot; set id_calendar=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span>.$M-&gt;getSqlid().<span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00122"></a>00122 
+<a name="l00123"></a>00123                 <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00124"></a>00124                 {
+<a name="l00125"></a>00125                     $idcollec=(int)<a class="code" href="test__davical__operations_8php.html#ac31342552caa14576478e347cd0fa901">CreateCalendar</a>($M-&gt;getGroup()-&gt;getName(), $M-&gt;getName().<span class="stringliteral">&quot; &quot;</span>.$M-&gt;getGroup()-&gt;getName());
+<a name="l00126"></a>00126                     $this-&gt;<a class="code" href="class_e_d_t.html#a8d0522e673fbb7629abb95550261d0cd">setIdCollection</a>($idcollec);
+<a name="l00127"></a>00127                     $this-&gt;subject = $M;
+<a name="l00128"></a>00128                 }
+<a name="l00129"></a>00129                 <span class="keywordflow">else</span>
+<a name="l00130"></a>00130                 {   
+<a name="l00131"></a>00131                         <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS_);
+<a name="l00132"></a>00132                 }
+<a name="l00133"></a>00133             }
+<a name="l00134"></a>00134             <span class="keywordflow">else</span> <span class="keywordflow">if</span> (is_a($Object, <span class="stringliteral">&quot;Enseignant&quot;</span>))
+<a name="l00135"></a>00135             {
+<a name="l00136"></a>00136                 $E     = $Object;
+<a name="l00137"></a>00137                 $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set id_teacher=&quot;</span> . $E-&gt;getSqlid() . <span class="stringliteral">&quot; where id=&quot;</span>.$this-&gt;sqlid.<span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00138"></a>00138 
+<a name="l00139"></a>00139                 <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00140"></a>00140                 {
+<a name="l00141"></a>00141                     $idcollec=(int)<a class="code" href="test__davical__operations_8php.html#ac31342552caa14576478e347cd0fa901">CreateCalendar</a>($E-&gt;getLogin(), $E-&gt;getFullName() . <span class="stringliteral">&quot; EDT&quot;</span>);
+<a name="l00142"></a>00142                     $this-&gt;<a class="code" href="class_e_d_t.html#a8d0522e673fbb7629abb95550261d0cd">setIdCollection</a>($idcollec);
+<a name="l00143"></a>00143                     $this-&gt;teacherOwner = $E;
+<a name="l00144"></a>00144                 }
+<a name="l00145"></a>00145                 <span class="keywordflow">else</span>
+<a name="l00146"></a>00146                 {
+<a name="l00147"></a>00147                     <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00148"></a>00148                 }
+<a name="l00149"></a>00149             }
+<a name="l00150"></a>00150             
+<a name="l00151"></a>00151             $this-&gt;<a class="code" href="class_e_d_t.html#ab050dd66d46a6fff00172e8d5974dcdf">autoShare</a>();
+<a name="l00152"></a>00152         }
+<a name="l00153"></a>00153     }
+<a name="l00154"></a>00154 
+<a name="l00155"></a>00155     <span class="comment">// getters</span>
+<a name="l00156"></a><a class="code" href="class_e_d_t.html#a12251d0c022e9e21c137a105ff683f13">00156</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a12251d0c022e9e21c137a105ff683f13">getId</a>()
+<a name="l00157"></a>00157     {
+<a name="l00158"></a>00158         <span class="keywordflow">return</span> $this-&gt;sqlid;
+<a name="l00159"></a>00159     }
+<a name="l00160"></a>00160 
+<a name="l00161"></a><a class="code" href="class_e_d_t.html#a953c961ababda0eb06026fa42b4903e1">00161</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a953c961ababda0eb06026fa42b4903e1">getModifiedBy</a>()
+<a name="l00162"></a>00162     {
+<a name="l00163"></a>00163         <span class="keywordflow">return</span> $this-&gt;modifiedBy;
+<a name="l00164"></a>00164     }
+<a name="l00165"></a>00165 
+<a name="l00166"></a><a class="code" href="class_e_d_t.html#ac5b5b08687b6ff9e0ec097dd34532012">00166</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ac5b5b08687b6ff9e0ec097dd34532012">getListCourses</a>()
+<a name="l00167"></a>00167     {
+<a name="l00168"></a>00168         <span class="keywordflow">return</span> $this-&gt;listCourses;
+<a name="l00169"></a>00169     }
+<a name="l00170"></a>00170 
+<a name="l00171"></a><a class="code" href="class_e_d_t.html#ade1c7e7114c5bfb2a9ab6a6e028f173c">00171</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ade1c7e7114c5bfb2a9ab6a6e028f173c">getListModif</a>()
+<a name="l00172"></a>00172     {
+<a name="l00173"></a>00173         <span class="keywordflow">return</span> $this-&gt;listModif;
+<a name="l00174"></a>00174     }
+<a name="l00175"></a>00175 
+<a name="l00176"></a><a class="code" href="class_e_d_t.html#a4f44e7bc9de772c21b4304d11e87bf16">00176</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a4f44e7bc9de772c21b4304d11e87bf16">getGroup</a>()
+<a name="l00177"></a>00177     {
+<a name="l00178"></a>00178         <span class="keywordflow">return</span> $this-&gt;group;
+<a name="l00179"></a>00179     }
+<a name="l00180"></a>00180 
+<a name="l00181"></a><a class="code" href="class_e_d_t.html#a7ec8f5b794ded8f3c0df9afd96c8233c">00181</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a7ec8f5b794ded8f3c0df9afd96c8233c">getSubject</a>()
+<a name="l00182"></a>00182     {
+<a name="l00183"></a>00183         <span class="keywordflow">return</span> $this-&gt;subject;
+<a name="l00184"></a>00184     }
+<a name="l00185"></a>00185 
+<a name="l00186"></a><a class="code" href="class_e_d_t.html#a349924800b9cc6134a6606c4ee4a4e27">00186</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a349924800b9cc6134a6606c4ee4a4e27">getTeacherOwner</a>()
+<a name="l00187"></a>00187     {
+<a name="l00188"></a>00188         <span class="keywordflow">return</span> $this-&gt;teacherOwner;
+<a name="l00189"></a>00189     }
+<a name="l00190"></a><a class="code" href="class_e_d_t.html#ae343e775e67f544a1be10343d21e2c21">00190</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ae343e775e67f544a1be10343d21e2c21">getIdCollection</a>()
+<a name="l00191"></a>00191     {
+<a name="l00192"></a>00192         <span class="keywordflow">return</span> $this-&gt;idcollection;
+<a name="l00193"></a>00193     }
+<a name="l00194"></a>00194 
+<a name="l00195"></a><a class="code" href="class_e_d_t.html#a62ffea6af35973c517b05a2447b2e802">00195</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a62ffea6af35973c517b05a2447b2e802">containsCourse</a>(<a class="code" href="class_cours.html">Cours</a> $C)
+<a name="l00196"></a>00196     {
+<a name="l00197"></a>00197         <span class="keywordflow">foreach</span> ($this-&gt;listCourses as $oneCourse)
+<a name="l00198"></a>00198         {
+<a name="l00199"></a>00199             <span class="keywordflow">if</span> ($oneCourse == $C)
+<a name="l00200"></a>00200             {
+<a name="l00201"></a>00201                 <span class="keywordflow">return</span> TRUE;
+<a name="l00202"></a>00202             }
+<a name="l00203"></a>00203         }
+<a name="l00204"></a>00204 
+<a name="l00205"></a>00205         <span class="keywordflow">return</span> FALSE;
+<a name="l00206"></a>00206     }
+<a name="l00207"></a>00207 
+<a name="l00208"></a><a class="code" href="class_e_d_t.html#ae342a57b384c876b57ca4a51da2e58d9">00208</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ae342a57b384c876b57ca4a51da2e58d9">hasModification</a>(<a class="code" href="class_modification.html">Modification</a> $M)
+<a name="l00209"></a>00209     {
+<a name="l00210"></a>00210         <span class="keywordflow">foreach</span> ($this-&gt;listModif as $oneModif)
+<a name="l00211"></a>00211         {
+<a name="l00212"></a>00212             <span class="keywordflow">if</span> ($oneModif == $M)
+<a name="l00213"></a>00213             {
+<a name="l00214"></a>00214                 <span class="keywordflow">return</span> TRUE;
+<a name="l00215"></a>00215             }
+<a name="l00216"></a>00216         }
+<a name="l00217"></a>00217 
+<a name="l00218"></a>00218         <span class="keywordflow">return</span> FALSE;
+<a name="l00219"></a>00219     }
+<a name="l00220"></a>00220 
+<a name="l00221"></a>00221     <span class="comment">// setters</span>
+<a name="l00222"></a><a class="code" href="class_e_d_t.html#aa0453166d92d2b7b639e0b01eae8e90c">00222</a>     <span class="keyword">protected</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#aa0453166d92d2b7b639e0b01eae8e90c">setId</a>($newIdTimetable)
+<a name="l00223"></a>00223     {
+<a name="l00224"></a>00224         <span class="keywordflow">if</span> (is_int($newIdTimetable))
+<a name="l00225"></a>00225         {
+<a name="l00226"></a>00226             $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set id=&quot;</span> . $newIdTimetable . <span class="stringliteral">&quot; where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00227"></a>00227 
+<a name="l00228"></a>00228             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00229"></a>00229             {
+<a name="l00230"></a>00230                 $this-&gt;sqlid = $newIdTimetable;
+<a name="l00231"></a>00231             }
+<a name="l00232"></a>00232             <span class="keywordflow">else</span>
+<a name="l00233"></a>00233             {
+<a name="l00234"></a>00234                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00235"></a>00235             }
+<a name="l00236"></a>00236         }
+<a name="l00237"></a>00237     }
+<a name="l00238"></a>00238 
+<a name="l00239"></a><a class="code" href="class_e_d_t.html#a8d0522e673fbb7629abb95550261d0cd">00239</a>     <span class="keyword">protected</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a8d0522e673fbb7629abb95550261d0cd">setIdCollection</a>($newId)
+<a name="l00240"></a>00240     {
+<a name="l00241"></a>00241         <span class="keywordflow">if</span> (is_int($newId))
+<a name="l00242"></a>00242         {
+<a name="l00243"></a>00243             $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set id_collection=&quot;</span> . $newId . <span class="stringliteral">&quot; where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00244"></a>00244 
+<a name="l00245"></a>00245             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00246"></a>00246             {
+<a name="l00247"></a>00247                 $this-&gt;idcollection = $newId;
+<a name="l00248"></a>00248             }
+<a name="l00249"></a>00249             <span class="keywordflow">else</span>
+<a name="l00250"></a>00250             {
+<a name="l00251"></a>00251                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00252"></a>00252             }
+<a name="l00253"></a>00253         }
+<a name="l00254"></a>00254     }
+<a name="l00255"></a>00255     
+<a name="l00256"></a><a class="code" href="class_e_d_t.html#adc960879ce9a85edad73a778fb98f227">00256</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#adc960879ce9a85edad73a778fb98f227">setModifiedBy</a>(<a class="code" href="class_personne.html">Personne</a> $newModifiedBy = NULL)
+<a name="l00257"></a>00257     {
+<a name="l00258"></a>00258         <span class="keywordflow">if</span> (!empty($newModifiedBy))
+<a name="l00259"></a>00259         {
+<a name="l00260"></a>00260             $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set is_being_modified_by=&quot;</span> . $newModifiedBy-&gt;getSqlid() . <span class="stringliteral">&quot; where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00261"></a>00261 
+<a name="l00262"></a>00262             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00263"></a>00263             {
+<a name="l00264"></a>00264                 $this-&gt;modifiedBy = $newModifiedBy;
+<a name="l00265"></a>00265             }
+<a name="l00266"></a>00266             <span class="keywordflow">else</span>
+<a name="l00267"></a>00267             {
+<a name="l00268"></a>00268                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00269"></a>00269             }
+<a name="l00270"></a>00270         }
+<a name="l00271"></a>00271         <span class="keywordflow">else</span>
+<a name="l00272"></a>00272         {
+<a name="l00273"></a>00273             $query = <span class="stringliteral">&quot;update &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set is_being_modified_by=NULL where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00274"></a>00274 
+<a name="l00275"></a>00275             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00276"></a>00276             {
+<a name="l00277"></a>00277                 $this-&gt;modifiedBy = NULL;
+<a name="l00278"></a>00278             }
+<a name="l00279"></a>00279             <span class="keywordflow">else</span>
+<a name="l00280"></a>00280             {
+<a name="l00281"></a>00281                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00282"></a>00282             }
+<a name="l00283"></a>00283         }
+<a name="l00284"></a>00284     }
+<a name="l00285"></a>00285 
+<a name="l00286"></a><a class="code" href="class_e_d_t.html#a3b3e623a901ce24b7cf81c84beb86bbb">00286</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a3b3e623a901ce24b7cf81c84beb86bbb">setListCourses</a>($newListCourses = NULL)
+<a name="l00287"></a>00287     {
+<a name="l00288"></a>00288         <span class="keywordflow">foreach</span> ($this-&gt;listCourses as $oneCourse)
+<a name="l00289"></a>00289         {
+<a name="l00290"></a>00290             $this-&gt;<a class="code" href="class_e_d_t.html#a03fa3e0e2e146762ef59e991d379cb8b">removeCourse</a>($oneCourse);
+<a name="l00291"></a>00291         }
+<a name="l00292"></a>00292 
+<a name="l00293"></a>00293         <span class="keywordflow">if</span> (is_array($newListCourses))
+<a name="l00294"></a>00294         {
+<a name="l00295"></a>00295             <span class="keywordflow">foreach</span> ($newListCourses as $aCourse)
+<a name="l00296"></a>00296             {
+<a name="l00297"></a>00297                 $this-&gt;<a class="code" href="class_e_d_t.html#a36aca5b391ab20faf5da65913ed629a6">addCourse</a>($aCourse);
+<a name="l00298"></a>00298             }
+<a name="l00299"></a>00299         }
+<a name="l00300"></a>00300     }
+<a name="l00301"></a>00301 
+<a name="l00302"></a><a class="code" href="class_e_d_t.html#a824aa936757cb9d48e5c8595b489e9bd">00302</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a824aa936757cb9d48e5c8595b489e9bd">setListModif</a>(<a class="code" href="class_modification.html">Modification</a> $newListModif = NULL)
+<a name="l00303"></a>00303     {
+<a name="l00304"></a>00304         <span class="keywordflow">foreach</span> ($this-&gt;listModif as $oneModif)
+<a name="l00305"></a>00305         {
+<a name="l00306"></a>00306             $this-&gt;<a class="code" href="class_e_d_t.html#a76586b167ae509b4048d97baef88f0a5">removeModification</a>($oneModif);
+<a name="l00307"></a>00307         }
+<a name="l00308"></a>00308 
+<a name="l00309"></a>00309         <span class="keywordflow">if</span> (is_array($newListModif))
+<a name="l00310"></a>00310         {
+<a name="l00311"></a>00311             <span class="keywordflow">foreach</span> ($newListModifs as $aModif)
+<a name="l00312"></a>00312             {
+<a name="l00313"></a>00313                 $this-&gt;<a class="code" href="class_e_d_t.html#ae36b050530c7ac89ace6adbf0d875441">addModification</a>($aModif);
+<a name="l00314"></a>00314             }
+<a name="l00315"></a>00315         }
+<a name="l00316"></a>00316     }
+<a name="l00317"></a>00317 
+<a name="l00318"></a>00318     <span class="comment">// This method shouldn’t be outside this class and its children since the attribute shouldn’t change after loading/creating the object</span>
+<a name="l00319"></a><a class="code" href="class_e_d_t.html#a725488f9d2217730ecb62e22f1a59405">00319</a>     <span class="keyword">protected</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a725488f9d2217730ecb62e22f1a59405">setGroup</a>(<a class="code" href="class_groupe.html">Groupe</a> $newGroup = NULL)
+<a name="l00320"></a>00320     {
+<a name="l00321"></a>00321         <span class="keywordflow">if</span> (!empty($newGroup))
+<a name="l00322"></a>00322         {
+<a name="l00323"></a>00323             <span class="keywordflow">if</span> ($this-&gt;validated)
+<a name="l00324"></a>00324             {
+<a name="l00325"></a>00325                 $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_validated_calendar=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span> . $newGroup-&gt;Sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00326"></a>00326             }
+<a name="l00327"></a>00327             <span class="keywordflow">else</span>
+<a name="l00328"></a>00328             {
+<a name="l00329"></a>00329                 $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_current_calendar=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span> . $newGroup-&gt;Sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00330"></a>00330 
+<a name="l00331"></a>00331                 <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00332"></a>00332                 {
+<a name="l00333"></a>00333                     $this-&gt;group = $newGroup;
+<a name="l00334"></a>00334                 }
+<a name="l00335"></a>00335                 <span class="keywordflow">else</span>
+<a name="l00336"></a>00336                 {
+<a name="l00337"></a>00337                     <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00338"></a>00338                 }
+<a name="l00339"></a>00339 
+<a name="l00340"></a>00340                 $this-&gt;setSubject();
+<a name="l00341"></a>00341                 $this-&gt;setTeacherOwner();
+<a name="l00342"></a>00342             }
+<a name="l00343"></a>00343         }
+<a name="l00344"></a>00344         <span class="keywordflow">else</span>
+<a name="l00345"></a>00345         {
+<a name="l00346"></a>00346             <span class="keywordflow">if</span> ($this-&gt;validated)
+<a name="l00347"></a>00347             {
+<a name="l00348"></a>00348                 $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_validated_calendar=NULL where id=&quot;</span> . $newGroup-&gt;Sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00349"></a>00349             }
+<a name="l00350"></a>00350             <span class="keywordflow">else</span>
+<a name="l00351"></a>00351             {
+<a name="l00352"></a>00352                 $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; set id_current_calendar=NULL where id=&quot;</span> . $newGroup-&gt;Sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00353"></a>00353                 <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00354"></a>00354                 {
+<a name="l00355"></a>00355                     $this-&gt;group = NULL;
+<a name="l00356"></a>00356                 }
+<a name="l00357"></a>00357                 <span class="keywordflow">else</span>
+<a name="l00358"></a>00358                 {
+<a name="l00359"></a>00359                     <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00360"></a>00360                 }
+<a name="l00361"></a>00361             }
+<a name="l00362"></a>00362         }
+<a name="l00363"></a>00363     }
+<a name="l00364"></a>00364 
+<a name="l00365"></a>00365     <span class="comment">// This method shouldn’t be outside this class since the attribute shouldn’t change after loading/creating the object</span>
+<a name="l00366"></a>00366     <span class="keyword">private</span> <span class="keyword">function</span> setSubject(<a class="code" href="class_matiere.html">Matiere</a> $newSubject = NULL)
+<a name="l00367"></a>00367     {
+<a name="l00368"></a>00368         <span class="keywordflow">if</span> (!empty($newSubject))
+<a name="l00369"></a>00369         {
+<a name="l00370"></a>00370             $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot; set id_calendar=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot; where id=&quot;</span> . $newSubject-&gt;sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00371"></a>00371 
+<a name="l00372"></a>00372             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00373"></a>00373             {
+<a name="l00374"></a>00374                 $this-&gt;subject = $newSubject;
+<a name="l00375"></a>00375             }
+<a name="l00376"></a>00376             <span class="keywordflow">else</span>
+<a name="l00377"></a>00377             {
+<a name="l00378"></a>00378                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00379"></a>00379             }
+<a name="l00380"></a>00380 
+<a name="l00381"></a>00381             $this-&gt;<a class="code" href="class_e_d_t.html#a725488f9d2217730ecb62e22f1a59405">setGroup</a>();
+<a name="l00382"></a>00382             $this-&gt;setTeacherOwner();
+<a name="l00383"></a>00383         }
+<a name="l00384"></a>00384         <span class="keywordflow">else</span>
+<a name="l00385"></a>00385         {
+<a name="l00386"></a>00386             $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot; set id_calendar=NULL where id=&quot;</span> . $newSubject-&gt;sqlid() . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00387"></a>00387 
+<a name="l00388"></a>00388             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00389"></a>00389             {
+<a name="l00390"></a>00390                 $this-&gt;subject = NULL;
+<a name="l00391"></a>00391             }
+<a name="l00392"></a>00392             <span class="keywordflow">else</span>
+<a name="l00393"></a>00393             {
+<a name="l00394"></a>00394                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00395"></a>00395             }
+<a name="l00396"></a>00396         }
+<a name="l00397"></a>00397     }
+<a name="l00398"></a>00398 
+<a name="l00399"></a>00399     <span class="comment">// This method shouldn’t be outside this class since the attribute shouldn’t change after loading/creating the object</span>
+<a name="l00400"></a>00400     <span class="keyword">private</span> <span class="keyword">function</span> setTeacherOwner(<a class="code" href="class_enseignant.html">Enseignant</a> $newTeacherOwner = NULL)
+<a name="l00401"></a>00401     {
+<a name="l00402"></a>00402         <span class="keywordflow">if</span> (!empty($newTeacherOwner))
+<a name="l00403"></a>00403         {
+<a name="l00404"></a>00404             $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set id_teacher=&quot;</span> . $newTeacherOwner-&gt;getSqlid() . <span class="stringliteral">&quot; where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00405"></a>00405 
+<a name="l00406"></a>00406             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00407"></a>00407             {
+<a name="l00408"></a>00408                 $this-&gt;teacherOwner = $newTeacherOwner;
+<a name="l00409"></a>00409             }
+<a name="l00410"></a>00410             <span class="keywordflow">else</span>
+<a name="l00411"></a>00411             {
+<a name="l00412"></a>00412                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00413"></a>00413             }
+<a name="l00414"></a>00414 
+<a name="l00415"></a>00415             $this-&gt;setSubject();
+<a name="l00416"></a>00416             $this-&gt;<a class="code" href="class_e_d_t.html#a725488f9d2217730ecb62e22f1a59405">setGroup</a>();
+<a name="l00417"></a>00417         }
+<a name="l00418"></a>00418         <span class="keywordflow">else</span>
+<a name="l00419"></a>00419         {
+<a name="l00420"></a>00420             $query = <span class="stringliteral">&quot;UPDATE &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; set id_teacher=NULL where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00421"></a>00421             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00422"></a>00422             {
+<a name="l00423"></a>00423                 $this-&gt;teacherOwner = NULL;
+<a name="l00424"></a>00424             }
+<a name="l00425"></a>00425             <span class="keywordflow">else</span>
+<a name="l00426"></a>00426             {
+<a name="l00427"></a>00427                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00428"></a>00428             }
+<a name="l00429"></a>00429         }
+<a name="l00430"></a>00430     }
+<a name="l00431"></a>00431 
+<a name="l00432"></a>00432     <span class="comment">// others</span>
+<a name="l00433"></a><a class="code" href="class_e_d_t.html#a0d103c0baeb601e1880585f5fa60c4b7">00433</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a0d103c0baeb601e1880585f5fa60c4b7">extractExams</a>()
+<a name="l00434"></a>00434     {
+<a name="l00435"></a>00435         $examList = array();
+<a name="l00436"></a>00436 
+<a name="l00437"></a>00437         <span class="keywordflow">foreach</span> ($this-&gt;listCourses as $tempCourse)
+<a name="l00438"></a>00438         {
+<a name="l00439"></a>00439             <span class="keywordflow">if</span> ($tempCourse-&gt;getTypeOfCourse() == <a class="code" href="unknown_8_type__cours_8php.html#ae7fabd9a1752bb7d2034279f5829d55b">EXAMEN</a>)
+<a name="l00440"></a>00440             {
+<a name="l00441"></a>00441                 $examList[] = $tempCourse;
+<a name="l00442"></a>00442             }
+<a name="l00443"></a>00443         }
+<a name="l00444"></a>00444 
+<a name="l00445"></a>00445         <span class="keywordflow">return</span> $examList;
+<a name="l00446"></a>00446     }
+<a name="l00447"></a>00447 
+<a name="l00448"></a><a class="code" href="class_e_d_t.html#a36aca5b391ab20faf5da65913ed629a6">00448</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a36aca5b391ab20faf5da65913ed629a6">addCourse</a>(<a class="code" href="class_cours.html">Cours</a> $newCourse) <span class="comment">// TODO adapt davical dB en créant des évènements de même nom/horaires et salle pour tous les EDT concernés</span>
+<a name="l00449"></a>00449     {
+<a name="l00450"></a>00450         <span class="keywordflow">if</span> (!$this-&gt;<a class="code" href="class_e_d_t.html#a62ffea6af35973c517b05a2447b2e802">containsCourse</a>($newCourse))
+<a name="l00451"></a>00451         {
+<a name="l00452"></a>00452             $query = <span class="stringliteral">&quot;insert &quot;</span> . <a class="code" href="class_cours.html#a422f65442f186f72ecb4a9de34308679">Cours::belongsToTABLENAME</a> . <span class="stringliteral">&quot; (id_course,id_calendar) VALUES(&quot;</span> . $newCourse-&gt;<a class="code" href="class_cours.html#ac9084f2f4f5f491d8a4781c999429475">getSqlid</a>() . <span class="stringliteral">&quot;,&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;) ;&quot;</span>;
+<a name="l00453"></a>00453 
+<a name="l00454"></a>00454             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00455"></a>00455             {
+<a name="l00456"></a>00456                 $this-&gt;listCourses[] = $newCourse;
+<a name="l00457"></a>00457                 $S                   = $newCourse-&gt;<a class="code" href="class_cours.html#a7ec8f5b794ded8f3c0df9afd96c8233c">getSubject</a>();
+<a name="l00458"></a>00458 
+<a name="l00459"></a>00459                 <span class="comment">// the two next blocs add the new course to all calendars related to this one</span>
+<a name="l00460"></a>00460                 <span class="keywordflow">if</span> (!empty($S))
+<a name="l00461"></a>00461                 {
+<a name="l00462"></a>00462                     $S-&gt;getTimetable()-&gt;addCourse($newCourse); <span class="comment">// ADD course to calendar of the course’s subject</span>
+<a name="l00463"></a>00463 
+<a name="l00464"></a>00464                     <span class="keywordflow">foreach</span> ($S-&gt;getTeachedBy() as $oneSpeaker) <span class="comment">// for all speakers of this course</span>
+<a name="l00465"></a>00465                     {
+<a name="l00466"></a>00466                         $E = <span class="keyword">new</span> <a class="code" href="class_enseignant.html">Enseignant</a>();
+<a name="l00467"></a>00467 
+<a name="l00468"></a>00468                         <span class="keywordflow">if</span> ($E-&gt;loadFromDB($oneSpeaker-&gt;getSqlId())) <span class="comment">// we check that $onespeaker is a user</span>
+<a name="l00469"></a>00469                         {
+<a name="l00470"></a>00470                             $E-&gt;getTimetable()-&gt;addCourse($newCourse); <span class="comment">// ADD course to teacher’s calendar</span>
+<a name="l00471"></a>00471                         }
+<a name="l00472"></a>00472                     }
+<a name="l00473"></a>00473                 }
+<a name="l00474"></a>00474 
+<a name="l00475"></a>00475                 <span class="keywordflow">if</span> (!empty($this-&gt;group)) <span class="comment">// ADD course in all linked groups calendars</span>
+<a name="l00476"></a>00476                 {
+<a name="l00477"></a>00477                     $G = $this-&gt;group;
+<a name="l00478"></a>00478 
+<a name="l00479"></a>00479                     <span class="keywordflow">foreach</span> ($G-&gt;getListOfLinkedGroups() as $onegroup)
+<a name="l00480"></a>00480                     {
+<a name="l00481"></a>00481                         $T = $onegroup-&gt;getTimeTable();
+<a name="l00482"></a>00482 
+<a name="l00483"></a>00483                         <span class="keywordflow">if</span> (!empty($T))
+<a name="l00484"></a>00484                         {
+<a name="l00485"></a>00485                             $T-&gt;addCourse($newCourse);
+<a name="l00486"></a>00486                         }
+<a name="l00487"></a>00487                     }
+<a name="l00488"></a>00488                 }
+<a name="l00489"></a>00489             }
+<a name="l00490"></a>00490             <span class="keywordflow">else</span>
+<a name="l00491"></a>00491             {
+<a name="l00492"></a>00492                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00493"></a>00493             }
+<a name="l00494"></a>00494         }
+<a name="l00495"></a>00495     }
+<a name="l00496"></a>00496 
+<a name="l00497"></a><a class="code" href="class_e_d_t.html#a03fa3e0e2e146762ef59e991d379cb8b">00497</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a03fa3e0e2e146762ef59e991d379cb8b">removeCourse</a>(<a class="code" href="class_cours.html">Cours</a> $courseToRemove)
+<a name="l00498"></a>00498     {
+<a name="l00499"></a>00499         $S = $courseToRemove();
+<a name="l00500"></a>00500 
+<a name="l00501"></a>00501         <span class="keywordflow">if</span> ($this-&gt;<a class="code" href="class_e_d_t.html#a62ffea6af35973c517b05a2447b2e802">containsCourse</a>($courseToRemove))
+<a name="l00502"></a>00502         {
+<a name="l00503"></a>00503             $query = <span class="stringliteral">&quot;delete from &quot;</span> . <a class="code" href="class_cours.html#a422f65442f186f72ecb4a9de34308679">Cours::belongsToTABLENAME</a> . <span class="stringliteral">&quot; where id_course=&quot;</span> . $courseToRemove-&gt;<a class="code" href="class_cours.html#ac9084f2f4f5f491d8a4781c999429475">getSqlid</a>() . <span class="stringliteral">&quot; and id_calendar=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00504"></a>00504 
+<a name="l00505"></a>00505             <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00506"></a>00506             {
+<a name="l00507"></a>00507                 unset($this-&gt;listCourses[array_search($courseToRemove, $this-&gt;listCourses)]);
+<a name="l00508"></a>00508                 <span class="comment">// The two next blocs remove the course from all calendars related to this one</span>
+<a name="l00509"></a>00509 
+<a name="l00510"></a>00510                 <span class="keywordflow">if</span> (!empty($S))
+<a name="l00511"></a>00511                 {
+<a name="l00512"></a>00512                     $S-&gt;getTimetable()-&gt;removeCourse($courseToRemove); <span class="comment">// REMOVE course from calendar of the course’s subject</span>
+<a name="l00513"></a>00513 
+<a name="l00514"></a>00514                     <span class="keywordflow">foreach</span> ($S-&gt;getTeachedBy() as $oneSpeaker) <span class="comment">// for all speakers of this course</span>
+<a name="l00515"></a>00515                     {
+<a name="l00516"></a>00516                         $E = <span class="keyword">new</span> <a class="code" href="class_enseignant.html">Enseignant</a>();
+<a name="l00517"></a>00517 
+<a name="l00518"></a>00518                         <span class="keywordflow">if</span> ($E-&gt;loadFromDB($oneSpeaker-&gt;getSqlId())) <span class="comment">// We check that $onespeaker is a user</span>
+<a name="l00519"></a>00519                         {
+<a name="l00520"></a>00520                             $E-&gt;getTimetable()-&gt;removeCourse($courseToRemove); <span class="comment">// REMOVE course from teacher’s calendar</span>
+<a name="l00521"></a>00521                         }
+<a name="l00522"></a>00522                     }
+<a name="l00523"></a>00523                 }
+<a name="l00524"></a>00524 
+<a name="l00525"></a>00525                 <span class="keywordflow">if</span> (!empty($this-&gt;group)) <span class="comment">// REMOVE course from all linked groups calendars</span>
+<a name="l00526"></a>00526                 {
+<a name="l00527"></a>00527                     $G = $this-&gt;group;
+<a name="l00528"></a>00528 
+<a name="l00529"></a>00529                     <span class="keywordflow">foreach</span> ($G-&gt;getListOfLinkedGroups() as $onegroup)
+<a name="l00530"></a>00530                     {
+<a name="l00531"></a>00531                         $T = $onegroup-&gt;getTimeTable();
+<a name="l00532"></a>00532 
+<a name="l00533"></a>00533                         <span class="keywordflow">if</span> (!empty($T))
+<a name="l00534"></a>00534                         {
+<a name="l00535"></a>00535                             $T-&gt;removeCourse($courseToRemove);
+<a name="l00536"></a>00536                         }
+<a name="l00537"></a>00537                     }
+<a name="l00538"></a>00538                 }
+<a name="l00539"></a>00539             }
+<a name="l00540"></a>00540             <span class="keywordflow">else</span>
+<a name="l00541"></a>00541             {
+<a name="l00542"></a>00542                 <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00543"></a>00543             }
+<a name="l00544"></a>00544         }
+<a name="l00545"></a>00545     }
+<a name="l00546"></a>00546 
+<a name="l00547"></a><a class="code" href="class_e_d_t.html#ae36b050530c7ac89ace6adbf0d875441">00547</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ae36b050530c7ac89ace6adbf0d875441">addModification</a>(<a class="code" href="class_modification.html">Modification</a> $M)
+<a name="l00548"></a>00548     {
+<a name="l00549"></a>00549         <span class="keywordflow">if</span> (!<a class="code" href="class_e_d_t.html#ae342a57b384c876b57ca4a51da2e58d9">hasModification</a>($M))
+<a name="l00550"></a>00550         {
+<a name="l00551"></a>00551             $this-&gt;listModif[] = $M;
+<a name="l00552"></a>00552             <span class="comment">// No need for a SQL query, the modification should already have been registered in the DB</span>
+<a name="l00553"></a>00553         }
+<a name="l00554"></a>00554     }
+<a name="l00555"></a>00555 
+<a name="l00556"></a>00556     <span class="comment">// This method shouldn’t be called outside this class because there’s no reason that only one modification of timetable to be removed</span>
+<a name="l00557"></a><a class="code" href="class_e_d_t.html#a76586b167ae509b4048d97baef88f0a5">00557</a>     <span class="keyword">protected</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a76586b167ae509b4048d97baef88f0a5">removeModification</a>(<a class="code" href="class_modification.html">Modification</a> $M)
+<a name="l00558"></a>00558     {
+<a name="l00559"></a>00559         <span class="keywordflow">if</span> (!<a class="code" href="class_e_d_t.html#ae342a57b384c876b57ca4a51da2e58d9">hasModification</a>($M))
+<a name="l00560"></a>00560         {
+<a name="l00561"></a>00561             $M-&gt;<a class="code" href="class_modification.html#a260b34e3ce5a0be2e2539c1291b989a5">removeFromDB</a>();
+<a name="l00562"></a>00562             unset($this-&gt;listModif[array_search($M, $this-&gt;listModif)]);
+<a name="l00563"></a>00563         }
+<a name="l00564"></a>00564     }
+<a name="l00565"></a>00565 
+<a name="l00566"></a><a class="code" href="class_e_d_t.html#a2f3a37854d1a6a04be2a135da1c495bd">00566</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a2f3a37854d1a6a04be2a135da1c495bd">clearModifications</a>()
+<a name="l00567"></a>00567     {
+<a name="l00568"></a>00568         <span class="keywordflow">foreach</span> ($this-&gt;listModif as $oneModif)
+<a name="l00569"></a>00569         {
+<a name="l00570"></a>00570             $oneModif-&gt;removeFromDB();
+<a name="l00571"></a>00571         }
+<a name="l00572"></a>00572 
+<a name="l00573"></a>00573         $this-&gt;listModif = array();
+<a name="l00574"></a>00574     }
+<a name="l00575"></a>00575 
+<a name="l00576"></a><a class="code" href="class_e_d_t.html#abe93d63108b754bc99754ef32a2bf86e">00576</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#abe93d63108b754bc99754ef32a2bf86e">loadCourseFromRessource</a>($ressource)
+<a name="l00577"></a>00577     {
+<a name="l00578"></a>00578         $C = <span class="keyword">new</span> <a class="code" href="class_cours.html">Cours</a>();
+<a name="l00579"></a>00579         $C-&gt;loadFromDB(int_val($ressource[<span class="stringliteral">&#39;id_course&#39;</span>]));
+<a name="l00580"></a>00580         $this-&gt;<a class="code" href="class_e_d_t.html#a36aca5b391ab20faf5da65913ed629a6">addCourse</a>($C);
+<a name="l00581"></a>00581     }
+<a name="l00582"></a>00582 
+<a name="l00583"></a>00583     <span class="comment">// This method expects an array describing a ressource from a select query on modification table</span>
+<a name="l00584"></a><a class="code" href="class_e_d_t.html#a948d11bea42951fbf6e22929caf0be7b">00584</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a948d11bea42951fbf6e22929caf0be7b">loadModificationFromRessource</a>($ressource)
+<a name="l00585"></a>00585     {
+<a name="l00586"></a>00586         $M = <span class="keyword">new</span> <a class="code" href="class_modification.html">Modification</a>();
+<a name="l00587"></a>00587         $M-&gt;setDate($ressource[<span class="stringliteral">&#39;date&#39;</span>]);
+<a name="l00588"></a>00588         $U = <span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
+<a name="l00589"></a>00589         $U-&gt;loadFromDB(int_val($ressource[<span class="stringliteral">&#39;id_user&#39;</span>]));
+<a name="l00590"></a>00590         $M-&gt;setModifiedBy($U);
+<a name="l00591"></a>00591         $C = <span class="keyword">new</span> <a class="code" href="class_cours.html">Cours</a>();
+<a name="l00592"></a>00592         $C-&gt;loadFromDB(int_val($ressource[<span class="stringliteral">&#39;id_course&#39;</span>]));
+<a name="l00593"></a>00593         $M-&gt;setCourseModified($C);
+<a name="l00594"></a>00594         $this-&gt;<a class="code" href="class_e_d_t.html#ae36b050530c7ac89ace6adbf0d875441">addModification</a>($M);
+<a name="l00595"></a>00595     }
+<a name="l00596"></a>00596 
+<a name="l00597"></a><a class="code" href="class_e_d_t.html#a2f014444c5fde45b477dccfd4ae1a63f">00597</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a2f014444c5fde45b477dccfd4ae1a63f">loadFromDB</a>($id = NULL, $onlyclasscalendar = FALSE)
+<a name="l00598"></a>00598     {
+<a name="l00599"></a>00599         <span class="keywordflow">if</span> ($id == NULL) <span class="comment">// if we do not want to load a particularEDT</span>
+<a name="l00600"></a>00600         {
+<a name="l00601"></a>00601             <span class="keywordflow">if</span> ($this-&gt;sqlid != NULL) <span class="comment">// check if the current EDT object is defined</span>
+<a name="l00602"></a>00602             {
+<a name="l00603"></a>00603                 $id = $this-&gt;sqlid; <span class="comment">// if yes, we want to “reload” data about this object from the database (UPDATE)</span>
+<a name="l00604"></a>00604             }
+<a name="l00605"></a>00605         }
+<a name="l00606"></a>00606 
+<a name="l00607"></a>00607         <span class="keywordflow">if</span> ($id == NULL) <span class="comment">// if no, the first EDT object of the DB, will be chosen to be loaded</span>
+<a name="l00608"></a>00608         {
+<a name="l00609"></a>00609             <span class="keywordflow">if</span> (!$onlyclasscalendar)
+<a name="l00610"></a>00610             {
+<a name="l00611"></a>00611                 $query = <span class="stringliteral">&quot;select * from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00612"></a>00612             }
+<a name="l00613"></a>00613             <span class="keywordflow">else</span>
+<a name="l00614"></a>00614             {
+<a name="l00615"></a>00615                 $query = <span class="stringliteral">&quot;select * from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; where is_class_calendar=true;&quot;</span>;
+<a name="l00616"></a>00616             }
+<a name="l00617"></a>00617 
+<a name="l00618"></a>00618             $result = <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
+<a name="l00619"></a>00619         }
+<a name="l00620"></a>00620         <span class="keywordflow">else</span> <span class="comment">// (if yes) from here, we load data about the EDT that has $id as sqlid</span>
+<a name="l00621"></a>00621         {
+<a name="l00622"></a>00622             <span class="keywordflow">if</span> ($onlyclasscalendar) <span class="comment">// we load any EDT that matches the criteria</span>
+<a name="l00623"></a>00623             {
+<a name="l00624"></a>00624                 $query = <span class="stringliteral">&quot;select * from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; where id=$1;&quot;</span>;
+<a name="l00625"></a>00625             }
+<a name="l00626"></a>00626             <span class="keywordflow">else</span> <span class="comment">// we load only EDTclasse that matches the criteria</span>
+<a name="l00627"></a>00627             {
+<a name="l00628"></a>00628                 $query = <span class="stringliteral">&quot;select * from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; where id=$1 and is_class_calendar=true;&quot;</span>;
+<a name="l00629"></a>00629             }
+<a name="l00630"></a>00630 
+<a name="l00631"></a>00631             $params = array($id);
+<a name="l00632"></a>00632             $result = <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query, $params);
+<a name="l00633"></a>00633         }
+<a name="l00634"></a>00634 
+<a name="l00635"></a>00635         <span class="keywordflow">if</span> ($result)
+<a name="l00636"></a>00636         {
+<a name="l00637"></a>00637             $ressource = pg_fetch_assoc($result); <span class="comment">// ressource is now an array containing values for each SQLcolumn of the EDT table</span>
+<a name="l00638"></a>00638             $this-&gt;<a class="code" href="class_e_d_t.html#a3a53d2c42489ff72eead988ddfeaa8de">loadFromRessource</a>($ressource);
+<a name="l00639"></a>00639 
+<a name="l00640"></a>00640             <span class="keywordflow">return</span> TRUE;
+<a name="l00641"></a>00641         }
+<a name="l00642"></a>00642 
+<a name="l00643"></a>00643         <span class="keywordflow">return</span> FALSE;
+<a name="l00644"></a>00644     }
+<a name="l00645"></a>00645 
+<a name="l00646"></a><a class="code" href="class_e_d_t.html#a3a53d2c42489ff72eead988ddfeaa8de">00646</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a3a53d2c42489ff72eead988ddfeaa8de">loadFromRessource</a>($ressource)
+<a name="l00647"></a>00647     {
+<a name="l00648"></a>00648         <span class="comment">// we change values of attributes</span>
+<a name="l00649"></a>00649         $this-&gt;sqlid = $ressource[<span class="stringliteral">&#39;id&#39;</span>];
+<a name="l00650"></a>00650         $U           = <span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
+<a name="l00651"></a>00651         $U-&gt;loadFromDB(int_val($ressource[<span class="stringliteral">&#39;is_being_modified_by&#39;</span>]));
+<a name="l00652"></a>00652         $this-&gt;modifiedBy = $U;
+<a name="l00653"></a>00653 
+<a name="l00654"></a>00654         <span class="keywordflow">if</span> ($ressource[<span class="stringliteral">&#39;id_teacher&#39;</span>])
+<a name="l00655"></a>00655         {
+<a name="l00656"></a>00656             $U = <span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
+<a name="l00657"></a>00657             $U-&gt;loadFromDB(int_val($ressource[<span class="stringliteral">&#39;id_teacher&#39;</span>]));
+<a name="l00658"></a>00658             $this-&gt;teacher = $U;
+<a name="l00659"></a>00659         }
+<a name="l00660"></a>00660         <span class="keywordflow">else</span>
+<a name="l00661"></a>00661         {
+<a name="l00662"></a>00662             $this-&gt;teacher = NULL;
+<a name="l00663"></a>00663         }
+<a name="l00664"></a>00664 
+<a name="l00665"></a>00665         $params = array($this-&gt;sqlid);
+<a name="l00666"></a>00666 
+<a name="l00667"></a>00667         <span class="keywordflow">if</span> ($ressource[<span class="stringliteral">&#39;is_validated_calendar&#39;</span>])
+<a name="l00668"></a>00668         {
+<a name="l00669"></a>00669             $this-&gt;validated = TRUE;
+<a name="l00670"></a>00670             $query           = <span class="stringliteral">&quot;select id from &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; where id_validated_calendar=$1;&quot;</span>;
+<a name="l00671"></a>00671         }
+<a name="l00672"></a>00672         <span class="keywordflow">else</span>
+<a name="l00673"></a>00673         {
+<a name="l00674"></a>00674             $this-&gt;validated = FALSE;
+<a name="l00675"></a>00675             $query           = <span class="stringliteral">&quot;select id from &quot;</span> . <a class="code" href="class_groupe.html#a929a03de916b4bf52b6d52fbb4d7a872">Groupe::TABLENAME</a> . <span class="stringliteral">&quot; where id_current_calendar=$1;&quot;</span>;
+<a name="l00676"></a>00676         }
+<a name="l00677"></a>00677 
+<a name="l00678"></a>00678         <span class="keywordflow">if</span> ($result2 = <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query, $params))
+<a name="l00679"></a>00679         {
+<a name="l00680"></a>00680             $result2 = pg_fetch_assoc($result2);
+<a name="l00681"></a>00681             $G       = <span class="keyword">new</span> <a class="code" href="class_groupe.html">Groupe</a>();
+<a name="l00682"></a>00682             $G-&gt;loadFromDB(int_val($result2[<span class="stringliteral">&#39;id&#39;</span>]));
+<a name="l00683"></a>00683             $this-&gt;group = $G;
+<a name="l00684"></a>00684         }
+<a name="l00685"></a>00685         <span class="keywordflow">else</span>
+<a name="l00686"></a>00686         {
+<a name="l00687"></a>00687             $this-&gt;group = NULL;
+<a name="l00688"></a>00688         }
+<a name="l00689"></a>00689 
+<a name="l00690"></a>00690         $query = <span class="stringliteral">&quot;select id from &quot;</span> . <a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a> . <span class="stringliteral">&quot; where id_calendar=$1;&quot;</span>;
+<a name="l00691"></a>00691 
+<a name="l00692"></a>00692         <span class="keywordflow">if</span> ($result2 = <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query, $params))
+<a name="l00693"></a>00693         {
+<a name="l00694"></a>00694             $result2 = pg_fetch_assoc($result2);
+<a name="l00695"></a>00695             $M       = <span class="keyword">new</span> <a class="code" href="class_matiere.html">Matiere</a>();
+<a name="l00696"></a>00696             $M-&gt;loadFromDB(int_val($result2[<span class="stringliteral">&#39;id&#39;</span>]));
+<a name="l00697"></a>00697             $this-&gt;subject = $M;
+<a name="l00698"></a>00698         }
+<a name="l00699"></a>00699         <span class="keywordflow">else</span>
+<a name="l00700"></a>00700         {
+<a name="l00701"></a>00701             $this-&gt;subject = NULL;
+<a name="l00702"></a>00702         }
+<a name="l00703"></a>00703     }
+<a name="l00704"></a>00704 
+<a name="l00705"></a><a class="code" href="class_e_d_t.html#a260b34e3ce5a0be2e2539c1291b989a5">00705</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a260b34e3ce5a0be2e2539c1291b989a5">removeFromDB</a>()
+<a name="l00706"></a>00706     {
+<a name="l00707"></a>00707         $this-&gt;<a class="code" href="class_e_d_t.html#a824aa936757cb9d48e5c8595b489e9bd">setListModif</a>();
+<a name="l00708"></a>00708         $this-&gt;setTeacherOwner();
+<a name="l00709"></a>00709         $this-&gt;setSubject();
+<a name="l00710"></a>00710         $query = <span class="stringliteral">&quot;delete * from &quot;</span> . self::TABLENAME . <span class="stringliteral">&quot; where id=&quot;</span> . $this-&gt;sqlid . <span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00711"></a>00711 
+<a name="l00712"></a>00712         <span class="keywordflow">if</span> (<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query))
+<a name="l00713"></a>00713         {
+<a name="l00714"></a>00714         }
+<a name="l00715"></a>00715         <span class="keywordflow">else</span>
+<a name="l00716"></a>00716         {
+<a name="l00717"></a>00717             <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00718"></a>00718         }
+<a name="l00719"></a>00719         $BDD=<span class="keyword">new</span> <a class="code" href="class_base_de_donnees.html">BaseDeDonnees</a>(<span class="stringliteral">&quot;davical_app&quot;</span>,<span class="stringliteral">&quot;davical&quot;</span>);
+<a name="l00720"></a>00720         <span class="keywordflow">if</span> (!$BDD-&gt;connect())
+<a name="l00721"></a>00721         {
+<a name="l00722"></a>00722             echo (<span class="stringliteral">&quot;pas de connexion vrs davical&quot;</span>);
+<a name="l00723"></a>00723         }
+<a name="l00724"></a>00724         <span class="keywordflow">else</span>
+<a name="l00725"></a>00725         {
+<a name="l00726"></a>00726             $query=<span class="stringliteral">&quot;delete from calendar_item where collection_id=&quot;</span>.$this-&gt;idcollection.<span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00727"></a>00727             $BDD-&gt;executeQuery($query,$params);
+<a name="l00728"></a>00728             $query=<span class="stringliteral">&quot;delete from collection where collection_id=&quot;</span>.$this-&gt;idcollection.<span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00729"></a>00729             $BDD-&gt;executeQuery($query,$params);
+<a name="l00730"></a>00730         
+<a name="l00731"></a>00731         }
+<a name="l00732"></a>00732     }
+<a name="l00733"></a>00733     
+<a name="l00734"></a><a class="code" href="class_e_d_t.html#a13723395751469236a43d26867ed86da">00734</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#a13723395751469236a43d26867ed86da">shareWith</a>(<a class="code" href="class_utilisateur.html">Utilisateur</a> $U, $write=<span class="keyword">false</span>)
+<a name="l00735"></a>00735     {
+<a name="l00736"></a>00736         $BDD=<span class="keyword">new</span> <a class="code" href="class_base_de_donnees.html">BaseDeDonnees</a>(<span class="stringliteral">&quot;agendav&quot;</span>);
+<a name="l00737"></a>00737         <span class="keywordflow">if</span> (!$BDD-&gt;connect())
+<a name="l00738"></a>00738         {
+<a name="l00739"></a>00739             echo (<span class="stringliteral">&quot;pas de connexion vrs agendav&quot;</span>);
+<a name="l00740"></a>00740         }
+<a name="l00741"></a>00741         <span class="keywordflow">else</span>
+<a name="l00742"></a>00742         {
+<a name="l00743"></a>00743             <span class="keywordflow">if</span>($this-&gt;group)
+<a name="l00744"></a>00744             {
+<a name="l00745"></a>00745                 
+<a name="l00746"></a>00746                 $params[]=$this-&gt;group-&gt;getName();
+<a name="l00747"></a>00747                 $params[]=$this-&gt;group-&gt;getName().<span class="stringliteral">&quot; EDT&quot;</span>;
+<a name="l00748"></a>00748                 $params[]=$U-&gt;<a class="code" href="class_utilisateur.html#a827998aa84c36eb4260c248cd4797e9b">getLogin</a>();
+<a name="l00749"></a>00749             }
+<a name="l00750"></a>00750             <span class="keywordflow">else</span> <span class="keywordflow">if</span>($this-&gt;subject)
+<a name="l00751"></a>00751             {
+<a name="l00752"></a>00752                 $params[]=$this-&gt;subject-&gt;getGroup()-&gt;getName();
+<a name="l00753"></a>00753                 $params[]=$this-&gt;subject-&gt;getName().<span class="stringliteral">&quot; &quot;</span>.$this-&gt;subject-&gt;getGroup()-&gt;getName();
+<a name="l00754"></a>00754                 $params[]=$U-&gt;<a class="code" href="class_utilisateur.html#a827998aa84c36eb4260c248cd4797e9b">getLogin</a>();
+<a name="l00755"></a>00755             
+<a name="l00756"></a>00756             }
+<a name="l00757"></a>00757             <span class="keywordflow">else</span> <span class="keywordflow">if</span>($this-&gt;teacherOwner)
+<a name="l00758"></a>00758             {
+<a name="l00759"></a>00759                 $params[]=$this-&gt;teacherOwner-&gt;getLogin();
+<a name="l00760"></a>00760                 $params[]=$this-&gt;teacherOwner-&gt;getFullName().<span class="stringliteral">&quot; EDT&quot;</span>;
+<a name="l00761"></a>00761                 $params[]=$U-&gt;<a class="code" href="class_utilisateur.html#a827998aa84c36eb4260c248cd4797e9b">getLogin</a>();
+<a name="l00762"></a>00762             }
+<a name="l00763"></a>00763             $query=<span class="stringliteral">&quot;select user_from from shared where user_from=$1 and (calendar=$2 and user_which=$3);&quot;</span>;
+<a name="l00764"></a>00764             $result=$BDD-&gt;executeQuery($query,$params);
+<a name="l00765"></a>00765             <span class="keywordflow">if</span>(!$result or !pg_fetch_assoc($result))<span class="comment">//WEIRD but we can have a ressource as a result even when the table is empty -_-</span>
+<a name="l00766"></a>00766             {<span class="comment">//if there&#39;s no matching entry, we insert in table</span>
+<a name="l00767"></a>00767                 $query=<span class="stringliteral">&quot;insert into shared (user_from,user_which,calendar,options,write_access) values ($1,$3,$2,&#39;N;&#39;,$4);&quot;</span>;
+<a name="l00768"></a>00768                 $params[]=(bool)$write;
+<a name="l00769"></a>00769                 <span class="keywordflow">if</span>(!$BDD-&gt;executeQuery($query,$params))
+<a name="l00770"></a>00770                 $BDD-&gt;show_error(<span class="stringliteral">&quot;ligne n°&quot;</span>.__LINE__.<span class="stringliteral">&quot; class:&quot;</span>.__CLASS__);
+<a name="l00771"></a>00771             }<span class="keywordflow">else</span>{
+<a name="l00772"></a>00772                 echo(<span class="stringliteral">&quot;Déjà partagé&quot;</span>);    
+<a name="l00773"></a>00773             }   
+<a name="l00774"></a>00774         }
+<a name="l00775"></a>00775     }
+<a name="l00776"></a><a class="code" href="class_e_d_t.html#ab050dd66d46a6fff00172e8d5974dcdf">00776</a>     <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#ab050dd66d46a6fff00172e8d5974dcdf">autoShare</a>(){
+<a name="l00777"></a>00777         <span class="keywordflow">if</span>($this-&gt;group or $this-&gt;subject)
+<a name="l00778"></a>00778         {
+<a name="l00779"></a>00779         
+<a name="l00780"></a>00780         <span class="comment">//Shares a group or subject calendar with all secretaries &amp; heads of department (writing privilege)</span>
+<a name="l00781"></a>00781             $S=<span class="keyword">new</span> <a class="code" href="class_statut__personne.html">Statut_personne</a>(<a class="code" href="class_statut__personne.html#a43d3cf541a304c995ca17a9fd44d69e9">Statut_personne::HEAD</a>);
+<a name="l00782"></a>00782             $head=$S-&gt;toInt();
+<a name="l00783"></a>00783             $S=<span class="keyword">new</span> <a class="code" href="class_statut__personne.html">Statut_personne</a>(<a class="code" href="class_statut__personne.html#a536545ace879774ba7d55edeb12bd169">Statut_personne::SECRETARY</a>);
+<a name="l00784"></a>00784             $sec=$S-&gt;toInt();
+<a name="l00785"></a>00785             $query=<span class="stringliteral">&quot;select id_person from guser as G where G.id_person in (select id_person from &quot;</span>.Statut_personne::TABLENAME.<span class="stringliteral">&quot; where status=&quot;</span>. $head.<span class="stringliteral">&quot; or status=&quot;</span>. $sec.<span class="stringliteral">&quot;);&quot;</span>;
+<a name="l00786"></a>00786             $result=<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
+<a name="l00787"></a>00787             <span class="keywordflow">if</span>($result){
+<a name="l00788"></a>00788                 $userid=pg_fetch_assoc($result);
+<a name="l00789"></a>00789                 <span class="keywordflow">while</span>($userid!=null){
+<a name="l00790"></a>00790                     $u=<span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
+<a name="l00791"></a>00791                     $u-&gt;loadFromDB(intval($userid[<span class="stringliteral">&#39;id_person&#39;</span>]));
+<a name="l00792"></a>00792                     <span class="keywordflow">if</span>($u){
+<a name="l00793"></a>00793                         $this-&gt;<a class="code" href="class_e_d_t.html#a13723395751469236a43d26867ed86da">shareWith</a>($u,<span class="keyword">true</span>);
+<a name="l00794"></a>00794                         echo($u-&gt;toHTML());
+<a name="l00795"></a>00795                     }
+<a name="l00796"></a>00796                     $userid=pg_fetch_assoc($result);
+<a name="l00797"></a>00797                 }
+<a name="l00798"></a>00798             }<span class="keywordflow">else</span> <a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;show_error();
+<a name="l00799"></a>00799         }
+<a name="l00800"></a>00800         <span class="keywordflow">if</span>($this-&gt;subject)
+<a name="l00801"></a>00801         {
+<a name="l00802"></a>00802             <span class="comment">//Shares a subject calendar with teachers in charge (no writing privilege)</span>
+<a name="l00803"></a>00803             <span class="keywordflow">for</span>($i=1;$i&lt;=3;$i++){
+<a name="l00804"></a>00804                 $query=<span class="stringliteral">&quot;select id_person from guser as G where G.id_person in (select id_speaker&quot;</span>.$i.<span class="stringliteral">&quot; from &quot;</span>.<a class="code" href="class_matiere.html#a929a03de916b4bf52b6d52fbb4d7a872">Matiere::TABLENAME</a>.<span class="stringliteral">&quot; where id=&quot;</span>.$this-&gt;subject-&gt;getSqlid().<span class="stringliteral">&quot;);&quot;</span>;
+<a name="l00805"></a>00805                 $result=<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
+<a name="l00806"></a>00806                 <span class="keywordflow">if</span>($result){
+<a name="l00807"></a>00807                     $userid=pg_fetch_assoc($result);
+<a name="l00808"></a>00808                     <span class="keywordflow">while</span>($userid!=null){
+<a name="l00809"></a>00809                         $u=<span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
+<a name="l00810"></a>00810                         $u-&gt;loadFromDB(intval($userid[<span class="stringliteral">&#39;id_person&#39;</span>]));
+<a name="l00811"></a>00811                         <span class="keywordflow">if</span>($u)$this-&gt;<a class="code" href="class_e_d_t.html#a13723395751469236a43d26867ed86da">shareWith</a>($u,<span class="keyword">false</span>);
+<a name="l00812"></a>00812                         $userid=pg_fetch_assoc($result);
+<a name="l00813"></a>00813                     }
+<a name="l00814"></a>00814                 }
+<a name="l00815"></a>00815             }
+<a name="l00816"></a>00816         }
+<a name="l00817"></a>00817         <span class="keywordflow">else</span> <span class="keywordflow">if</span>($this-&gt;teacherOwner)
+<a name="l00818"></a>00818         {
+<a name="l00819"></a>00819             <span class="comment">//Shares a teacher calendar with all secretaries (reading privilege?)</span>
+<a name="l00820"></a>00820             $S=<span class="keyword">new</span> <a class="code" href="class_statut__personne.html">Statut_personne</a>(<a class="code" href="class_statut__personne.html#a536545ace879774ba7d55edeb12bd169">Statut_personne::SECRETARY</a>);
+<a name="l00821"></a>00821             $sec=$S-&gt;toInt();
+<a name="l00822"></a>00822             $query=<span class="stringliteral">&quot;select id_person from guser as G where G.id_person in (select id_person from &quot;</span>.Statut_personne::TABLENAME.<span class="stringliteral">&quot; where status=&quot;</span>. $sec.<span class="stringliteral">&quot;);&quot;</span>;
+<a name="l00823"></a>00823             $result=<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
+<a name="l00824"></a>00824             <span class="keywordflow">if</span>($result){
+<a name="l00825"></a>00825                 $userid=pg_fetch_assoc($result);
+<a name="l00826"></a>00826                 <span class="keywordflow">while</span>($userid!=null){
+<a name="l00827"></a>00827                     $u=<span class="keyword">new</span> <a class="code" href="class_utilisateur.html">Utilisateur</a>();
+<a name="l00828"></a>00828                     $u-&gt;loadFromDB(intval($userid[<span class="stringliteral">&#39;id_person&#39;</span>]));
+<a name="l00829"></a>00829                     <span class="keywordflow">if</span>($u)$this-&gt;<a class="code" href="class_e_d_t.html#a13723395751469236a43d26867ed86da">shareWith</a>($u,<span class="keyword">true</span>);
+<a name="l00830"></a>00830                     $userid=pg_fetch_assoc($result);
+<a name="l00831"></a>00831                 }
+<a name="l00832"></a>00832             }       
+<a name="l00833"></a>00833         }
+<a name="l00834"></a>00834 
+<a name="l00835"></a>00835     }
+<a name="l00836"></a>00836     
+<a name="l00837"></a><a class="code" href="class_e_d_t.html#afdff66750c3a7d071dd9d9fb4a248a10">00837</a>     <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">function</span> <a class="code" href="class_e_d_t.html#afdff66750c3a7d071dd9d9fb4a248a10">autoShareAllCalendars</a>(){
+<a name="l00838"></a>00838         $query=<span class="stringliteral">&quot;select id from &quot;</span>.self::TABLENAME.<span class="stringliteral">&quot;;&quot;</span>;
+<a name="l00839"></a>00839             $result=<a class="code" href="class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d">BaseDeDonnees::currentDB</a>()-&gt;executeQuery($query);
+<a name="l00840"></a>00840             <span class="keywordflow">if</span>($result){
+<a name="l00841"></a>00841                 $id=pg_fetch_assoc($result);
+<a name="l00842"></a>00842                 <span class="keywordflow">while</span>($id!=null){
+<a name="l00843"></a>00843                     $C=<span class="keyword">new</span> <a class="code" href="class_e_d_t.html">EDT</a>();
+<a name="l00844"></a>00844                     $C-&gt;loadFromDB($id[<span class="stringliteral">&#39;id&#39;</span>]);
+<a name="l00845"></a>00845                     $C-&gt;autoShare();
+<a name="l00846"></a>00846                     $id=pg_fetch_assoc($result);
+<a name="l00847"></a>00847                 }
+<a name="l00848"></a>00848             }   
+<a name="l00849"></a>00849     }
+<a name="l00850"></a>00850 }
+<a name="l00851"></a>00851 ?&gt;
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -943,7 +948,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Recherche');
 
 
 <hr class="footer"/><address class="footer"><small>
-Généré le Lundi Avril 13 2015 22:05:26 pour GaliDAV par &#160;<a href="http://www.doxygen.org/index.html">
+Généré le Mardi Avril 14 2015 05:38:36 pour GaliDAV par &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
