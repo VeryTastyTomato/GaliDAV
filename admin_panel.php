@@ -10,12 +10,33 @@ error_reporting(E_ALL);
 <link rel="stylesheet" href="./agendav-1.2.6.2.css">
 <title>Tests GaliDAV</title></head>
 <body> 
-<h1 style="text-align:center;">Test utilisation davical</h1>
+<div class="navbar">
+ <div class="navbar-inner">
+  <div class="container-fluid">
+   <span class="brand"><?php echo "Panneau d'administration"; ?></span>
+   <p class="navbar-text pull-right" id="loading">
+    Connexion
+   </p>
+   
+
+   <ul class="nav pull-right">
+  <?php
+ 
+  $agendav_path="http://edthote.fr/agendav2";
+  	echo("<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><a href='$agendav_path/index.php' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role='button' aria-disabled='false'> <span class='ui-button-text'>Retour aux emplois du temps</span></a></li>");
+  	
+  	?>
+    <li class="dropdown" id="usermenu"><a href="#"><span class="username">X</span></a></li>
+   </ul>
+      
+  </div>
+ </div>
+</div>
+
 
 <?php 
 require_once("test_davical_operations.php");
 require_once("ListePersonnes.php");
-
 	//Reconstruit toutes les tables de la base
 	//BaseDeDonnees::currentDB()->initialize();
 
@@ -26,7 +47,7 @@ require_once("ListePersonnes.php");
 		unset($_GET['GMESSAGE_ERROR']);
 	}
 ?>
-<form action="test_davical_operations.php" method="POST" style="position:fixed;right:0px;top:0px;"><input type='hidden' name='action' value="clear_db"/><input type=submit value="Effacer toutes les données"/></form>
+<form action="test_davical_operations.php" method="POST" style="position:fixed;right:0px;top:50px;"><input type='hidden' name='action' value="clear_db"/><input type=submit value="Effacer toutes les données"/></form>
 
 <div id=admin_panel style='width:80%;height:450px;padding:auto;margin-left:auto;margin-right:auto;overflow:auto'>
 	<table>

@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 // Flora NOTE: vous devez écrire dans votre hote.conf la ligne 
 // php_value include_path /usr/share/davical/inc:/usr/share/awl/inc
 
+
 require_once("/usr/share/davical/htdocs/always.php");
 require_once("auth-functions.php");
 require_once("DAVPrincipal.php");
@@ -225,7 +226,7 @@ if (isset($_POST['action']))
 	if ($_POST['action'] == 'add_group')
 	{
 		$G = new Groupe($_POST['name'], $_POST['isaclass']);
-		header('Location: ./admin_panel.php');
+		//header('Location: ./admin_panel.php');
 	}
 
 	if ($_POST['action'] == 'add_person')

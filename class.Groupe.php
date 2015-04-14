@@ -408,8 +408,22 @@ class Groupe
 		$this->setListOfStudents(); // remove all students from the group (DB)
 		$this->setListOfLinkedGroups(); // remove all links with other groups/classes (DB)
 		$params = array(intval($this->sqlid));
+		$this->timetable->removeFromDB();
+		
+		$query  = "select id from " . Matiere::TABLENAME . " where id_group=$1;";
+		$result=BaseDeDonnees::currentDB()->executeQuery($query, $params);
+		if($result){
+			$array=pg_fetch_assoc($result);
+			while($array!=null){
+				$array=$array['id'];
+				$S=new Matiere();
+				if($S->loadFromDB($array['id']))
+					$S->removeFromDB();
+				$array=pg_fetch_assoc($result);
+			}
+		}
+		
 		$query  = "delete from " . self::TABLENAME . " where id=$1;";
-		//TODO remove the group calendar and the subject calendar
 		if (BaseDeDonnees::currentDB()->executeQuery($query, $params))
 		{			
 			$BDD = new BaseDeDonnees("davical_app", "davical");

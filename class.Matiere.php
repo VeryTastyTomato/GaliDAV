@@ -157,13 +157,7 @@ class Matiere
 
 					if($result2)
 					{					
-						$this->teachedBy[] = $P;
-						$query     = "select * from " . Utilisateur::TABLENAME . " where id_person=$1;";
-						$ressource = BaseDeDonnees::currentDB()->executeQuery($query, $params);
-						if($ressource)
-						{
-							//TODO share the subject calendar to $P
-						}
+						$this->timetable->shareWith($P);
 					}
 				}
 			}
@@ -226,31 +220,7 @@ class Matiere
 		}
 	}
 
-	/*This method doesn’t exist anymore, due to a high difficulty. We load directly the teacher in "loadFromDB" and "loadFromRessource" methods
-	public function loadTeacherFromRessource($ressource)
-	{
-	if(!empty($ressource['speaker1']))
-	$E = new Enseignant();
-	$E->loadFromDB(intval($ressource));
-	$this->addTeacher($E);
-	}*/
-	// no group attribute for "Matiere", so?
-	// Flora: yes, nut no need for this method
 
-	public function loadGroupFromRessource($ressource)
-	{
-		$G = new Groupe();
-		// TODO
-	}
-
-	// don’t know if it’s useful since the calendar is loaded easily in "loadFromRessource"
-	// Flora: no need for this method
-
-	public function loadTimetableFromRessource($ressource)
-	{
-		$E = new EDT();
-		// TODO
-	}
 
 	public function loadFromDB($id = NULL)
 	{
@@ -323,17 +293,11 @@ class Matiere
 
 	public function removeFromDB()
 	{
+	//TODO delete all courses
 		$this->timetable->removeFromDB();//first we delete the associated calendar
 
-		//Etienne : Pas de gestion de groupe vu qu'on a pas de champs destiné à la Matiere dans Groupe ?
-		//Etienne : idem pour les enseignants
-
 		$query = "delete * from " . self::TABLENAME . " where id=" . $this->sqlid . ";";
-		if (BaseDeDonnees::currentDB()->executeQuery($query))
-		{
-			//TODO delete calendar from davical DB 
-		}
-		else
+		if (!BaseDeDonnees::currentDB()->executeQuery($query))
 		{
 			BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 		}

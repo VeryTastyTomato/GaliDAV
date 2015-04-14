@@ -9,6 +9,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 require_once('class.Cours.php');
 require_once('class.Modification.php');
 require_once('class.Utilisateur.php');
+//require_once('shared_calendars.php');
 
 class EDT
 {
@@ -52,7 +53,7 @@ class EDT
 				BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 			}
 			
-			$query       = "select id from " . self::TABLENAME . " order by date_creation desc;";
+			$query       = "select id from " . self::TABLENAME . " where id_collection is null;";
 			$result= BaseDeDonnees::currentDB()->executeQuery($query);
 			if($result) 
 			{
@@ -715,6 +716,19 @@ class EDT
 		{
 			BaseDeDonnees::currentDB()->show_error("ligne n°".__LINE__." class:".__CLASS__);
 		}
+		$BDD=new BaseDeDonnees("davical_app","davical");
+		if (!$BDD->connect())
+		{
+			echo ("pas de connexion vrs davical");
+		}
+		else
+		{
+			$query="delete from calendar_item where collection_id=".$this->idcollection.";";
+			$BDD->executeQuery($query,$params);
+			$query="delete from collection where collection_id=".$this->idcollection.";";
+			$BDD->executeQuery($query,$params);
+		
+		}
 	}
 	
 	public function shareWith(Utilisateur $U, $write=false)
@@ -728,44 +742,35 @@ class EDT
 		{
 			if($this->group)
 			{
+				
 				$params[]=$this->group->getName();
 				$params[]=$this->group->getName()." EDT";
 				$params[]=$U->getLogin();
-
-				$query="select user_from from shared where user_from='$1' and (calendar='$2' and user_which='$3');";
-				if(!$BDD->executeQuery($query,$params))//if there's no matching entry, we insert in table
-					$query="insert into shared (user_from,user_which,calendar,options,write_access) values ($1,$3,$2,'N;',$4);";
-				$params[]=(bool)$write;
-				if(!$BDD->executeQuery($query,$params))
-					$BDD->show_error("ligne n°".__LINE__." class:".__CLASS__);			
 			}
 			else if($this->subject)
 			{
 				$params[]=$this->subject->getGroup()->getName();
 				$params[]=$this->subject->getName()." ".$this->subject->getGroup()->getName();
 				$params[]=$U->getLogin();
-	
-				$query="select user_from from shared where user_from=$1 and (calendar=$2 and user_which=$3);";
-				if(!$BDD->executeQuery($query,$params))//if there's no matching entry, we insert in table
-					$query="insert into shared (user_from,user_which,calendar,options,write_access) values ($1,$3,$2,'N;',$4);";
-				$params[]=(bool)$write;
-				if(!$BDD->executeQuery($query,$params))
-					$BDD->show_error("ligne n°".__LINE__." class:".__CLASS__);			
+			
 			}
 			else if($this->teacherOwner)
 			{
 				$params[]=$this->teacherOwner->getLogin();
 				$params[]=$this->teacherOwner->getFullName()." EDT";
 				$params[]=$U->getLogin();
-				
-
-				$query="select user_from from shared where user_from='$1' and (calendar='$2' and user_which='$3');";
-					if(!$BDD->executeQuery($query,$params))//if there's no matching entry, we insert in table
+			}
+			$query="select user_from from shared where user_from=$1 and (calendar=$2 and user_which=$3);";
+			$result=$BDD->executeQuery($query,$params);
+			if(!$result or !pg_fetch_assoc($result))//WEIRD but we can have a ressource as a result even when the table is empty -_-
+			{//if there's no matching entry, we insert in table
 				$query="insert into shared (user_from,user_which,calendar,options,write_access) values ($1,$3,$2,'N;',$4);";
 				$params[]=(bool)$write;
 				if(!$BDD->executeQuery($query,$params))
-					$BDD->show_error("ligne n°".__LINE__." class:".__CLASS__);			
-			}
+				$BDD->show_error("ligne n°".__LINE__." class:".__CLASS__);
+			}else{
+				echo("Déjà partagé");	
+			}	
 		}
 	}
 	public function autoShare(){
@@ -790,7 +795,7 @@ class EDT
 					}
 					$userid=pg_fetch_assoc($result);
 				}
-			}
+			}else BaseDeDonnees::currentDB()->show_error();
 		}
 		if($this->subject)
 		{

@@ -5,8 +5,8 @@ if (0 > version_compare(PHP_VERSION, '5'))
 {
 	die('This file was generated for PHP 5');
 }
-
 require_once('class.Utilisateur.php');
+
 require_once('class.Matiere.php');
 require_once('Cours/unknown.Type_cours.php');
 require_once('class.Groupe.php');
