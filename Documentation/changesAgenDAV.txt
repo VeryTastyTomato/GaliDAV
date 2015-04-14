@@ -1,7 +1,27 @@
 ###  On répertorie ici tous les changements effectués sur les fichiers du client AgenDAV ###
 
 ## sur /web/public/js/libs/fullcalendar.min.js ##
+
+	# ligne 125 #
+	defaultView:"agendaWeek"
+	weekends:false
+	
 	# à la fin #
 	allDaySlot:false
 	minTime:8
 	maxTime:19
+
+
+## sur /web/public/css/app.print.css ##
+
+	# ligne 10 "background: #fff !important;" #
+	DELETE
+	ADD : "page-break-inside: avoid;"
+	ADD GLOBAL : voir "Ajout perso" à la fin du fichier en question
+
+## sur /web/application/views/navbar.php ## (bouton impression)
+
+	# avant <p class="navbar-text pull-right" id="loading"> #
+	ADD 	"<form>
+  			<input id="impression" name="impression" 				type="button" onclick="imprimer_page()" 			value="Imprimer cet Emploi du temps" />
+		</form>"
