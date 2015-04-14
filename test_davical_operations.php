@@ -266,5 +266,19 @@ if (isset($_POST['action']))
 		$G->removeFromDB();
 		header('Location: ./admin_panel.php');
 	}
+
+	if ($_POST['action'] == 'modify_group')
+	{
+		$aGroup = new Groupe;
+
+		if (!$aGroup->loadFromDB(intval($_POST['id'])))
+		{
+			die('Error: Group' . $_POST['id'] . 'not found.');
+		}
+		else
+		{
+			echo("G id/name = " . $aGroup->getId() . " / " . $aGroup->getName());
+		}
+	}
 }
 ?>

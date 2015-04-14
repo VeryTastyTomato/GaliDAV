@@ -22,7 +22,7 @@ error_reporting(E_ALL);
    <ul class="nav pull-right">
   <?php
  
-  $agendav_path="http://edthote.fr/agendav2";
+  $agendav_path="http://davical.example.net/agendav2";
   	echo("<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><a href='$agendav_path/index.php' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role='button' aria-disabled='false'> <span class='ui-button-text'>Retour aux emplois du temps</span></a></li>");
   	
   	?>
@@ -101,8 +101,8 @@ require_once("ListePersonnes.php");
 		</tr>
 		<tr>
 			<th style="width:33%">Ajouter une matière</th>
-			<th style="width:33%">?</th>
-			<th style="width:33%">?</th>
+			<th style="width:33%"></th>
+			<th style="width:33%">Modifier un groupe</th>
 			
 		</tr>
 		<tr>
@@ -118,8 +118,23 @@ require_once("ListePersonnes.php");
 				</table>
 				<input type="submit" value="Ajouter" style='width:80%;margin-left:auto;margin-right:auto;'/><br/>
 			</form></td>
+
+			<td></td>
+
+			<td style = "border-left:solid; border-right:solid; padding:auto;">
+				<form action = "test_davical_operations.php" method = "POST">
+					<input type = 'hidden' name = 'action' value = "modify_group"/>
+					<table style = margin-left:auto;margin-right:auto;>
+						<tr>
+							<th>Nom :</th><td><input type = "text" name = "subjectgroup" required></td>
+						</tr>
+						<tr>
+							<th><?php echo XListStudents(); ?></th>
+						</tr>
+					</table>
+				</form>
+			</td>
 		</tr>
-		
 	</table>
 </div>
 

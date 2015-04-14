@@ -30,6 +30,7 @@ if(isset($_POST['user'])){
   <p></p>
   </div>
 </div>";
+				BaseDeDonnees::currentDB()->show_error();
 	}
 
 }
@@ -55,7 +56,7 @@ if(isset($_POST['user'])){
    <ul class="nav pull-right">
   <?php
  
-  $agendav_path="http://edthote.fr/agendav2";
+  $agendav_path="http://davical.example.net/agendav2";
   	echo("<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><a href='$agendav_path/index.php' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role='button' aria-disabled='false'> <span class='ui-button-text'>Retour aux emplois du temps</span></a></li>");
   	
   	?>
@@ -73,7 +74,7 @@ if(isset($_POST['user'])){
 
 <div class="loginform ui-corner-all">
 
-  <form action="http://edthote.fr/GaliDAV/login_admin.php" method="post" accept-charset="utf-8" class="form-horizontal">
+  <form action="http://davical.example.net/GaliDAV/login_admin.php" method="post" accept-charset="utf-8" class="form-horizontal">
   <div style="display:none">
 <input name="csrf_test_name" value="3d354941803123010204d7bca40984ea" type="hidden">
 </div>            <div class="control-group">
