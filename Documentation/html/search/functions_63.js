@@ -1,19 +1,19 @@
 var searchData=
 [
-  ['changeuserstatus',['changeUserStatus',['../class_administrateur.html#abb879aaa77f0c6f25eb0659dc1e91f16',1,'Administrateur']]],
+  ['changeuserstatus',['changeUserStatus',['../class_administrator.html#a634ce415a96e78ebfe4928ca7efa78f0',1,'Administrator']]],
   ['checkpagebreak',['CheckPageBreak',['../classphp_to_p_d_f.html#aeda215ba755aec624000399bd047e563',1,'phpToPDF']]],
   ['checkttf',['CheckTTF',['../makefont_8php.html#a77e282eb3da32ac811d34defeb16c071',1,'makefont.php']]],
-  ['clear',['clear',['../class_base_de_donnees.html#aa821bec12eaa7e0f649397c9675ff505',1,'BaseDeDonnees']]],
+  ['clear',['clear',['../class_database.html#aa821bec12eaa7e0f649397c9675ff505',1,'Database']]],
   ['clearmodifications',['clearModifications',['../class_e_d_t.html#a2f3a37854d1a6a04be2a135da1c495bd',1,'EDT']]],
-  ['close',['close',['../class_base_de_donnees.html#aa69c8bf1f1dcf4e72552efff1fe3e87e',1,'BaseDeDonnees']]],
+  ['close',['close',['../class_database.html#aa69c8bf1f1dcf4e72552efff1fe3e87e',1,'Database']]],
   ['comparetimetable',['compareTimetable',['../class_responsable.html#aa03d57223d06454ebc77d48f744cb1cb',1,'Responsable']]],
   ['comparetimetables',['compareTimetables',['../class_secretaire.html#ad013576ad8caa3c43557c32e5e9ce5bf',1,'Secretaire']]],
-  ['connect',['connect',['../class_base_de_donnees.html#a78572828d11dcdf2a498497d9001d557',1,'BaseDeDonnees']]],
+  ['connect',['connect',['../class_database.html#a78572828d11dcdf2a498497d9001d557',1,'Database']]],
   ['containscourse',['containsCourse',['../class_e_d_t.html#a62ffea6af35973c517b05a2447b2e802',1,'EDT']]],
   ['containsstudent',['containsStudent',['../class_groupe.html#a807f74a4cc355e2fc4fa049f9d416413',1,'Groupe']]],
   ['convertpersontouser',['convertPersonToUser',['../class_utilisateur.html#abc1d3762d2f452269bf1bb1c6b90c6b6',1,'Utilisateur']]],
   ['createcalendar',['CreateCalendar',['../test__davical__operations_8php.html#ac31342552caa14576478e347cd0fa901',1,'test_davical_operations.php']]],
   ['creategroupaccount',['CreateGroupAccount',['../test__davical__operations_8php.html#a4900356a1090e87ce68e5a0ea0247225',1,'test_davical_operations.php']]],
   ['createuseraccount',['CreateUserAccount',['../test__davical__operations_8php.html#a3bbb0ab90066a41d053dd0ed00c2787f',1,'test_davical_operations.php']]],
-  ['currentdb',['currentDB',['../class_base_de_donnees.html#a8bce094315d2ed39643a5939d8ff426d',1,'BaseDeDonnees']]]
+  ['currentdb',['currentDB',['../class_database.html#a8bce094315d2ed39643a5939d8ff426d',1,'Database']]]
 ];

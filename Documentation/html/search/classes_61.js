@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['administrateur',['Administrateur',['../class_administrateur.html',1,'']]]
+  ['administrator',['Administrator',['../class_administrator.html',1,'']]]
 ];

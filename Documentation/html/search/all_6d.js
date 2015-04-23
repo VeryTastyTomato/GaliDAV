@@ -8,7 +8,7 @@ var searchData=
   ['maquette',['Maquette',['../class_maquette.html',1,'']]],
   ['matiere',['Matiere',['../class_matiere.html',1,'']]],
   ['modification',['Modification',['../class_modification.html',1,'']]],
-  ['modifyclass',['modifyClass',['../class_administrateur.html#a37e6a74d726f4c46b35135d1675fc24f',1,'Administrateur']]],
+  ['modifyclass',['modifyClass',['../class_administrator.html#a019d004c9454722eb0164d4662ea3007',1,'Administrator']]],
   ['modifyclass_5fcoursesmodel',['modifyClass_CoursesModel',['../class_responsable.html#a8ef389fe377dfc51741fde7d1ac8f507',1,'Responsable\modifyClass_CoursesModel()'],['../class_secretaire.html#a8ef389fe377dfc51741fde7d1ac8f507',1,'Secretaire\modifyClass_CoursesModel()']]],
   ['modifygroup_5flinkedclasses',['modifyGroup_LinkedClasses',['../class_responsable.html#a161bf91ccd53d4b2a83391cc52ec8ac8',1,'Responsable\modifyGroup_LinkedClasses()'],['../class_secretaire.html#a161bf91ccd53d4b2a83391cc52ec8ac8',1,'Secretaire\modifyGroup_LinkedClasses()']]],
   ['modifygroup_5fmembers',['modifyGroup_Members',['../class_responsable.html#a0e52cdc77faa1ad666fff7b04c137347',1,'Responsable\modifyGroup_Members()'],['../class_secretaire.html#a0e52cdc77faa1ad666fff7b04c137347',1,'Secretaire\modifyGroup_Members()']]],
