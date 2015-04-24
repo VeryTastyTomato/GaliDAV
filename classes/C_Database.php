@@ -87,7 +87,7 @@ class Database
 	*/
 	public function setLocation($newLocation)
 	{
-		if (!empty($newLocation))
+		if (!empty($newLocation)) // ???
 		{
 			$this->location = $newLocation;
 		}

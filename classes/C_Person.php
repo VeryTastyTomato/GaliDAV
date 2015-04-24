@@ -33,8 +33,8 @@ class Person
 	// --- OPERATIONS ---
 	/**
 	 * \brief Person’s constructor
-	 * \param $newFamilyName    \e String containing the familiy name.
-	 * \param $newFirstName    \e String containing the first name.
+	 * \param $newFamilyName    \e String containing the family name.
+	 * \param $newFirstName     \e String containing the first name.
 	 * \param $newEmailAddress1 \e String containing the email address 1.
 	 * \param $newEmailAddress2 \e String containing the email address 2.
 	*/
@@ -360,7 +360,7 @@ class Person
 
 	/**
 	 * \brief  Loads data from the database.
-	 * \param  $id The SQL id of the database.
+	 * \param  $id The SQL id on the database.
 	 * \param  $canBeUser \e Boolean ???
 	 * \return TRUE if data loaded successfully, FALSE otherwise.
 	*/
