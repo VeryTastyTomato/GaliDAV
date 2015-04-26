@@ -40,8 +40,8 @@ class Timetable
 	// --- OPERATIONS ---
 	/**
 	 * \brief Timetable’s constructor
-	 * \param $object   Contains either a group, a subject or a teacher.
-	 * \param $validate \e Boolean indicating if the timetable is validated or not.
+	 * \param $object    Contains either a group, a subject or a teacher.
+	 * \param $validated \e Boolean indicating if the timetable is validated or not.
 	*/
 	public function __construct($object = NULL, $validated = FALSE)
 	{
@@ -99,11 +99,11 @@ class Timetable
 
 				if ($validated)
 				{
-					$query = "UPDATE " . Group::TABLENAME . " SET id_validated_timetable = " . $this->sqlId . " WHERE id = " . $aGroup->getId() . ";";
+					$query = "UPDATE " . Group::TABLENAME . " SET id_validated_timetable = " . $this->sqlId . " WHERE id = " . $aGroup->getSqlId() . ";";
 				}
 				else
 				{
-					$query = "UPDATE " . Group::TABLENAME . " SET id_current_timetable = " . $this->sqlId . " WHERE id = " . $aGroup->getId() . ";";
+					$query = "UPDATE " . Group::TABLENAME . " SET id_current_timetable = " . $this->sqlId . " WHERE id = " . $aGroup->getSqlId() . ";";
 				}
 
 				if (Database::currentDB()->executeQuery($query))
@@ -114,7 +114,7 @@ class Timetable
 				}
 				else
 				{
-					Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS_);
+					Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 				}
 			}
 			else if ($object instanceof Subject)
@@ -159,7 +159,7 @@ class Timetable
 	 * \brief  Getter for the attribute $sqlId.
 	 * \return The \e integer value of $sqlId.
 	*/
-	public function getId()
+	public function getSqlId()
 	{
 		return $this->sqlId;
 	}
@@ -709,7 +709,7 @@ class Timetable
 	 * \param  $onlyClassCalendar \e Boolean ???
 	 * \return TRUE if data loaded successfully, FALSE otherwise.
 	*/
-	public function loadFromDB($id = NULL, $onlyclasscalendar = FALSE)
+	public function loadFromDB($id = NULL, $onlyClassCalendar = FALSE)
 	{
 		if ($id == NULL) // if we do not want to load a particular timetable
 		{

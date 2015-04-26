@@ -1,0 +1,11 @@
+classe Cours
+	méthode integrateInTimetable
+		question : doit-on renvoyer $timetable après l’intégration du cours dans celui-ci ? En gros, est-ce que le passage dans l’argument de la fonction est fait par référence ou par valeur ?
+
+classe EDT
+	attribut listModif
+		question : quel est le type de cet attribut ? un tableau de Type_cours ?
+
+classe Personne
+	méthode setAllStatus
+		question : il me semble que cette comporte des erreurs, me trompè-je ? La dernière instruction notamment.

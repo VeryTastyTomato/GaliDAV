@@ -107,7 +107,7 @@ class PersonStatus
 	 * \param  $aStatus The status from which we want to know the associated \e integer value.
 	 * \return The \e integer value of the given status.
 	*/
-	public static function getIntValue(PersonStatus $aStatus)
+	public static function getIntValue($aStatus)
 	{
 		switch ($aStatus)
 		{

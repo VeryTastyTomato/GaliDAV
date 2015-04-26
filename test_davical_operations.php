@@ -1,22 +1,26 @@
 <?php
+/**
+ * \file  test_davical_operations.php
+ * \brief Contains all the operations on DAViCal’s database.
+*/
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Flora NOTE: vous devez écrire dans votre hote.conf la ligne 
+// Flora NOTE: vous devez écrire dans votre hote.conf la ligne
 // php_value include_path /usr/share/davical/inc:/usr/share/awl/inc
-
 
 require_once("/usr/share/davical/htdocs/always.php");
 require_once("auth-functions.php");
 require_once("DAVPrincipal.php");
-require_once("class.Secretaire.php");
-require_once("class.Enseignant.php");
-require_once("class.Administrateur.php");
-require_once("class.Responsable.php");
+require_once("classes/C_Secretary.php");
+require_once("classes/C_Teacher.php");
+require_once("classes/C_Administrator.php");
+require_once("classes/C_Head.php");
 require_once("ListePersonnes.php");
+
 // Créer un calendrier de nom, $calendarNameGiven pour l'utilisateur d'identifiant $username
 
-function CreateCalendar($username, $calendarNameGiven, $defult_timezone = NULL)
+function CreateCalendar($userName, $calendarNameGiven, $default_timezone = NULL)
 {
 	global $session, $c;
 
@@ -25,24 +29,31 @@ function CreateCalendar($username, $calendarNameGiven, $defult_timezone = NULL)
 		$c->default_collections = array();
 	}
 
-	$principal      = new Principal('username', $username);
-	$user_fullname  = $principal->fullname; // user fullname
-	$user_rfullname = implode(' ', array_reverse(explode(' ', $principal->fullname))); // user fullname in reverse order
-	$sql            = 'INSERT INTO collection (user_no, parent_container, dav_name, dav_etag, dav_displayname, is_calendar, is_addressbook, default_privileges, created, modified, resourcetypes) ';
-	$sql .= 'VALUES( :user_no, :parent_container, :collection_path, :dav_etag, :displayname, :is_calendar, :is_addressbook, :privileges::BIT(24), current_timestamp, current_timestamp, :resourcetypes );';
-	//foreach( $c->default_collections as $v ) {
+	$principal           = new Principal('username', $userName);
+	$userFullName        = $principal->fullname; // user fullname
+	$userReverseFullName = implode(' ', array_reverse(explode(' ', $principal->fullname))); // user fullname in reverse order
+	$sqlQuery            = 'INSERT INTO collection (user_no, parent_container, dav_name, dav_etag, dav_displayname, is_calendar, is_addressbook, default_privileges, created, modified, resourcetypes) ';
+	$sqlQuery           .= 'VALUES( :user_no, :parent_container, :collection_path, :dav_etag, :displayname, :is_calendar, :is_addressbook, :privileges::BIT(24), current_timestamp, current_timestamp, :resourcetypes );';
+	// foreach ($c->default_collections as $v) {}
 
 	if (FALSE)
 	{
-		/* if ( !empty($v['name']) ) {
-		$qry = new AwlQuery( 'SELECT 1 FROM collection WHERE dav_name = :dav_name', array( ':dav_name' => $principal->dav_name().$v['name'].'/') );
-		if ( !$qry->Exec() ) {
-		$c->messages[] = i18n('There was an error reading from the database.');
-		return false;
+		/* if (!empty($v['name']))
+		{
+			$awlQuery = new AwlQuery('SELECT 1 FROM collection WHERE dav_name = :dav_name', array(':dav_name' => $principal->dav_name().$v['name'].'/'));
 		}
-		if ( $qry->rows() > 0 ) {
-		$c->messages[] = i18n('Home '.$calendarGivenName.' already exists.');
-		return true;
+
+		if (!$awlQuery->Exec())
+		{
+			$c->messages[] = i18n('There was an error reading from the database.');
+			return FALSE;
+		}
+
+		if ($awlQuery->rows() > 0)
+		{
+			$c->messages[] = i18n('Home ' . $calendarGivenName . ' already exists.');
+			return TRUE;
+		}
 		*/
 	}
 	else
@@ -51,232 +62,276 @@ function CreateCalendar($username, $calendarNameGiven, $defult_timezone = NULL)
 		$params[':parent_container'] = $principal->dav_name();
 		$params[':dav_etag']         = '-1';
 		$params[':collection_path']  = $principal->dav_name() . $calendarNameGiven . '/';
-		// $params[':displayname'] = $user_fullname." ".$calendarNameGiven;
+		// $params[':displayname'] = $userFullName . " " . $calendarNameGiven;
 		$params[':displayname']      = $calendarNameGiven;
 		$params[':resourcetypes']    = '<DAV::collection/><urn:ietf:params:xml:ns:caldav:calendar/>';
 		$params[':is_calendar']      = TRUE;
 		$params[':is_addressbook']   = FALSE;
 		$params[':privileges']       = NULL;
-		$qry                         = new AwlQuery($sql, $params);
+		$awlQuery                    = new AwlQuery($sqlQuery, $params);
 
-		if ($qry->Exec())
+		if ($awlQuery->Exec())
 		{
 			$c->messages[] = i18n('Calendar added.');
 			dbg_error_log("User", ":Write: Created user's calendar at '%s'", $params[':collection_path']);
-			$BDD       = new BaseDeDonnees("davical_app", "davical");
-			$result=$BDD->executeQuery("select collection_id from collection order by created desc;");
-			if($result){
-				$result=pg_fetch_assoc($result);
+			$DB     = new Database("davical_app", "davical");
+			$result = $DB->executeQuery("SELECT collection_id FROM collection ORDER BY created DESC;");
+
+			if ($result)
+			{
+				$result = pg_fetch_assoc($result);
 				return $result['collection_id'];
 			}
 			else
 			{
-				$BDD->show_error("ligne n° ".__LINE__." //fonction: ".__FUNCTION__);
-				return false;
+				$DB->showError("ligne n° " . __LINE__ . " //fonction : " . __FUNCTION__);
+
+				return FALSE;
 			}
-			
 		}
 		else
 		{
-			$c->messages[] = i18n("There was an error writing to the database.");
+			$c->messages[] = i18n('There was an error writing to the database.');
 
 			return FALSE;
 		}
 	}
-	//}
 
 	return TRUE;
 }
 
-function getDAVPrincipalNoFromLogin($login){
-	$BDD       = new BaseDeDonnees("davical_app", "davical");
-	$query="select user_no from dav_principal where username='".pg_escape_string($login)."';";
-	$result=$BDD->executeQuery($query);
-	if(!$result){
-		$BDD->show_error("ligne n° ".__LINE__." //fonction: ".__FUNCTION__);
-		return false;
+function getDAVPrincipalNoFromLogin($login)
+{
+	$DB     = new Database("davical_app", "davical");
+	$query  = "SELECT user_no FROM dav_principal WHERE username = '" . pg_escape_string($login) . "';";
+	$result = $DB->executeQuery($query);
+
+	if (!$result)
+	{
+		$BDD->showError("ligne n° " . __LINE__ . " //fonction : " . __FUNCTION__);
+
+		return FALSE;
 	}
-	else{
-		$result=pg_fetch_assoc($result);
-		return ((int)$result['user_no']);
+	else
+	{
+		$result = pg_fetch_assoc($result);
+
+		return ((int) $result['user_no']);
 	}
 }
 
-function CreateUserAccount($username, $fullname, $password, $email = NULL, $privileges = NULL)
+function CreateUserAccount($userName, $fullName, $password, $email = NULL,  $privileges = NULL)
 {
-	$param['username']    = $username;
-	$param['fullname']    = $fullname;
-	$param['displayname'] = $fullname;
-	$param['password']    = $password; //
+	$param['username']    = $userName;
+	$param['fullname']    = $fullName;
+	$param['displayname'] = $fullName;
+	$param['password']    = $password;
 	$param['email']       = $email;
 	$param['type_id']     = 1; // type Person
-	//$param['default_privileges']= privilege_to_bits(array('all')) ; // ne compile pas
-	$P                    = new DAVPrincipal($param);
-	$P->password          = $password; // ne marche pas
-	$P->privileges        = $privileges; // ne marche pas
-	$P->Create($param);
+	// $param['default_privileges'] = privilege_to_bits(array('all')) ; // ne compile pas
+	$aPerson                    = new DAVPrincipal($param);
+	$aPerson->password          = $password; // ne marche pas
+	$aPerson->privileges        = $privileges; // ne marche pas
+	$aPerson->Create($param);
 
 	if ($privileges)
 	{
-		$BDD       = new BaseDeDonnees("davical_app", "davical");
+		$DB        = new Database("davical_app", "davical");
 		$params2[] = privilege_to_bits($privileges);
-		$params2[] = $username;
-		$query     = "update dav_principal set default_privileges=$1 where username=$2;";
-		$result    = $BDD->executeQuery($query, $params2);
-		$BDD->close();
+		$params2[] = $userName;
+		$query     = "UPDATE dav_principal SET default_privileges = $1 WHERE username = $2;";
+		$result    = $DB->executeQuery($query, $params2);
+		$DB->close();
 
 		if (!$result)
 		{
-			$BDD->show_error();
+			$DB->showError();
 		}
 	}
 
-	return $P;
+	return $aPerson;
 }
 
-function CreateGroupAccount($classname, $password, $email = NULL, $privilege = NULL) // pour l'instant le mot de passe n'est pas utile, on n'est pas censé se connecter en tant que class
+function CreateGroupAccount($className, $password, $email = NULL, $privilege = NULL) // pour l'instant le mot de passe n'est pas utile, on n'est pas censé se connecter en tant que class
 {
-	$param['username']    = $classname;
-	$param['fullname']    = $classname;
-	$param['displayname'] = $classname;
+	$param['username']    = $className;
+	$param['fullname']    = $className;
+	$param['displayname'] = $className;
 	$param['password']    = $password; // ne marche pas
 	$param['email']       = $email;
 	$param['type_id']     = 3; // type Groupe;
-	$C                    = new DAVPrincipal($param);
-	$C->Create($param);
+	$aClass               = new DAVPrincipal($param);
+	$aClass->Create($param);
 
-	return $C;
+	return $aClass;
 }
 
 if (isset($_POST['action']))
 {
 	if ($_POST['action'] == 'add_subject')
 	{
-		$G=new Groupe();
-		if($G->loadFromDB($_POST['groupname']))
+		$aGroup = new Group();
+
+		if ($aGroup->loadFromDB($_POST['groupname']))
 		{
-	
-			$M=new Matiere($_POST['subjectname'],$G);
-			if($_POST['speaker1']!="--"){
-				$res=BaseDeDonnees::currentDB()->executeQuery(query_person_by_fullname($_POST['speaker1']));
-				if($res){
-					$result=pg_fetch_assoc($res);
-					$P=new Personne();
-					$P->loadFromDB($result['id']);
-					$M->addTeacher($P);
+			$aSubject = new Subject($_POST['subjectname'], $aGroup);
+
+			if ($_POST['speaker1'] != "--")
+			{
+				$res = Database::currentDB()->executeQuery(query_person_by_fullname($_POST['speaker1']));
+
+				if($res)
+				{
+					$result = pg_fetch_assoc($res);
+					$aPerson = new Person();
+					$aPerson->loadFromDB($result['id']);
+					$aSubject->addTeacher($aPerson);
 				}
 				else
-					BaseDeDonnees::currentDB()->show_error();
-			
+				{
+					Database::currentDB()->showError();
+				}
 			}
-			if($_POST['speaker2']!="--"){
-				$res=BaseDeDonnees::currentDB()->executeQuery(query_person_by_fullname($_POST['speaker2']));
-				if($res){
-					$result=pg_fetch_assoc($res);
-					$P=new Personne();
-					$P->loadFromDB($result['id']);
-					$M->addTeacher($P);
+
+			if ($_POST['speaker2'] != "--")
+			{
+				$res = Database::currentDB()->executeQuery(query_person_by_fullname($_POST['speaker2']));
+
+				if ($res)
+				{
+					$result = pg_fetch_assoc($res);
+					$aPerson = new Person();
+					$aPerson->loadFromDB($result['id']);
+					$aSubject->addTeacher($aPerson);
 				}
 				else
-					BaseDeDonnees::currentDB()->show_error();
-			
+				{
+					Database::currentDB()->showError();
+				}
 			}
-			if($_POST['speaker3']!="--"){
-				$res=BaseDeDonnees::currentDB()->executeQuery(query_person_by_fullname($_POST['speaker3']));
-				if($res){
-					$result=pg_fetch_assoc($res);
-					$P=new Personne();
-					$P->loadFromDB($result['id']);
-					$M->addTeacher($P);
+
+			if ($_POST['speaker3'] != "--")
+			{
+				$res = Database::currentDB()->executeQuery(query_person_by_fullname($_POST['speaker3']));
+
+				if ($res)
+				{
+					$result = pg_fetch_assoc($res);
+					$aPerson = new Person();
+					$aPerson->loadFromDB($result['id']);
+					$subject->addTeacher($aPerson);
 				}
 				else
-					BaseDeDonnees::currentDB()->show_error();
-			
+				{
+					Database::currentDB()->showError();
+				}
 			}
 		}
+
 		header('Location: ./admin_panel2.php');
+		die;
 	}
 
 	if ($_POST['action'] == 'add_user')
 	{
-		if($_POST['password']!=$_POST['password2'])
+		if ($_POST['password'] != $_POST['password2'])
+		{
 			header('Location: ./admin_panel2.php?GMESSAGE_ERROR=DIFFERENT_PASS');
-		else{
+			die;
+		}
+		else
+		{
 			if ($_POST['status'] == 'secretary')
 			{
-				$U=new Secretaire($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+				$aUser = new Secretary($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'], $_POST['email']);
 			}
 			else if ($_POST['status'] == 'teacher')
 			{
-				$U=new Enseignant($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+				$aUser = new Teacher($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'], $_POST['email']);
 			}
 			else if ($_POST['status'] == 'head')
 			{
-				$U=new Responsable($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+				$aUser = new Head($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'], $_POST['email']);
 			}
 			else if ($_POST['status'] == 'administrator')
 			{
-				$U=new Administrateur($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'],$_POST['email']);
+				$aUser = new Administrator($_POST['familyname'], $_POST['firstname'], $_POST['login'], $_POST['password'], $_POST['email']);
 			}
-			echo($U->toHTML());
+
+			echo($aUser->toHTML());
 			header('Location: ./admin_panel2.php');
+			die;
 		}
 	}
 
 	if ($_POST['action'] == 'add_group')
 	{
-		$G = new Groupe($_POST['name'], $_POST['isaclass']);
-		//header('Location: ./admin_panel.php');
+		$aGroup = new Group($_POST['name'], $_POST['isaclass']);
+		// header('Location: ./admin_panel.php');
 	}
 
 	if ($_POST['action'] == 'add_person')
 	{
-		$P = new Personne($_POST['familyname'], $_POST['firstname'], $_POST['email']);
+		$aPerson = new Person($_POST['familyname'], $_POST['firstname'], $_POST['email']);
+
 		if ($_POST['status'] == 'student')
 		{
-			$P->addStatus(new Statut_personne(Statut_personne::STUDENT));
+			$aPerson->addStatus(new PersonStatus(PersonStatus::STUDENT));
 		}
 		else if ($_POST['status'] == 'speaker')
 		{
-			$P->addStatus(new Statut_personne(Statut_personne::SPEAKER));
+			$aPerson->addStatus(new PersonStatus(PersonStatus::SPEAKER));
 		}
-		echo($P->toHTML());
+
+		echo($aPerson->toHTML());
 		header('Location: ./admin_panel2.php');
+		die;
 	}
 
 	if ($_POST['action'] == 'delete_person')
 	{
-		$P = new Personne();
-		$P->loadFromDB(intval($_POST['id']));
-		$P->removeFromDB();
+		$aPerson = new Person();
+		$aPerson->loadFromDB(intval($_POST['id']));
+		$aPerson->removeFromDB();
 		header('Location: ./admin_panel2.php');
+		die;
 	}
+
 	if ($_POST['action'] == 'clear_db')
 	{
-		BaseDeDonnees::currentDB()->clear();
-		
+		Database::currentDB()->clear();
 		header('Location: ./admin_panel2.php');
+		die;
 	}
-	
+
 	if ($_POST['action'] == 'init_db')
 	{
-		BaseDeDonnees::currentDB()->initialize();
-		
+		Database::currentDB()->initialize();
 		header('Location: ./admin_panel2.php');
+		die;
 	}
-	
+
 	if ($_POST['action'] == 'delete_group')
 	{
-		$G = new Groupe();
-		if(!$G->loadFromDB(intval($_POST['id'])))die('Ooops: Group not found');
-		else echo("G id/name= ".$G->getId()." / ".$G->getName());
-		$G->removeFromDB();
+		$aGroup = new Group();
+
+		if (!$aGroup->loadFromDB(intval($_POST['id'])))
+		{
+			die('Group not found');
+		}
+		else
+		{
+			echo("G id/name= " . $aGroup->getSqlId() . " / " . $aGroup->getName());
+		}
+
+		$aGroup->removeFromDB();
 		header('Location: ./admin_panel2.php');
+		die;
 	}
 
 	if ($_POST['action'] == 'modify_group')
 	{
-		$aGroup = new Groupe;
+		$aGroup = new Group();
 
 		if (!$aGroup->loadFromDB(intval($_POST['id'])))
 		{
@@ -284,7 +339,7 @@ if (isset($_POST['action']))
 		}
 		else
 		{
-			echo("G id/name = " . $aGroup->getId() . " / " . $aGroup->getName());
+			echo("G id/name = " . $aGroup->getSqlId() . " / " . $aGroup->getName());
 		}
 	}
 }

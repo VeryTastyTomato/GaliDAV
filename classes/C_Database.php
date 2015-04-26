@@ -41,7 +41,7 @@ class Database
 	 * \param $newPassword     \e String containing the password of the database.
 	 * \param $newHost         \e ???
 	*/
-	public function __construct($newUser = 'galidav', Database $newDatabaseName = NULL, $newPassword = NULL, $newHost = NULL)
+	public function __construct($newUser = 'galidav', $newDatabaseName = NULL, $newPassword = NULL, $newHost = NULL)
 	{
 		$this->user           = $newUser;
 		$this->databaseName   = $newDatabaseName;

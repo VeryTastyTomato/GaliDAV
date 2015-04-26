@@ -13,7 +13,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 
 require_once('C_PersonStatus.php');
 require_once('C_Database.php');
-require_once("test_davical_operations.php");
+require_once('test_davical_operations.php');
 
 // Les opérations sur une Personne sont automatiquement reportées dans la BDD.
 
@@ -69,10 +69,10 @@ class Person
 			}
 			else
 			{
-				$query       = "SELECT id FROM " . self::TABLENAME . " ORDER BY date_creation DESC; ";
+				$query       = "SELECT id FROM " . self::TABLENAME . " ORDER BY date_creation DESC;";
 				$result      = Database::currentDB()->executeQuery($query);
 				$tmp         = pg_fetch_assoc($result);
-				$this->sqlid = $tmp['id'];
+				$this->sqlId = $tmp['id'];
 			}
 		}
 	}
@@ -93,7 +93,7 @@ class Person
 	*/
 	public function getSqlId()
 	{
-		return $this->sqlid;
+		return $this->sqlId;
 	}
 
 	/**
@@ -133,12 +133,12 @@ class Person
 	}
 
 	// setters
-	// Flora: this method is declared protected because the id of a person shouldn’t change in time (given by SQL)
 	/**
 	 * \brief Setter for the attribute $sqlId.
+	 * \details This method is declared protected because the id of a person shouldn’t change in time (given by SQL).
 	 * \param $newSqlId Contains the new value of $sqlId.
 	*/
-	protected function setSqlid($newSqlId)
+	protected function setSqlId($newSqlId)
 	{
 		if (is_int($newSqlId))
 		{

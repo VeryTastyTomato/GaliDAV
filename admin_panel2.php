@@ -1,31 +1,38 @@
 <?php
-ini_set('display_errors', 1); 
+/**
+ * \file  admin_panel2.php
+ * \brief Displays the administrator’s panel.
+*/
+ini_set('display_errors', 1);
 error_reporting(E_ALL);
 ?>
 
- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<link rel="stylesheet" href="./agendav-1.2.6.2.css">
-<title>Tests GaliDAV</title></head>
-<body> 
-<div class="navbar">
- <div class="navbar-inner">
-  <div class="container-fluid">
-   <span class="brand"><?php echo "Panneau d'administration"; ?></span>
-   <p class="navbar-text pull-right" id="loading">
-    Connexion
-   </p>
+	<head>
+		<meta http-equiv = "Content-Type" content = "text/html;charset = utf-8">
+		<link rel = "stylesheet" href = "./agendav-1.2.6.2.css">
+		<title>Tests GaliDAV</title>
+	</head>
+	<body>
+		<div class = "navbar">
+			<div class = "navbar-inner">
+				<div class = "container-fluid">
+					<span class = "brand">
+						<?php
+							echo "Panneau d'administration";
+						?>
+					</span>
+					<p class = "navbar-text pull-right" id = "loading">Connexion</p>
    
 
    <ul class="nav pull-right">
   <?php
  
   if(!defined("AGENDAV_PATH"))
- 	define("AGENDAV_PATH","http://edthote.fr/agendav2");
- 	$agendav_path="http://edthote.fr/agendav2";
- 	$galidav_path="http://edthote.fr/GaliDAV";
+ 	define("AGENDAV_PATH","http://davical.example.net/agendav2");
+ 	$agendav_path="http://davical.example.net/agendav2";
+ 	$galidav_path="http://davical.example.net/GaliDAV";
   	echo("<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><a href='".$agendav_path."/index.php' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role='button' aria-disabled='false'> <span class='ui-button-text'>Retour aux emplois du temps</span></a></li>");
   	
   	?>
@@ -41,8 +48,8 @@ error_reporting(E_ALL);
 require_once("test_davical_operations.php");
 require_once("ListePersonnes.php");
 	//Reconstruit toutes les tables de la base
-	//BaseDeDonnees::currentDB()->initialize();
-	  $agendav_path="http://edthote.fr/agendav2";
+	//Database::currentDB()->initialize();
+	  $agendav_path="http://davical.example.net/agendav2";
 	if(isset($_GET['GMESSAGE_ERROR'])){
 		if($_GET['GMESSAGE_ERROR']=='DIFFERENT_PASS')
 			echo"<p class='gmessage error' style='width:80%;height:30px;padding:auto;margin-left:auto;margin-right:auto;overflow:auto; border-style:dashed'>Les deux mots de passes entrés sont différents</p>";

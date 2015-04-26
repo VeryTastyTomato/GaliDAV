@@ -26,7 +26,7 @@ class Group
 	protected $linkedGroupsList = array(); // Flora: a Classe object shouldn’t be linked to other Classe objects
 
 	const TABLENAME = "ggroup";
-	const SQLcolumns = "id serial PRIMARY KEY, name VARACHAR(30) UNIQUE NOT NULL, is_class BOOLEAN NOT NULL DEFAULT FALSE, id_current_timetable INTEGER REFERENCES gcalendar(id),id_validated_timetable INTEGER REFERENCES gcalendar(id)";
+	const SQLcolumns = "id serial PRIMARY KEY, name VARCHAR(30) UNIQUE NOT NULL, is_class BOOLEAN NOT NULL DEFAULT FALSE, id_current_timetable INTEGER REFERENCES gcalendar(id),id_validated_timetable INTEGER REFERENCES gcalendar(id)";
 
 	const composedOfTABLENAME = "ggroup_composed_of";
 	const composedOfSQLcolumns = "id_person INTEGER REFERENCES gperson(id), id_group INTEGER REFERENCES ggroup(id), CONSTRAINT ggroup_composed_of_pk PRIMARY KEY(id_person, id_group)";

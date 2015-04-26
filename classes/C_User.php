@@ -129,7 +129,7 @@ class User extends Person
 	// others
 	/**
 	 * \brief  Checks if the given password matches the user’s one.
-	 * \param  $givenPassowrd The password to check.
+	 * \param  $givenPassword The password to check.
 	 * \return TRUE if the passwords are the same, FALSE otherwise.
 	*/
 	public function isPassword($givenPassword)

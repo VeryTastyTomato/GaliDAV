@@ -13,7 +13,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 	die('This file was written for PHP 5');
 }
 
-require_once('../types/T_Courses.php');
+require_once('types/T_Courses.php');
 require_once('C_Timetable.php');
 require_once('C_Subject.php');
 
@@ -29,7 +29,7 @@ class Course
 	private $subject     = NULL;
 
 	const TABLENAME           = "gcourse";
-	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30) NOT NULL, room VARCHAR(30), begins_at TIMESTAMP WITOUTH TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER";
+	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30) NOT NULL, room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER";
 	const belongsToTABLENAME  = "gcourse_belongs_to";
 	const belongsToSQLcolumns = "id_course INTEGER REFERENCES gcourse(id), id_calendar INTEGER REFERENCES gcalendar(id), CONSTRAINT gcourse_belongs_to_pk PRIMARY KEY(id_course, id_calendar)";
 

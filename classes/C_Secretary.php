@@ -13,7 +13,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 require_once('C_User.php');
 
 require_once('C_Subject.php');
-require_once('../types/T_Courses.php');
+require_once('types/T_Courses.php');
 require_once('C_Group.php');
 require_once('C_Class.php');
 require_once('C_ElemOfClassesModel.php');
