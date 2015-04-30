@@ -1,4 +1,5 @@
 <!-- File modified for GaliDAV -->
+
 <?php $galidav_path = 'http://test.davical.net/galidav/'; ?>
 
 <div class = "navbar">

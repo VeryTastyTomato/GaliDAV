@@ -1,4 +1,5 @@
-<!-- File modified for GaliDAV-->
+<!-- File modified for GaliDAV -->
+
 <?php
 	if (isset($logo))
 	{
@@ -9,7 +10,7 @@
 <div id = "shortcuts" class = "block">
 	<div id = "shortcut_add_event">
 		<?php
-			echo 'Ajouter un cours'; // $this->i18n->_('labels', 'createevent')
+			echo $this->i18n->_('labels', 'addcourse');
 		?>
 	</div>
 </div>
@@ -17,7 +18,7 @@
 	<div class = "calendar_list ui-widget block" id = "own_calendar_list">
 		<div class = "ui-widget-header ui-corner-all">
 			<?php
-				echo 'Matières' // $this->i18n->_('labels', 'calendars')
+				echo $this->i18n->_('labels', 'subject');
 			?>
 		</div>
 	<div class = "ui-widget-content">

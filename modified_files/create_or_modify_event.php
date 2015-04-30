@@ -1,4 +1,4 @@
-// File modified for GaliDAV
+<!-- File modified for GaliDAV -->
 
 <div id="com_event_dialog">
 <div id="com_event_dialog_tabs">
@@ -174,21 +174,18 @@ $form_transp = array(
 
 <?php
 echo formelement(
-		'Type de cours',
-		//$this->i18n->_('labels', 'type_cours'),
+		$this->i18n->_('labels', 'coursetype'),
 		form_input($form_summary));
 
 
 echo formelement(
-		'Salle',
-		//$this->i18n->_('labels', 'location'),
+		$this->i18n->_('labels', 'room'),
 		form_input($form_location));
 
 
 echo form_hidden('original_calendar', $calendar);
 echo formelement(
-		'Matière',
-		//$this->i18n->_('labels', 'calendar'),
+		$this->i18n->_('labels', 'subject'),
 		form_dropdown('calendar', $form_calendar, $calendar,
 			'class="medium"'));
 
