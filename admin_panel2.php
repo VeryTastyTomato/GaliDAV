@@ -24,56 +24,91 @@ error_reporting(E_ALL);
 						?>
 					</span>
 					<p class = "navbar-text pull-right" id = "loading">Connexion</p>
-   
 
-   <ul class="nav pull-right">
-  <?php
- 
-  if(!defined("AGENDAV_PATH"))
- 	define("AGENDAV_PATH","http://davical.example.net/agendav2");
- 	$agendav_path="http://davical.example.net/agendav2";
- 	$galidav_path="http://davical.example.net/GaliDAV";
-  	echo("<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><a href='".$agendav_path."/index.php' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role='button' aria-disabled='false'> <span class='ui-button-text'>Retour aux emplois du temps</span></a></li>");
-  	
-  	?>
-    <li class="dropdown" id="usermenu"><a href="#"><span class="username"></span></a></li>
-   </ul>
-      
-  </div>
- </div>
-</div>
+					<ul class = "nav pull-right">
+						<?php
+							if (!defined("AGENDAV_PATH"))
+							{
+								define("AGENDAV_PATH", "http://davical.example.net/agendav2");
+							}
+							$agendav_path = "http://davical.example.net/agendav2";
+							$galidav_path = "http://davical.example.net/GaliDAV";
+							echo ("<li class = 'dropdown' style = 'margin-top:auto;margin-bottom:auto;'><a href = '".$agendav_path."/index.php' class = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role = 'button' aria-disabled = 'false'> <span class = 'ui-button-text'>Retour aux emplois du temps</span></a></li>");
+						?>
+						<li class = "dropdown" id = "usermenu">
+							<a href = "#"><span class = "username"></span></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<?php
+			require_once("test_davical_operations.php");
+			require_once("ListePersonnes.php");
 
+			// Reconstruit toutes les tables de la base
+			// Database::currentDB()->initialize();
 
-<?php 
-require_once("test_davical_operations.php");
-require_once("ListePersonnes.php");
-	//Reconstruit toutes les tables de la base
-	//Database::currentDB()->initialize();
-	  $agendav_path="http://davical.example.net/agendav2";
-	if(isset($_GET['GMESSAGE_ERROR'])){
-		if($_GET['GMESSAGE_ERROR']=='DIFFERENT_PASS')
-			echo"<p class='gmessage error' style='width:80%;height:30px;padding:auto;margin-left:auto;margin-right:auto;overflow:auto; border-style:dashed'>Les deux mots de passes entrés sont différents</p>";
-	
-		unset($_GET['GMESSAGE_ERROR']);
-	}
-?>
-<form action="test_davical_operations.php" method="POST" style="position:absolute;left:0px;top:50px;width:150px;"><input type='hidden' name='action' value="clear_db"/><input type=submit value="Effacer toutes les données"/></form>
-<form action="test_davical_operations.php" method="POST" style="position:absolute;left:180px;top:50px;width:150px;"><input type='hidden' name='action' value="init_db"/><input type=submit value="(Re)créer une base vierge"/></form>
+			if (isset($_GET['GMESSAGE_ERROR']))
+			{
+				if ($_GET['GMESSAGE_ERROR'] == 'DIFFERENT_PASS')
+				{
+					echo "<p class = 'gmessage error' style = 'width:80%;height:30px;padding:auto;margin-left:auto;margin-right:auto;overflow:auto; border-style:dashed'>Les deux mots de passes entrés sont différents</p>";
+				}
 
-<div id=admin_panel style='width:80%;height:450px;padding:auto;margin-left:auto;margin-right:auto;overflow:auto'>
-	<table style='width:100%;height:100%;'>
-		<tr style='width:100%;height:100%;'>
-			<td style='width:50%;height:100%'><ul style='width:100%;list-style-type:none;padding:20px;'>
-			<li class='dropdown add_student' style='margin-top:auto;margin-bottom:auto;width:100%;height:10%;'>
-			<?php echo("<a href='$galidav_path/admin_panel2.php?action=add_person' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role='button' aria-disabled='false'>");?> <div class='ui-button-text add_student' style='width:100%;'>Ajouter un étudiant ou un intervenant</div></a></li>
-			<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><?php echo("<a href='$galidav_path/admin_panel2.php?action=add_user' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role='button' aria-disabled='false'>");?> <div class='ui-button-text'>Ajouter un utilisateur</div></a></li>
-			<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><?php echo("<a href='$galidav_path/admin_panel2.php?action=add_group' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role='button' aria-disabled='false'>");?> <div class='ui-button-text'>Ajouter une classe ou un groupe</div></a></li>
-			
-			<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><?php echo("<a href='$galidav_path/admin_panel2.php?action=add_subject' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role='button' aria-disabled='false'>");?> <div class='ui-button-text'>Ajouter une matière </div></a></li></ul><td>
-			<td class="loginform ui-corner-all add_student" style='width:50%;height:100%'>
-			<?php if(isset($_GET['action'])) {
-				if($_GET['action']=='add_user'){
-				echo("
+				unset($_GET['GMESSAGE_ERROR']);
+			}
+		?>
+		<form action = "test_davical_operations.php" method = "POST" style = "position:absolute;left:0px;top:50px;width:150px;">
+			<input type = 'hidden' name = 'action' value = "clear_db" />
+			<input type = submit value = "Effacer toutes les données" />
+		</form>
+		<form action = "test_davical_operations.php" method = "POST" style = "position:absolute;left:180px;top:50px;width:150px;">
+			<input type = 'hidden' name = 'action' value = "init_db" />
+			<input type = submit value = "(Re)créer une base vierge" />
+		</form>
+		<div id = admin_panel style = 'width:80%;height:450px;padding:auto;margin-left:auto;margin-right:auto;overflow:auto'>
+			<table style = 'width:100%;height:100%;'>
+				<tr style = 'width:100%;height:100%;'>
+					<td style = 'width:50%;height:100%'>
+						<ul style = 'width:100%;list-style-type:none;padding:20px;'>
+							<li class = 'dropdown add_student' style = 'margin-top:auto;margin-bottom:auto;width:100%;height:10%;'>
+								<?php
+									echo ("<a href = '$galidav_path/admin_panel2.php?action=add_person' class = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role = 'button' aria-disabled = 'false'>");
+								?>
+									<div class = 'ui-button-text add_student' style = 'width:100%;'>Ajouter un étudiant ou un intervenant</div>
+								</a>
+							</li>
+							<li class = 'dropdown' style = 'margin-top:auto;margin-bottom:auto;'>
+								<?php
+									echo ("<a href = '$galidav_path/admin_panel2.php?action=add_user' class ='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role = 'button' aria-disabled = 'false'>");
+								?>
+									<div class = 'ui-button-text'>Ajouter un utilisateur</div>
+								</a>
+							</li>
+							<li class = 'dropdown' style = 'margin-top:auto;margin-bottom:auto;'>
+								<?php
+									echo ("<a href = '$galidav_path/admin_panel2.php?action=add_group' class = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role = 'button' aria-disabled = 'false'>");
+								?>
+									<div class = 'ui-button-text'>Ajouter une classe ou un groupe</div>
+								</a>
+							</li>
+							<li class = 'dropdown' style = 'margin-top:auto;margin-bottom:auto;'>
+								<?php
+									echo ("<a href = '$galidav_path/admin_panel2.php?action=add_subject' class = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role = 'button' aria-disabled = 'false'>");
+								?>
+									<div class = 'ui-button-text'>Ajouter une matière</div>
+								</a>
+							</li>
+						</ul>
+					<td>
+					<td class = "loginform ui-corner-all add_student" style = 'width:50%;height:100%'>
+						<?php
+							if (isset($_GET['action']))
+							{
+								if ($_GET['action'] == 'add_user')
+								{
+									echo ("
 				<form action='test_davical_operations.php' method='POST'>
 				<input type='hidden' name='action' value='add_user'0/>
 				<table style=margin-left:auto;margin-right:auto;>
@@ -90,10 +125,11 @@ require_once("ListePersonnes.php");
 				<input type='radio' name='status' value='administrator'/>Administrateur<br/>
 				<input type='submit' value='Ajouter' style='width:80%;margin-left:auto;margin-right:auto;'/>
 			</form>");
-			}
-			
-				if($_GET['action']=='add_person'){
-				echo("
+								}
+
+								if ($_GET['action'] == 'add_person')
+								{
+									echo ("
 				<form action='test_davical_operations.php' method='POST'>
 				<input type='hidden' name='action' value='add_person'/>
 				<table style=margin-left:auto;margin-right:auto;>
@@ -105,10 +141,11 @@ require_once("ListePersonnes.php");
 				<input type='radio' name='status' value='speaker'/>Intervenant<br/>
 				<input type='submit' value='Ajouter' style='width:80%;margin-left:auto;margin-right:auto;'/>
 			</form>");
-			}
-			
-			if($_GET['action']=='add_group'){
-				echo("
+								}
+
+								if ($_GET['action'] == 'add_group')
+								{
+									echo ("
 				<form action='test_davical_operations.php' method='POST'>
 				<input type='hidden' name='action' value='add_group'/>
 				<table style=margin-left:auto;margin-right:auto;>
@@ -118,57 +155,57 @@ require_once("ListePersonnes.php");
 				</td></tr></table>
 				<input type='submit' value='Ajouter' style='width:80%;margin-left:auto;margin-right:auto;'/><br/>
 			</form>");
-			}
-			if($_GET['action']=='add_subject'){
-			echo("
+								}
+
+								if ($_GET['action'] == 'add_subject')
+								{
+									echo ("
 				<form action='test_davical_operations.php' method='POST'>
 				<input type='hidden' name='action' value='add_subject'/>
 				<table style=margin-left:auto;margin-right:auto;>
 				<tr><th>Matière </th><td><input type='text' name='subjectname' required/></td></tr>
 				<tr><th>Classe</th><td><select name='groupname'/><?php echo XoptionGroups();?></td></tr>
-				<tr><th>Intervenant1:</th><td><select name='speaker1'/>"); echo XoptionSpeakers(); echo("</select></td></tr>
-				<tr><th>Intervenant2: </th><td><select name='speaker2'/>"); echo XoptionSpeakers(); echo("</select></td></tr>
-				<tr><th>Intervenant3: </th><td><select name='speaker3'/>"); echo XoptionSpeakers(); echo("</select></td></tr>
+				<tr><th>Intervenant1:</th><td><select name='speaker1'/>");
+ 									echo XoptionSpeakers();
+									echo ("</select></td></tr>
+				<tr><th>Intervenant2: </th><td><select name='speaker2'/>"); 
+									echo XoptionSpeakers();
+									echo ("</select></td></tr>
+				<tr><th>Intervenant3: </th><td><select name='speaker3'/>");
+									echo XoptionSpeakers();
+									echo ("</select></td></tr>
 				</table>
 				<input type='submit' value='Ajouter' style='width:80%;margin-left:auto;margin-right:auto;'/><br/>
 			</form>");
-			}
-			
-			}
-			
-			else echo("Sélectionnez une action");
-			?>
-			
-			
-			
-			<td>
-		</tr>
-		
-		
-	</table>
-</div>
+								}
+							}
 
-<div style='height:150px;border:solid;background-color:#AAAAAA;border-width:10px;border-color:#888888;overflow:auto;width:100%;margin-left:auto;margin-right:auto;'>
-	<table style='height:100%;width:100%';>
-		<tr style='width:100%'>
-			<th style='width:20%'>Toutes les personnes</th>
-			<th style='width:20%'>Tous les enseignants</th>
-			<th style='width:20%'>Tous les élèves</th>
-			<th style="width:20%">Tous les groupes et classes</th>
-		</tr>
-		<tr style='height:50%;'>
-			<td><?php echo XListAll();?></td>
-			<td><?php echo XListTeachers();?></td>
-			<td><?php echo XListStudents();?></td>
-			<td><?php echo XListAllGroups();?></td>
-		</tr>
-		<tr>
-			<th>?</th>
-		</tr>
-		<tr style='height:50%;'>
-			
-		</tr>
-	</table>
-</div>
-</body>
+							else echo("Sélectionnez une action");
+						?>
+					<td>
+				</tr>
+			</table>
+		</div>
+		<div style = 'height:150px;border:solid;background-color:#AAAAAA;border-width:10px;border-color:#888888;overflow:auto;width:100%;margin-left:auto;margin-right:auto;'>
+			<table style = 'height:100%;width:100%';>
+				<tr style = 'width:100%'>
+					<th style = 'width:20%'>Toutes les personnes</th>
+					<th style = 'width:20%'>Tous les enseignants</th>
+					<th style = 'width:20%'>Tous les élèves</th>
+					<th style = "width:20%">Tous les groupes et classes</th>
+				</tr>
+				<tr style = 'height:50%;'>
+					<td><?php echo XListAll(); ?></td>
+					<td><?php echo XListTeachers(); ?></td>
+					<td><?php echo XListStudents(); ?></td>
+					<td><?php echo XListAllGroups(); ?></td>
+				</tr>
+				<tr>
+					<th>?</th>
+				</tr>
+				<tr style = 'height:50%;'>
+				</tr>
+			</table>
+		</div>
+	</body>
 </html>

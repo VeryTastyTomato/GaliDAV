@@ -45,7 +45,7 @@
 
 	\chapter*{Avant-propos}
 	\addcontentsline{toc}{chapter}{Avant-propos}
-		GaliDAV a été initialement développé dans le cadre du cours de Conduite et gestion de projets à l’école d’ingénieurs SupGalilée de l’université Paris 13, par des étudiants en deuxième année de la spécialité informatique. Un dépôt sur GitHub est accessible à l’adresse : https://github.com/VeryTastyTomato/GaliDAV
+		GaliDAV a été initialement développé dans le cadre du cours de Conduite et gestion de projets à l’école d’ingénieurs Sup Galilée de l’université Paris 13, par des étudiants en deuxième année de la spécialité informatique. Un dépôt sur GitHub est accessible à l’adresse : \url{https://github.com/VeryTastyTomato/GaliDAV}
 	\chapter*{Introduction}
 	\addcontentsline{toc}{chapter}{Introduction}
 		\section*{Définition}
@@ -72,17 +72,37 @@
 				\item et enfin le paquet \texttt{\textbf{davical}}.
 			\end{itemize}
 
-			En ce qui concerne le client AgenDAV, vous devez télécharger l’archive contenant la version 1.2.6.2 sur son site officiel, la décompresser et copier le répertoire obtenu à l’emplacement \texttt{/usr/share/davical/htdocs} (nécessite les privilèges super-utilisateur). Il est fortement conseillé de renommer le répertoire décompressé \texttt{agendav}.
+			En ce qui concerne le client AgenDAV, vous devez télécharger l’archive contenant la version 1.2.6.2 sur son site officiel, la décompresser et copier le répertoire obtenu à l’emplacement \texttt{/usr/share/davical/htdocs} (nécessite les privilèges super-utilisateur). Il est fortement conseillé de renommer le répertoire décompressé en \texttt{agendav}.
 
 			Enfin, faites de même pour l’application GaliDAV, en veillant à ce que le répertoire soit nommé \texttt{galidav} (ce n’est pas obligatoire mais nous supposerons  que c’est le cas par la suite).
 	\chapter{Configuration}
 		\section{PostgreSQL}
-			Après l’installation de PostgreSQL, il est fortement conseillé de changer le mot de passe de l’utilisateur \textit{postgres} en utilisant la commande suivant :
+			Après l’installation de PostgreSQL, modifier le fichier \texttt{/etc/postgresql/9.1/main/pg\_hba.conf} (avec les privilèges super-utilisateur) et changez toutes les lignes non-commentées contenant le mot \textit{peer} par \textit{md5} (colonne \texttt{METHOD}), \emph{sauf} pour la ligne suivante que vous devez laisser inchangée pour le moment :
+			\begin{verbatim}
+				local   all             postgres                                peer
+			\end{verbatim}
+
+			Redémarrez le serveur PostgreSQL avec la commande :
+			\begin{verbatim}
+				sudo service postgresql restart
+			\end{verbatim}
+
+			puis saisissez :
+			\begin{verbatim}
+				sudo -i -u postgres
+			\end{verbatim}
+
+			afin de pouvoir vous connecter à PostgreSQL avec les droits d’administration. Nous allons maintenant créer un nouvel utilisateur que vous pourrez utiliser par la suite si vous le souhaiter (remplacer \texttt{<nom\_utilisateur>} par le nom de votre choix) :
+			\begin{verbatim}
+				createuser -P <nom_utilisateur>
+			\end{verbatim}
+
+			On vous demandera ensuite d’attribuer un mot de passe à cet utilisateur. Maintenant vous pouvez attribuer un mot de passe à \textit{postgres} avec la commande suivante :
 			\begin{verbatim}
 				sudo passwd postgres
 			\end{verbatim}
 
-			Ensuite, ouvrez le fichier \texttt{/etc/postgresql/9.1/main/pg\_hba.conf} (toujours avec les privilèges super-utilisateur) et remplacer les \textit{trust} par \textit{md5}. Ensuite ajouter les lignes suivantes :
+			Ensuite, rouvrez le fichier \texttt{/etc/postgresql/9.1/main/pg\_hba.conf} (toujours avec les privilèges super-utilisateur). Enfin ajouter après la ligne \texttt{\og \# TYPE  DATABASE… \fg{}}, les lignes suivantes :
 			\begin{verbatim}
 				local   davical         davical_app                             trust
 				local   davical         davical_dba                             trust
@@ -90,10 +110,14 @@
 				local   galidav         galidav                                 trust
 			\end{verbatim}
 
-			\textbf{Remarque :} cette configuration n’est pas du tout sécurisée ; si vous souhaitez contrôler les connexions aux bases de données de manière sécurisée, consulter la documentation de PostgreSQL. De manière générale, la procédure décrite dans cette version du document ne prend en compte aucun problème de sécurité et n’est donc pas adapté pour des environnements en ayant besoin. \newline
-			Ensuite, saisissez la commande suivante :
+			\textbf{Remarque :} cette configuration est certainement insuffisante si vous souhaitez utiliser la base de données à distance, notamment en ce qui concerne la sécurité. Consulter la documentation de PostgreSQL pour en savoir plus sur les paramètres de configuration supplémentaires requis à cette fin. \newline
+
+			Il faut maintenant modifier les fichiers \texttt{davical.sql} et \texttt{caldav\_function.sql} (en super-utilisateur) en remplaçant \emph{PlPgSQL} par \emph{plpgsql} (utilisez la fonction rechercher/remplacer de votre éditeur de texte).  
+
+			Redémarrez encore le serveur PostgreSQL, puis saisissez les commandes suivantes (une ligne après l’autre) :
 			\begin{verbatim}
-				sudo -i -u postgres -c /usr/share/davical/dba/create-database.sh
+				sudo -i -u postgres
+				/usr/share/davical/dba/create-database.sh
 			\end{verbatim}
 
 			À ce stade, le mot de passe du compte administrateur de DAViCal s’affichera, notez-le soigneusement. Vous pourrez par la suite modifier le mot de passe du compte administrateur (fortement conseillé).
@@ -111,7 +135,7 @@
 			\end{verbatim}
 
 		\section{Apache / DAViCal}
-			Pour rendre le serveur DAViCal fonctionnel, on propose d’utiliser un hôte virtuel. Pour cela, vous devez tout d’abord connaître l’adresse IP de la machine sur laquelle se trouve le serveur DAViCal (qui peut-être différent de celle du serveur web). Ensuite, dans créez un fichier de configuration à l’emplacement \texttt{/etc/apache2/sites-available/} (nommez-le davical.conf par exemple) et saisissez dans ce fichier les lignes suivantes :
+			Pour rendre le serveur DAViCal fonctionnel, on propose d’utiliser un hôte virtuel. Pour cela, vous devez tout d’abord connaître l’adresse IP de la machine sur laquelle se trouve le serveur DAViCal (qui peut-être différent de celle du serveur web). Ensuite, créez un fichier de configuration à l’emplacement \texttt{/etc/apache2/sites-available/} (nommez-le davical.conf par exemple) et saisissez dans ce fichier les lignes suivantes :
 			\begin{verbatim}
 				<VirtualHost *adresse ip*>
 				  DocumentRoot /usr/share/davical/htdocs
@@ -139,20 +163,34 @@
 
 			Le texte entouré d’étoiles (*) est à remplacer par les valeurs correspondantes à votre cas. Les lignes commentées devant les php\_value le sont car elles ne devraient pas être nécessaires, mais s’il y a un souci réessayez en décommentant ces lignes.
 
-			Modifier également le fichier également le fichier /etc/hosts en ajoutant une ligne contenant l’adresse IP indiqué dans l’hôte virtuel ci-dessus et le nom de domaine du serveur, indiqué aussi ci-dessus.
+			Modifiez également le fichier /etc/hosts en ajoutant une ligne contenant l’adresse IP indiqué dans l’hôte virtuel ci-dessus et le nom de domaine du serveur, indiqué aussi ci-dessus.
 
-			Ensuite, utiliser la commande suivante :
+			Ensuite, utilisez la commande suivante :
 			\begin{verbatim}
 				sudo a2ensite davical.conf
 			\end{verbatim}
 
-			et recharger le serveur Apache :
+			et rechargez le serveur Apache :
 			\begin{verbatim}
 				sudo service apache2 reload
 			\end{verbatim}
 
+			Enfin, créer un fichier nommé \texttt{*nom de votre serveur*-conf.php} dans \texttt{/etc/davical/} et saisissez le code suivant :
+			\begin{verbatim}
+				<?php
+					$c->domain_name = "*nom de votre serveur*";
+					// $c->sysabbr     = 'DAViCal';
+					// $c->admin_email = 'admin@example.net';
+					// $c->system_name = "Example DAViCal Server";
+					// $c->enable_row_linking = true;
+
+					$c->pg_connect[] = 'dbname = davical port = 5432 user = davical_app';
+			\end{verbatim}
+
+			Vous pouvez dé-commenter les lignes et remplir les champs avec les valeurs adéquates, mais seule la dernière est nécessaire.
+
 		\section{AgenDAV / GaliDAV}
-			En supposant que l’on soit dans le répertoire \texttt{/etc/usr/share/davical/htdocs/galidav/}, saisissez la commande suivante :
+			En supposant que l’on soit dans le répertoire \texttt{/usr/share/davical/htdocs/galidav/}, saisissez la commande suivante :
 
 			\begin{verbatim}
 				psql -U agendav agendav < sql/pgsql.schema.sql

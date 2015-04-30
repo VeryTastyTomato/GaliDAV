@@ -7,8 +7,8 @@
 \contentsline {section}{\numberline {1.2}Proc\IeC {\'e}dure d\IeC {\textquoteright }installation sous Debian}{4}{section.1.2}
 \contentsline {chapter}{\numberline {2}Configuration}{5}{chapter.2}
 \contentsline {section}{\numberline {2.1}PostgreSQL}{5}{section.2.1}
-\contentsline {section}{\numberline {2.2}Apache / DAViCal}{5}{section.2.2}
-\contentsline {section}{\numberline {2.3}AgenDAV / GaliDAV}{6}{section.2.3}
+\contentsline {section}{\numberline {2.2}Apache / DAViCal}{6}{section.2.2}
+\contentsline {section}{\numberline {2.3}AgenDAV / GaliDAV}{7}{section.2.3}
 \contentsline {section}{\numberline {2.4}Documentations externes}{7}{section.2.4}
 \contentsline {chapter}{\numberline {3}Utilisation}{8}{chapter.3}
 \contentsline {section}{\numberline {3.1}Ajouter une mati\IeC {\`e}re}{8}{section.3.1}
