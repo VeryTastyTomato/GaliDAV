@@ -40,7 +40,7 @@ class Subject
 
 		$this->name = $newName;
 		$params     = array($newName);
-		$params[]   = $newGroup->getId();
+		$params[]   = $newGroup->getSqlId();
 		$query      = "INSERT INTO " . self::TABLENAME . " (name, id_group) VALUES ($1, $2);";
 		$result     = Database::currentDB()->executeQuery($query, $params);
 
@@ -50,16 +50,17 @@ class Subject
 		}
 		else
 		{
-			$result = pg_fetch_assoc($result);
 			$params = array($newName);
 			$query  = "SELECT id FROM " . self::TABLENAME . " WHERE name = $1;";
+			$result = Database::currentDB()->executeQuery($query, $params);
 
-			if (!Database::currentDB()->executeQuery($query,$params))
+			if (!$result)
 			{
-				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS_);
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 			else
 			{
+				$result = pg_fetch_assoc($result);
 				$this->group  = $newGroup;
 				$this->sqlId  = $result['id'];
 				$newTimetable = new Timetable($this);
@@ -208,7 +209,7 @@ class Subject
 					$params  = array($newTeacher->getSqlId());
 					$result2 = Database::currentDB()->executeQuery($query, $params);
 
-					if ($result2)
+					if ($result2 and ($newTeacher instanceof Teacher))
 					{
 						$this->timetable->shareWith($newTeacher);
 					}

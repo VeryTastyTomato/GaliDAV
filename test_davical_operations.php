@@ -6,7 +6,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Flora NOTE: vous devez écrire dans votre hote.conf la ligne
+// Flora NOTE: vous devez écrire dans le fichier de votre serveur virtuel la ligne
 // php_value include_path /usr/share/davical/inc:/usr/share/awl/inc
 
 require_once("/usr/share/davical/htdocs/always.php");
@@ -16,10 +16,9 @@ require_once("classes/C_Secretary.php");
 require_once("classes/C_Teacher.php");
 require_once("classes/C_Administrator.php");
 require_once("classes/C_Head.php");
-require_once("ListePersonnes.php");
+require_once("liste_personnes.php");
 
 // Créer un calendrier de nom, $calendarNameGiven pour l'utilisateur d'identifiant $username
-
 function CreateCalendar($userName, $calendarNameGiven, $default_timezone = NULL)
 {
 	global $session, $c;
@@ -30,7 +29,7 @@ function CreateCalendar($userName, $calendarNameGiven, $default_timezone = NULL)
 	}
 
 	$principal           = new Principal('username', $userName);
-	$userFullName        = $principal->fullname; // user fullname
+	$userFullName        = $principal->fullname;
 	$userReverseFullName = implode(' ', array_reverse(explode(' ', $principal->fullname))); // user fullname in reverse order
 	$sqlQuery            = 'INSERT INTO collection (user_no, parent_container, dav_name, dav_etag, dav_displayname, is_calendar, is_addressbook, default_privileges, created, modified, resourcetypes) ';
 	$sqlQuery           .= 'VALUES( :user_no, :parent_container, :collection_path, :dav_etag, :displayname, :is_calendar, :is_addressbook, :privileges::BIT(24), current_timestamp, current_timestamp, :resourcetypes );';
@@ -180,7 +179,7 @@ if (isset($_POST['action']))
 			{
 				$res = Database::currentDB()->executeQuery(query_person_by_fullname($_POST['speaker1']));
 
-				if($res)
+				if ($res)
 				{
 					$result = pg_fetch_assoc($res);
 					$aPerson = new Person();
@@ -219,7 +218,7 @@ if (isset($_POST['action']))
 					$result = pg_fetch_assoc($res);
 					$aPerson = new Person();
 					$aPerson->loadFromDB($result['id']);
-					$subject->addTeacher($aPerson);
+					$aSubject->addTeacher($aPerson);
 				}
 				else
 				{
@@ -228,7 +227,7 @@ if (isset($_POST['action']))
 			}
 		}
 
-		header('Location: ./admin_panel2.php');
+		header('Location: ./admin_panel.php');
 		die;
 	}
 
@@ -236,7 +235,7 @@ if (isset($_POST['action']))
 	{
 		if ($_POST['password'] != $_POST['password2'])
 		{
-			header('Location: ./admin_panel2.php?GMESSAGE_ERROR=DIFFERENT_PASS');
+			header('Location: ./admin_panel.php?GMESSAGE_ERROR=DIFFERENT_PASS');
 			die;
 		}
 		else
@@ -259,7 +258,7 @@ if (isset($_POST['action']))
 			}
 
 			echo($aUser->toHTML());
-			header('Location: ./admin_panel2.php');
+			header('Location: ./admin_panel.php');
 			die;
 		}
 	}
@@ -267,7 +266,8 @@ if (isset($_POST['action']))
 	if ($_POST['action'] == 'add_group')
 	{
 		$aGroup = new Group($_POST['name'], $_POST['isaclass']);
-		// header('Location: ./admin_panel.php');
+		header('Location: ./admin_panel.php');
+		die;
 	}
 
 	if ($_POST['action'] == 'add_person')
@@ -284,7 +284,7 @@ if (isset($_POST['action']))
 		}
 
 		echo($aPerson->toHTML());
-		header('Location: ./admin_panel2.php');
+		header('Location: ./admin_panel.php');
 		die;
 	}
 
@@ -293,21 +293,21 @@ if (isset($_POST['action']))
 		$aPerson = new Person();
 		$aPerson->loadFromDB(intval($_POST['id']));
 		$aPerson->removeFromDB();
-		header('Location: ./admin_panel2.php');
+		header('Location: ./admin_panel.php');
 		die;
 	}
 
 	if ($_POST['action'] == 'clear_db')
 	{
 		Database::currentDB()->clear();
-		header('Location: ./admin_panel2.php');
+		header('Location: ./admin_panel.php');
 		die;
 	}
 
 	if ($_POST['action'] == 'init_db')
 	{
 		Database::currentDB()->initialize();
-		header('Location: ./admin_panel2.php');
+		header('Location: ./admin_panel.php');
 		die;
 	}
 
@@ -325,7 +325,7 @@ if (isset($_POST['action']))
 		}
 
 		$aGroup->removeFromDB();
-		header('Location: ./admin_panel2.php');
+		header('Location: ./admin_panel.php');
 		die;
 	}
 

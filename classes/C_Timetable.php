@@ -120,7 +120,7 @@ class Timetable
 			else if ($object instanceof Subject)
 			{
 				$aSubject = $object;
-				$query    = "UPDATE " . Subject::TABLENAME . " SET id_calendar = " . $this->sqlId . " WHERE id = ".$M->getSqlId().";";
+				$query    = "UPDATE " . Subject::TABLENAME . " SET id_calendar = " . $this->sqlId . " WHERE id = " . $aSubject->getSqlId() . ";";
 
 				if (Database::currentDB()->executeQuery($query))
 				{
@@ -130,7 +130,7 @@ class Timetable
 				}
 				else
 				{	
-					Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS_);
+					Database::currentDB()->showError("ligne numéro" . __LINE__ . " classe :" . __CLASS__);
 				}
 			}
 			else if ($object instanceof Teacher)

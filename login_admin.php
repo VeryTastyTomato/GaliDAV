@@ -6,19 +6,19 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-$agendav_path = "http://test.davical.net/agendav";
+$galidav_path = "http://test.davical.net/galidav/";
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
 		<meta http-equiv = "Content-Type" content = "text/html;charset = utf-8">
-		<link rel = "stylesheet" href = "./agendav-1.2.6.2.css">
-		<link rel = "stylesheet" href = "./boostrap.agendav.css">
-		<title>Panneau d'administration</title>
+		<link rel = "stylesheet" href = "./css/agendav-1.2.6.2.css">
+		<link rel = "stylesheet" href = "./css/boostrap.agendav.css">
+		<title>Panneau d’administration</title>
 	</head>
 	<body>
-		<form name = "form1" method = "post" action = "<?php echo $galidav_path; ?>/admin_panel2.php">
+		<form name = "form1" method = "post" action = "<?php echo $galidav_path; ?>admin_panel.php">
 			<input type = "hidden" name = "libelle" value = "<?php echo $libelle; ?>" />
 		</form>
 		<?php
@@ -72,7 +72,7 @@ $agendav_path = "http://test.davical.net/agendav";
 					}
 				}
 			}
-			else // There is no admin user thus, we should authorize access to admin_panel2
+			else // There is no admin user thus, we should authorize access to admin_panel
 			{
 				echo ("<script type='text/javascript'>document.form1.submit(); </script>");
 			}
@@ -83,7 +83,7 @@ $agendav_path = "http://test.davical.net/agendav";
 				<div class = "container-fluid">
 					<span class = "brand">
 						<?php
-							echo "Panneau d'administration";
+							echo "Panneau d’administration";
 						?>
 					</span>
 					<p class = "navbar-text pull-right" id = "loading">Connexion</p>
@@ -107,12 +107,12 @@ $agendav_path = "http://test.davical.net/agendav";
 				}
 			?>
 			<div class = "loginform ui-corner-all">
-				<form action = "http://davical.example.net/GaliDAV/login_admin.php" method = "post" accept-charset = "utf-8" class = "form-horizontal">
+				<form action = "<?php $galidav_path ?>login_admin.php" method = "post" accept-charset = "utf-8" class = "form-horizontal">
 					<div style = "display:none">
 						<input name = "csrf_test_name" value = "3d354941803123010204d7bca40984ea" type = "hidden" />
 					</div>
 					<div class = "control-group">
-						<label class = "control-label">Nom d'utilisateur</label>
+						<label class = "control-label">Nom d’utilisateur</label>
 						<div class = "controls">
 							<?php
 								if (isset($_GET['user']))

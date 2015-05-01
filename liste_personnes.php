@@ -145,12 +145,17 @@ function XoptionGroups()
 	// $out = "<datalist class = optionOfGroup id = listgroups'>";
 	$out = "";
 	$res = Database::currentDB()->executeQuery(query_all_groups());
-	$group = pg_fetch_assoc($res);
 
-	while ($group != NULL)
+	if ($res)
 	{
-		// $out .= "<option value='" . $person['familyname'] . " " . $person['firstname'] . "'>";
-		$out .= "<option>" . $group['name'];
+		$group = pg_fetch_assoc($res);
+
+		while ($group)
+		{
+			// $out .= "<option value='" . $person['familyname'] . " " . $person['firstname'] . "'>";
+			$out .= "<option>" . $group['name'];
+			$group = pg_fetch_assoc($res);
+		}
 	}
 
 	//$out .= "</datalist>";
