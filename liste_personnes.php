@@ -1,4 +1,9 @@
 <?php
+/**
+ * \file  liste_personnes.php
+ * \brief Contains functions which get specified type of users in database.
+*/
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -111,17 +116,26 @@ function XListAllGroups()
 function XoptionSpeakers()
 {
 	// $out = "<datalist class = optionOfPeople id = listspeakers'>";
-	$out = "<option>--";
+	$out = "";
 	$res = Database::currentDB()->executeQuery(query_all_speakers());
-	$person = pg_fetch_assoc($res);
 
-	while ($person != NULL)
+	if ($res)
 	{
-		// $out .= "<option value='" . $person['familyname'] . " " . $person['firstname'] . "'>";
-		$out .= "<option>" . $person['familyname'] . " " . $person['firstname'];
+		$person = pg_fetch_assoc($res);
+
+		while ($person)
+		{
+			// $out .= "<option value='" . $person['familyname'] . " " . $person['firstname'] . "'>";
+			$out .= "<option>" . $person['familyname'] . " " . $person['firstname'];
+			$person = pg_fetch_assoc($res);
+		}
+	}
+	else
+	{
+		Database::showError();
 	}
 
-	// $out .= "</datalist>";
+	$out .= "</datalist>";
 
 	return $out;
 }

@@ -1,9 +1,12 @@
 <?php
+/**
+ * \file  login_admin.php
+ * \brief Checks if the user is an administrator to allow access to administrator’s panel.
+*/
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-$agendav_path = "http://davical.example.net/agendav2";
-$galidav_path = "http://davical.example.net/GaliDAV";
+$agendav_path = "http://test.davical.net/agendav";
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

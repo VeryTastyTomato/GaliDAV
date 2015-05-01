@@ -102,7 +102,7 @@
 				sudo passwd postgres
 			\end{verbatim}
 
-			Ensuite, rouvrez le fichier \texttt{/etc/postgresql/9.1/main/pg\_hba.conf} (toujours avec les privilèges super-utilisateur). Enfin ajouter après la ligne \texttt{\og \# TYPE  DATABASE… \fg{}}, les lignes suivantes :
+			Ensuite, rouvrez le fichier \texttt{/etc/postgresql/9.1/main/pg\_hba.conf} (toujours avec les privilèges super-utilisateur). Enfin ajouter après la ligne \texttt{\textit{\# Put your configuration here}}, les lignes suivantes :
 			\begin{verbatim}
 				local   davical         davical_app                             trust
 				local   davical         davical_dba                             trust

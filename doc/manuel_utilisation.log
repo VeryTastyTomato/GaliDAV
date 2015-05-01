@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.4.28)  30 APR 2015 13:42
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.4.28)  1 MAY 2015 17:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -739,7 +739,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 [6] [7]
 Chapitre 3.
-<ajouter_calendrier.png, id=178, 147.55125pt x 62.2325pt>
+<ajouter_calendrier.png, id=180, 147.55125pt x 62.2325pt>
 File: ajouter_calendrier.png Graphic file (type png)
 
 <use ajouter_calendrier.png>
@@ -751,7 +751,7 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 (caption)                particular \caption on input line 230.
 See the caption package documentation for explanation.
 
-<modifier_calendrier.png, id=179, 503.8825pt x 326.21875pt>
+<modifier_calendrier.png, id=181, 503.8825pt x 326.21875pt>
 File: modifier_calendrier.png Graphic file (type png)
 
 <use modifier_calendrier.png>
@@ -766,7 +766,7 @@ See the caption package documentation for explanation.
 [8
 
  <./ajouter_calendrier.png> <./modifier_calendrier.png>]
-<partager_calendrier.png, id=185, 503.8825pt x 361.35pt>
+<partager_calendrier.png, id=187, 503.8825pt x 361.35pt>
 File: partager_calendrier.png Graphic file (type png)
 
 <use partager_calendrier.png>
@@ -778,7 +778,7 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 (caption)                particular \caption on input line 243.
 See the caption package documentation for explanation.
 
-<calendriers_partages.png, id=186, 147.55125pt x 99.37125pt>
+<calendriers_partages.png, id=188, 147.55125pt x 99.37125pt>
 File: calendriers_partages.png Graphic file (type png)
 
 <use calendriers_partages.png>
@@ -791,7 +791,7 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [9 <./partager_calendrier.png> <./calendriers_partages.png>]
-<creer_evenement.png, id=194, 554.07pt x 597.23125pt>
+<creer_evenement.png, id=196, 554.07pt x 597.23125pt>
 File: creer_evenement.png Graphic file (type png)
 
 <use creer_evenement.png>
@@ -804,7 +804,7 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [10 <./creer_evenement.png>]
-<modifier_evenement.png, id=200, 820.06375pt x 455.7025pt>
+<modifier_evenement.png, id=202, 820.06375pt x 455.7025pt>
 File: modifier_evenement.png Graphic file (type png)
 
 <use modifier_evenement.png>
@@ -821,7 +821,7 @@ Overfull \hbox (8.34518pt too wide) in paragraph at lines 275--276
  [] 
  []
 
-<afficher_differentes_vues.png, id=201, 227.85126pt x 33.12375pt>
+<afficher_differentes_vues.png, id=203, 227.85126pt x 33.12375pt>
 File: afficher_differentes_vues.png Graphic file (type png)
 
 <use afficher_differentes_vues.png>
@@ -834,7 +834,7 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [11 <./modifier_evenement.png> <./afficher_differentes_vues.png>]
-<naviguer_dans_calendrier.png, id=209, 216.81pt x 42.1575pt>
+<naviguer_dans_calendrier.png, id=211, 216.81pt x 42.1575pt>
 File: naviguer_dans_calendrier.png Graphic file (type png)
 
 <use naviguer_dans_calendrier.png>
@@ -846,7 +846,7 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 (caption)                particular \caption on input line 293.
 See the caption package documentation for explanation.
 
-<preferences.png, id=210, 1027.84pt x 447.6725pt>
+<preferences.png, id=212, 1027.84pt x 447.6725pt>
 File: preferences.png Graphic file (type png)
  <use preferences.png>
 Package pdftex.def Info: preferences.png used on input line 299.
@@ -869,24 +869,25 @@ Package rerunfilecheck Info: File `manuel_utilisation.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 302.
  ) 
 Here is how much of TeX's memory you used:
- 8253 strings out of 494958
- 123944 string characters out of 6179213
+ 8258 strings out of 494958
+ 124006 string characters out of 6179213
  216772 words of memory out of 5000000
- 11307 multiletter control sequences out of 15000+600000
- 65060 words of font info for 44 fonts, out of 8000000 for 9000
+ 11309 multiletter control sequences out of 15000+600000
+ 68371 words of font info for 46 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  36i,11n,43p,738b,520s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}</usr/share/texmf/fonts/type1/
 public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/s
 hare/texmf/fonts/type1/public/lm/lmcsc10.pfb></usr/share/texmf/fonts/type1/publ
 ic/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr12.pfb></usr/share/t
-exmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/l
-mro10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/
-fonts/type1/public/lm/lmtt10.pfb>
-Output written on manuel_utilisation.pdf (13 pages, 489743 bytes).
+exmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr
+i10.pfb></usr/share/texmf/fonts/type1/public/lm/lmro10.pfb></usr/share/texmf/fo
+nts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.p
+fb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
+Output written on manuel_utilisation.pdf (13 pages, 523263 bytes).
 PDF statistics:
- 263 PDF objects out of 1000 (max. 8388607)
- 222 compressed objects within 3 object streams
+ 271 PDF objects out of 1000 (max. 8388607)
+ 228 compressed objects within 3 object streams
  45 named destinations out of 1000 (max. 500000)
  232 words of extra memory for PDF output out of 10000 (max. 10000000)
 
